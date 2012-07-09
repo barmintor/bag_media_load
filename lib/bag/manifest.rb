@@ -17,7 +17,7 @@ module Bag
       file= open(@manifest)
       file.each do |line|
         rel_path = line.split(' ')[1]
-        source = @bagdir + '/' + rel_path
+        source = File.join(@bagdir, rel_path)
         yield Manifest.find_or_create(source)
       end
     end
@@ -25,7 +25,7 @@ module Bag
     def self.find_resource(dc_source)
       resource = nil
       sources(dc_sources).each do |source|
-        resource ||= Resource.find_by_source(source)
+        resource ||= GenericResource.find_by_source(source)
       end
       return resource
     end
@@ -35,18 +35,27 @@ module Bag
       if resource.blank?
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
-        resource = Resource.new(:namespace=>'ldpd')
+        resource = GenericResource.new(:namespace=>'ldpd')
+        resource.migrate!
         ds_size = File.stat(dc_source).size.to_s
-        ds = resource.create_datastream(:dsid => 'CONTENT', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :label=>sources[0])
-        resource.add_datastream(ds)
+        ds = resource.datastreams['content']
+        if ds
+          ds.dsLocation = sources[1]
+          ds.label = sources[0]
+        else
+          ds = resource.create_datastream(:dsid => 'content', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :label=>sources[0])
+          resource.add_datastream(ds)
+        end
         if IMAGE_TYPES.include? mimetype
           setImageProperties(resource)
+          resource.dc.type = 'Image'
+          resource.dc.title = 'Preservation Image'
+        else
+          raise "Unsupported MIME Type #{mimetype}"
         end
         resource.dc.identifier = sources[0]
         resource.dc.source = sources[0]
         resource.dc.format = mimetype
-        resource.dc.type = 'Image'
-        resource.dc.title = 'Preservation Image'
         resource.dc.extent = ds_size
         resource.save if create
       end

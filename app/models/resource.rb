@@ -3,19 +3,32 @@ require "cul_image_props"
 require "mime/types"
 require "uri"
 require "uri-open"
-class Resource < ::ActiveFedora::Base
+class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
   include ::ActiveFedora::DatastreamCollections
   include ::ActiveFedora::Relationships
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
-  include Cul::Scv::Hydra::ActiveFedora::Model::Resource
   alias :file_objects :resources
   
   IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg', "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp'}
   WIDTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_width))
   LENGTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_length))
+  
+  has_relationship "image_width", :image_width
+  has_relationship "image_length", :image_length
+  has_relationship "x_sampling", :x_sampling
+  has_relationship "y_sampling", :y_sampling
+  has_relationship "sampling_unit", :sampling_unit
+  has_relationship "extent", :extent
+  
+  has_datastream :name => "content", :type=>::ActiveFedora::Datastream, :versionable => true
+  
+  def assert_content_model
+    super
+    add_relationship(:rdf_type, Cul::Scv::Hydra::ActiveFedora::RESOURCE_TYPE.to_s)
+  end
 
   def route_as
     "resource"
@@ -27,8 +40,8 @@ class Resource < ::ActiveFedora::Base
 
   def to_solr(solr_doc = Hash.new, opts={})
     super
-    unless solr_doc["extent_s"] || self.datastreams["CONTENT"].nil?
-      solr_doc["extent_s"] = [self.datastreams["CONTENT"].size]
+    unless solr_doc["extent_s"] || self.datastreams["content"].nil?
+      solr_doc["extent_s"] = [self.datastreams["content"].size]
     end
     solr_doc
   end
@@ -66,7 +79,7 @@ class Resource < ::ActiveFedora::Base
     end
     
     def derivatives!(opts={:override=>false})
-      ds = datastreams["CONTENT"]
+      ds = datastreams["content"]
       if ds and IMAGE_EXT.include? ds.mimeType
         width = relationships(WIDTH).first.to_s.to_i
         length = relationships(LENGTH).first.to_s.to_i
@@ -123,4 +136,37 @@ class Resource < ::ActiveFedora::Base
       ds_label = "#{dsid}.#{ext}"
       self.save
     end
+    
+    def migrate!
+      if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
+        puts "This object appears to be an old-style ldpd:Resource"
+        migrate_content
+        assert_content_model
+        remove_content_model("info:fedora/ldpd:Resource")
+        save
+      else
+        puts "No migration necessary"
+      end
+    end
+    
+    def migrate_content
+      old = datastreams["CONTENT"]
+      nouv = datastreams["content"]
+      if old and not nouv
+        dsLocation = old.dsLocation
+        if old.controlGroup == 'M' or old.controlGroup == 'X'
+          raise "WWW URL for DS content not yet implemented!" 
+        end
+        nouv = create_datastream(:dsid=>'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :label=>old.label)
+        add_datastream(nouv)
+      end
+    end
+    
+    def remove_cmodel(cmodel)
+      object = RDF::URI.new(cmodel)
+      subject = RDF::URI.new(internal_uri)
+      predicate = ActiveFedora::Predicates.find_graph_predicate(:has_model)
+      relationships.delete RDF::Statement.new(subject, predicate, object)
+    end
+    
 end
