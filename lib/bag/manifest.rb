@@ -2,6 +2,7 @@ require 'active_support'
 require 'mime/types'
 module Bag
   class Manifest
+    include Bag::DcHelpers
     extend Bag::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     def initialize(manifest)
@@ -36,7 +37,6 @@ module Bag
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
         resource = GenericResource.new(:namespace=>'ldpd')
-        resource.migrate!
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         if ds
@@ -48,16 +48,18 @@ module Bag
         end
         if IMAGE_TYPES.include? mimetype
           setImageProperties(resource)
-          resource.dc.type = 'Image'
-          resource.dc.title = 'Preservation Image'
+          resource.set_dc_type 'Image'
+          resource.set_title 'Preservation Image'
         else
           raise "Unsupported MIME Type #{mimetype}"
         end
-        resource.dc.identifier = sources[0]
-        resource.dc.source = sources[0]
-        resource.dc.format = mimetype
-        resource.dc.extent = ds_size
+        resource.set_dc_identifier = sources[0]
+        resource.set_dc_source = sources[0]
+        resource.set_dc_format = mimetype
+        resource.set_dc_extent = ds_size
         resource.save if create
+      else
+        resource.migrate!
       end
       resource
     end

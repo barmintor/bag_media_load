@@ -1,5 +1,6 @@
 require 'active_support'
 module Bag
+  autoload :DcHelpers
   autoload :Info
   autoload :Manifest
   autoload :ImageHelpers

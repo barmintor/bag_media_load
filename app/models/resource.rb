@@ -3,6 +3,7 @@ require "cul_image_props"
 require "mime/types"
 require "uri"
 require "uri-open"
+require "bag"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
@@ -10,6 +11,7 @@ class GenericResource < ::ActiveFedora::Base
   include ::ActiveFedora::Relationships
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
+  include Bag::DcHelpers
   alias :file_objects :resources
   
   IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg', "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp'}
@@ -143,10 +145,11 @@ class GenericResource < ::ActiveFedora::Base
         migrate_content
         assert_content_model
         remove_content_model("info:fedora/ldpd:Resource")
-        save
       else
-        puts "No migration necessary"
+        puts "No content migration necessary"
       end
+      collapse_ids
+      save
     end
     
     def migrate_content
@@ -163,10 +166,20 @@ class GenericResource < ::ActiveFedora::Base
     end
     
     def remove_cmodel(cmodel)
-      object = RDF::URI.new(cmodel)
-      subject = RDF::URI.new(internal_uri)
-      predicate = ActiveFedora::Predicates.find_graph_predicate(:has_model)
-      relationships.delete RDF::Statement.new(subject, predicate, object)
+      object_relations.delete(:has_model, cmodel)
+      relationships_are_dirty=true
+    end
+    
+    def collapse_ids
+      ids = dc.term_values(:identifier)
+      new_ids = ids.uniq
+      return if new_ids.sort.eql? ids.sort
+      if dc.respond_to?(:identifier_values)
+        dc.identifier_values = ids.uniq
+      else
+        dc.identifier = ids.uniq
+      end
+      self.dc.dirty = true
     end
     
 end
