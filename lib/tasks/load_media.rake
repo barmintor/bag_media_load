@@ -23,6 +23,11 @@ namespace :bag do
     rubydora = ActiveFedora::Base.fedora_connection[0].connection
     puts rubydora.next_pid(:namespace=>'ldpd')
   end
+  task :load_fixtures do
+    ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
+    rubydora = ActiveFedora::Base.fedora_connection[0].connection
+    Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| puts rubydora.ingest open(f)}
+  end
   namespace :media do
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
