@@ -2,7 +2,7 @@ require "active-fedora"
 require "cul_image_props"
 require "mime/types"
 require "uri"
-require "uri-open"
+require "open-uri"
 require "bag"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
@@ -86,32 +86,38 @@ class GenericResource < ::ActiveFedora::Base
         width = relationships(WIDTH).first.to_s.to_i
         length = relationships(LENGTH).first.to_s.to_i
         long = (width > length) ? width : length
-        dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.replace('file:','') : ds.dsLocation
-        img = Magick::ImageList.new
-        img.from_blob(open(dsLocation))
-        unless datastreams["thumbnail"] and not opts[:override]
-          if long > 200
-            factor = 200 / long
-            dsid = "thumbnail"
-            derivative!(img, factor, dsid)
+        dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
+        begin
+          img = Magick::Image.from_blob(open(dsLocation).read)
+          img = img.first if img.is_a? Array
+          if datastreams["thumbnail"].nil? or opts[:override]
+            if long > 200
+              factor = 200 / long
+              dsid = "thumbnail"
+              derivative!(img, factor, dsid)
+            end
           end
-        end
-        unless datastreams["web850"] and not opts[:override]
-          if long > 850
-            factor = 850 / long
-            dsid = "web850"
-            derivative!(img, factor, dsid)
+          if datastreams["web850"].nil? or opts[:override]
+            if long > 850
+              factor = 850 / long
+              dsid = "web850"
+              derivative!(img, factor, dsid)
+            end
           end
-        end
-        unless datastreams["web1500"] and not opts[:override]
-          if long > 1500
-            factor = 1500 / long
-            dsid = "web1500"
-            derivative!(img, factor, dsid)
+          if datastreams["web1500"].nil? or opts[:override]
+            if long > 1500
+              factor = 1500 / long
+              dsid = "web1500"
+              derivative!(img, factor, dsid)
+            end
           end
-        end
-        unless datastreams["jp2"] and not opts[:override]
-          zoomable!(img, "jp2")
+          if datastreams["jp2"].nil? or opts[:override]
+            zoomable!(img, "jp2")
+          end
+          img.destroy!
+          puts "INFO Generated derivatives for #{self.pid}"
+        rescue Exception => e
+          puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
         end
       end
     end
@@ -126,7 +132,7 @@ class GenericResource < ::ActiveFedora::Base
         img_ds.mimeType = mimeType unless img_ds.mimeType == mimeType
         img_ds.content = img.to_blob { self.format = ext}
       else
-        img_ds = create_datastream(:dsid => dsid, :controlGroup => 'M', :mimeType=>mimeType, :label=>ds_label)
+        img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :label=>ds_label)
         img_ds.content = img.to_blob { self.format = ext}
         add_datastream(img_ds)
       end
@@ -141,12 +147,12 @@ class GenericResource < ::ActiveFedora::Base
     
     def migrate!
       if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
-        puts "This object appears to be an old-style ldpd:Resource"
+        puts "INFO: #{self.pid} appears to be an old-style ldpd:Resource"
         migrate_content
         assert_content_model
-        remove_content_model("info:fedora/ldpd:Resource")
+        remove_cmodel("info:fedora/ldpd:Resource")
       else
-        puts "No content migration necessary"
+        puts "INFO: No content migration necessary for #{self.pid}"
       end
       collapse_ids
       save
@@ -160,7 +166,7 @@ class GenericResource < ::ActiveFedora::Base
         if old.controlGroup == 'M' or old.controlGroup == 'X'
           raise "WWW URL for DS content not yet implemented!" 
         end
-        nouv = create_datastream(:dsid=>'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :label=>old.label)
+        nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :label=>old.label)
         add_datastream(nouv)
       end
     end

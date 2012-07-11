@@ -1,6 +1,7 @@
 require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
+require "bag"
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
@@ -26,7 +27,7 @@ namespace :bag do
   task :load_fixtures do
     ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
     rubydora = ActiveFedora::Base.fedora_connection[0].connection
-    Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| puts rubydora.ingest open(f)}
+    Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| puts rubydora.ingest :file=>open(f)}
   end
   namespace :media do
     desc "load resource objects for all the file resources in a bag"
@@ -38,14 +39,16 @@ namespace :bag do
       end
       
       bag_info = Bag::Info.new(File.join(bag_path,'bag-info.txt'))
+      raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
       group_id = bag_info.group_id || LDPD_COLLECTIONS_ID
-      bag_agg = BagAggregator.find_by_identifier(external_id)
+      puts "Searching for \"#{bag_info.external_id}\""
+      bag_agg = BagAggregator.find_by_identifier(bag_info.external_id)
       if bag_agg.blank?
         bag_agg = BagAggregator.new(:namespace=>'ldpd')
         bag_agg.dc.identifier = bag_info.external_id
         bag_agg.dc.title = bag_info.external_desc
-        bag_agg.dc.type = 'Collection'
+        bag_agg.dc.dc_type = 'Collection'
         bag_agg.label = bag_info.external_desc
         bag_agg.save
         all_ldpd_content.add_member(bag_agg) unless all_content.nil?
@@ -55,7 +58,7 @@ namespace :bag do
       if all_media.blank?
         all_media = ContentAggregator.new(:namespace=>'ldpd')
         all_media.dc.identifier = all_media_id
-        all_media.dc.type = 'Collection'
+        all_media.dc.dc_type = 'Collection'
         title = 'All Media From Bag at ' + bag_path
         all_media.dc.title = title
         all_media.label = title
@@ -64,7 +67,7 @@ namespace :bag do
 
       manifest = Bag::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
       manifest.each_resource do |resource|
-        resource.derivatives!
+        resource.derivatives!(:override=>true)
         all_media.add_member(resource)
       end
     end

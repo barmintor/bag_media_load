@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.5'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -11,8 +11,9 @@ gem 'blacklight', '~>3.4.0'
 gem 'active-fedora', '~>4.3'
 gem 'active_fedora_finders'
 gem 'hydra-head', '~>4.0.3'
-gem 'cul_scv_hydra'
+gem 'cul_scv_hydra', '~>0.6.1'
 gem 'cul_image_props'
+gem 'therubyracer'
 gem 'rmagick', '2.13.1', :require => 'RMagick'
 gem 'mime-types'
 

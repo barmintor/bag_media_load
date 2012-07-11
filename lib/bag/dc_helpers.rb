@@ -17,7 +17,6 @@ module Bag
     def set_dc_source(val)
       self.dc.update_indexed_attributes([:source=>0]=>val)
       self.dc.dirty = true
-      end
     end
     def set_dc_title(val)
       self.dc.update_indexed_attributes([:title=>0]=>val)

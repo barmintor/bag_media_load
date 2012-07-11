@@ -19,13 +19,13 @@ module Bag
       file.each do |line|
         rel_path = line.split(' ')[1]
         source = File.join(@bagdir, rel_path)
-        yield Manifest.find_or_create(source)
+        yield Manifest.find_or_create_resource(source)
       end
     end
     
     def self.find_resource(dc_source)
       resource = nil
-      sources(dc_sources).each do |source|
+      sources(dc_source).each do |source|
         resource ||= GenericResource.find_by_source(source)
       end
       return resource
