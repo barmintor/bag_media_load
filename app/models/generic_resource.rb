@@ -80,6 +80,12 @@ class GenericResource < ::ActiveFedora::Base
       end
     end
     
+    def image_blob(dsLocation)
+      img = Magick::Image.ping(dsLocation)
+      img = img.first if img.is_a? Array
+      img
+    end      
+    
     def derivatives!(opts={:override=>false})
       ds = datastreams["content"]
       if ds and IMAGE_EXT.include? ds.mimeType
@@ -88,25 +94,23 @@ class GenericResource < ::ActiveFedora::Base
         long = (width > length) ? width : length
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
-          img = Magick::Image.from_blob(open(dsLocation).read)
-          img = img.first if img.is_a? Array
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
-              factor = 200 / long
+              img ||= image_blob(dsLocation)
               dsid = "thumbnail"
               derivative!(img, 200, dsid)
             end
           end
           if datastreams["web850"].nil? or opts[:override]
             if long > 850
-              factor = 850 / long
+              img ||= image_blob(dsLocation)
               dsid = "web850"
               derivative!(img, 850, dsid)
             end
           end
           if datastreams["web1500"].nil? or opts[:override]
             if long > 1500
-              factor = 1500 / long
+              img ||= image_blob(dsLocation)
               dsid = "web1500"
               derivative!(img, 1500, dsid)
             end
@@ -114,7 +118,7 @@ class GenericResource < ::ActiveFedora::Base
           if datastreams["jp2"].nil? or opts[:override]
             zoomable!(img, "jp2")
           end
-          img.destroy!
+          img.destroy! if img
           puts "INFO Generated derivatives for #{self.pid}"
         rescue Exception => e
           puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
