@@ -83,8 +83,8 @@ class GenericResource < ::ActiveFedora::Base
     def derivatives!(opts={:override=>false})
       ds = datastreams["content"]
       if ds and IMAGE_EXT.include? ds.mimeType
-        width = relationships(WIDTH).first.to_s.to_i
-        length = relationships(LENGTH).first.to_s.to_i
+        width = relationships(:image_width).first.to_s.to_i
+        length = relationships(:image_length).first.to_s.to_i
         long = (width > length) ? width : length
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
@@ -94,21 +94,21 @@ class GenericResource < ::ActiveFedora::Base
             if long > 200
               factor = 200 / long
               dsid = "thumbnail"
-              derivative!(img, factor, dsid)
+              derivative!(img, 200, dsid)
             end
           end
           if datastreams["web850"].nil? or opts[:override]
             if long > 850
               factor = 850 / long
               dsid = "web850"
-              derivative!(img, factor, dsid)
+              derivative!(img, 850, dsid)
             end
           end
           if datastreams["web1500"].nil? or opts[:override]
             if long > 1500
               factor = 1500 / long
               dsid = "web1500"
-              derivative!(img, factor, dsid)
+              derivative!(img, 1500, dsid)
             end
           end
           if datastreams["jp2"].nil? or opts[:override]
@@ -123,20 +123,22 @@ class GenericResource < ::ActiveFedora::Base
     end
     
     def derivative!(image, factor, dsid, mimeType = 'image/png')
-      ext = EXT[mimeType]
+      ext = IMAGE_EXT[mimeType]
       ds_label = "#{dsid}.#{ext}"
-      img =  image.adaptive_resize(factor)
+      img =  image.resize_to_fit(factor, factor)
       img_ds = datastreams[dsid]
       if img_ds
-        img_ds.label = ds_label unless img_ds.label == ds_label
+        img_ds.dsLabel = ds_label unless img_ds.dsLabel == ds_label
         img_ds.mimeType = mimeType unless img_ds.mimeType == mimeType
-        img_ds.content = img.to_blob { self.format = ext}
       else
-        img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :label=>ds_label)
-        img_ds.content = img.to_blob { self.format = ext}
-        add_datastream(img_ds)
+        img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
+      img_content = img.to_blob { self.format = ext}
+      puts "INFO #{dsid}.content.length = #{img_content.length}"
+      img_ds.content = img_content
+      add_datastream(img_ds)
       self.save
+      img.destroy!
     end
     
     def zoomable!(image, dsid)
@@ -166,7 +168,7 @@ class GenericResource < ::ActiveFedora::Base
         if old.controlGroup == 'M' or old.controlGroup == 'X'
           raise "WWW URL for DS content not yet implemented!" 
         end
-        nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :label=>old.label)
+        nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :dsLabel=>old.dsLabel)
         add_datastream(nouv)
       end
     end

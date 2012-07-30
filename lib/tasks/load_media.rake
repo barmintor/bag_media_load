@@ -30,6 +30,18 @@ namespace :bag do
     Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| puts rubydora.ingest :file=>open(f)}
   end
   namespace :media do
+    desc "debug derivative creation"
+    task :debug => :environment do
+      rpath = '/fstore/archive/ldpd/preservation/lindquist/data/Lindquist_box_OS/burke_lindq_OS_1907v.tif'
+      resource = GenericResource.find_by_source(rpath)
+      puts "Found image at #{resource.pid}"
+      resource.migrate!
+      resource.derivatives!
+      resource.datastreams.each_key do |key|
+        ds = resource.datastreams[key]
+        puts "#{resource.pid}##{ds.dsid}.dsSize : #{ds.dsSize}"
+      end
+    end
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
       bag_path = ENV['BAG_PATH']
@@ -67,9 +79,12 @@ namespace :bag do
 
       manifest = Bag::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
       manifest.each_resource do |resource|
-        resource.derivatives!(:override=>true)
-        all_media.add_member(resource)
+        resource.derivatives!(:override=>false)
+        unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
+          all_media.add_member(resource)
+        end
       end
+      puts "INFO: Finished loading #{bag_path}"
     end
   end
 end

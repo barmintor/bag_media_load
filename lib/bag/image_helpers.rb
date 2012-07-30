@@ -4,7 +4,7 @@ require 'tempfile'
 module Bag
   module ImageHelpers
     def setImageProperties(obj)
-      ds = obj.datastreams['CONTENT']
+      ds = obj.datastreams['content']
       image_properties = nil
       if ds.controlGroup == 'E'
         # get blob

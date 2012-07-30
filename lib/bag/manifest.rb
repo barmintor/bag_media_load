@@ -5,6 +5,7 @@ module Bag
     include Bag::DcHelpers
     extend Bag::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
+    OCTETSTREAM = "application/octet-stream"
     def initialize(manifest)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
@@ -26,6 +27,7 @@ module Bag
     def self.find_resource(dc_source)
       resource = nil
       sources(dc_source).each do |source|
+        source = source.sub(/~/,'?') # tilde is an operator in search
         resource ||= GenericResource.find_by_source(source)
       end
       return resource
@@ -36,27 +38,35 @@ module Bag
       if resource.blank?
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
+        mimetype ||= OCTETSTREAM
         resource = GenericResource.new(:namespace=>'ldpd')
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         if ds
           ds.dsLocation = sources[1]
-          ds.label = sources[0]
+          ds.dsLabel = sources[0]
         else
-          ds = resource.create_datastream(:dsid => 'content', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :label=>sources[0])
+          ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0])
           resource.add_datastream(ds)
         end
         if IMAGE_TYPES.include? mimetype
-          setImageProperties(resource)
-          resource.set_dc_type 'Image'
-          resource.set_title 'Preservation Image'
+          begin
+            setImageProperties(resource)
+            resource.set_dc_format mimetype
+            resource.set_dc_type 'Image'
+            resource.set_title 'Preservation Image' if resource.dc.title.blank?
+          rescue Exception => e
+            puts "WARN failed to analyze image at #{sources[0]} : #{e.message}"
+            puts "WARN ingesting as unidentified bytestream"
+            resource.set_dc_format OCTETSTREAM
+            resource.set_title 'Preservation File Artifact' if resource.dc.title.blank?
+          end
         else
-          raise "Unsupported MIME Type #{mimetype}"
+          puts "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
         end
-        resource.set_dc_identifier = sources[0]
-        resource.set_dc_source = sources[0]
-        resource.set_dc_format = mimetype
-        resource.set_dc_extent = ds_size
+        resource.set_dc_identifier sources[0]
+        resource.set_dc_source sources[0]
+        resource.set_dc_extent ds_size
         resource.save if create
       else
         resource.migrate!
@@ -86,11 +96,15 @@ module Bag
     
     def self.mime_for_name(filename)
       ext = File.extname(filename).downcase
-      mt = MIME::Types.for(ext)
+      mt = MIME::Types.type_for(ext)
       if mt.is_a? Array
         mt = mt.first
       end
-      mt.content_type
+      unless mt.nil?
+        return mt.content_type
+      else
+        return nil
+      end
     end
   end
 end
