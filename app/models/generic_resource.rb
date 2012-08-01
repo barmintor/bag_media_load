@@ -3,7 +3,9 @@ require "cul_image_props"
 require "mime/types"
 require "uri"
 require "open-uri"
+require "tempfile"
 require "bag"
+require "image_science"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
@@ -94,42 +96,49 @@ class GenericResource < ::ActiveFedora::Base
         long = (width > length) ? width : length
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
+          res = {}
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
-              img ||= image_blob(dsLocation)
-              dsid = "thumbnail"
-              derivative!(img, 200, dsid)
+              res["thumbnail"] = 200
             end
           end
           if datastreams["web850"].nil? or opts[:override]
             if long > 850
-              img ||= image_blob(dsLocation)
-              dsid = "web850"
-              derivative!(img, 850, dsid)
+              res["web850"] = 850
             end
           end
           if datastreams["web1500"].nil? or opts[:override]
             if long > 1500
-              img ||= image_blob(dsLocation)
-              dsid = "web1500"
-              derivative!(img, 1500, dsid)
+              res["web1500"] = 1500
             end
           end
           if datastreams["jp2"].nil? or opts[:override]
             zoomable!(img, "jp2")
           end
-          img.destroy! if img
-          puts "INFO Generated derivatives for #{self.pid}"
+          unless res.empty?
+            ImageScience.with_image(dsLocation) do |img|
+              res.each do |k,v|
+                img.thumbnail(v) do |scaled|
+                  f = Tempfile.new(k,'.png')
+                  scaled.save(f.path)
+                  derivative!(f,k)
+                  f.unlink
+                end
+              end
+            end
+            puts "INFO Generated derivatives for #{self.pid}"
+          else
+            puts "INFO No required derivatives for #{self.pid}"
+          end
         rescue Exception => e
           puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
         end
       end
     end
     
-    def derivative!(image, factor, dsid, mimeType = 'image/png')
+    def derivative!(image, dsid, mimeType = 'image/png')
       ext = IMAGE_EXT[mimeType]
       ds_label = "#{dsid}.#{ext}"
-      img =  image.resize_to_fit(factor, factor)
       img_ds = datastreams[dsid]
       if img_ds
         img_ds.dsLabel = ds_label unless img_ds.dsLabel == ds_label
@@ -137,12 +146,11 @@ class GenericResource < ::ActiveFedora::Base
       else
         img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
-      img_content = img.to_blob { self.format = ext}
+      img_content = image.read
       puts "INFO #{dsid}.content.length = #{img_content.length}"
       img_ds.content = img_content
       add_datastream(img_ds)
       self.save
-      img.destroy!
     end
     
     def zoomable!(image, dsid)
