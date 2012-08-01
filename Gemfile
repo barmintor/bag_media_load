@@ -15,6 +15,8 @@ gem 'cul_scv_hydra', '~>0.6.1'
 gem 'cul_image_props'
 gem 'therubyracer'
 gem 'rmagick', '2.13.1', :require => 'RMagick'
+gem 'RubyInline'
+gem 'image_science'
 gem 'mime-types'
 
 gem 'devise'
@@ -49,3 +51,6 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+
+gem "compass-rails", "~> 1.0.0", :group => :assets
+gem "compass-susy-plugin", "~> 0.9.0", :group => :assets
