@@ -113,13 +113,13 @@ class GenericResource < ::ActiveFedora::Base
             end
           end
           if datastreams["jp2"].nil? or opts[:override]
-            zoomable!(img, "jp2")
+            #zoomable!(img, "jp2")
           end
           unless res.empty?
             ImageScience.with_image(dsLocation) do |img|
               res.each do |k,v|
                 img.thumbnail(v) do |scaled|
-                  f = Tempfile.new(k,'.png')
+                  f = Tempfile.new([k,'.png'])
                   scaled.save(f.path)
                   derivative!(f,k)
                   f.unlink
@@ -132,6 +132,7 @@ class GenericResource < ::ActiveFedora::Base
           end
         rescue Exception => e
           puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
+          puts e.backtrace
         end
       end
     end
@@ -146,7 +147,7 @@ class GenericResource < ::ActiveFedora::Base
       else
         img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
-      img_content = image.read
+      img_content = File.read(image.path,:encoding=>'BINARY')
       puts "INFO #{dsid}.content.length = #{img_content.length}"
       img_ds.content = img_content
       add_datastream(img_ds)
