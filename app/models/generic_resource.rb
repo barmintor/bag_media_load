@@ -152,7 +152,7 @@ class GenericResource < ::ActiveFedora::Base
       # How can we get to the PUT without reading the file into memory?
       img_ds.content = img_content
       add_datastream(img_ds)
-      puts "INFO #{dsid}.content.length = #{img_content.stat.length}"
+      puts "INFO #{dsid}.content.length = #{img_content.stat.size}"
       self.save
     end
     
