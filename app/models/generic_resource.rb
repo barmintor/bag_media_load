@@ -14,14 +14,15 @@ class GenericResource < ::ActiveFedora::Base
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
   include Bag::DcHelpers
+  include ::ActiveFedora::RelsInt
   alias :file_objects :resources
   
   IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg', "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp'}
   WIDTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_width))
   LENGTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_length))
   
-  has_relationship "image_width", :image_width
-  has_relationship "image_length", :image_length
+  has_relationship "image_width", :cul_image_width
+  has_relationship "image_length", :cul_image_length
   has_relationship "x_sampling", :x_sampling
   has_relationship "y_sampling", :y_sampling
   has_relationship "sampling_unit", :sampling_unit
@@ -100,6 +101,8 @@ class GenericResource < ::ActiveFedora::Base
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
               res["thumbnail"] = [200, Tempfile.new(["thumbnail",'.png'])]
+              rels_int.clear_relationships(ds, :foaf_thumbnail)
+              rels_int.add_relationship(ds,:foaf_thumbnail, internal_uri + "/thumbnail")
             end
           end
           if datastreams["web850"].nil? or opts[:override]
@@ -153,7 +156,27 @@ class GenericResource < ::ActiveFedora::Base
       img_ds.content = img_content
       add_datastream(img_ds)
       puts "INFO #{dsid}.content.length = #{img_content.stat.size}"
+      ds_rels(File.open(image.path,:encoding=>'BINARY'),ds)
+      derivatives = rels_int.relationships(datastreams['content'],:has_derivation)
+      unless derivatives.inject(false) {|memo, rel| memo || rel.target == "#{internal_uri}/#{dsid}"}
+        rels_int.add_relationship(datastreams['content'],:has_derivation, img_ds)
+      end
       self.save
+    end
+    
+    def ds_rels(blob, ds)
+      image_properties = Cul::Image::Properties.identify(blob)
+      if image_properties
+        image_prop_nodes = image_properties.nodeset
+        image_prop_nodes.each do |node|
+          value = node["resource"] || node.text
+          predicate = "#{node.namespace.href}#{node.name}"
+          rels_int.clear_relationships(ds, predicate)
+          rels_int.add_relationship(ds, predicate, value, node["resource"].blank?)
+        end
+      end
+    ensure
+      blob.close
     end
     
     def zoomable!(image, dsid)
