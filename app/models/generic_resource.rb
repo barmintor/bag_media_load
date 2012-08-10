@@ -157,9 +157,9 @@ class GenericResource < ::ActiveFedora::Base
       add_datastream(img_ds)
       puts "INFO #{dsid}.content.length = #{img_content.stat.size}"
       ds_rels(File.open(image.path,:encoding=>'BINARY'),ds)
-      derivatives = rels_int.relationships(datastreams['content'],:has_derivation)
-      unless derivatives.inject(false) {|memo, rel| memo || rel.target == "#{internal_uri}/#{dsid}"}
-        rels_int.add_relationship(datastreams['content'],:has_derivation, img_ds)
+      derivatives = rels_int.relationships(img_ds,:format_of)
+      unless derivatives.inject(false) {|memo, rel| memo || rel.target == "#{internal_uri}/content"}
+        rels_int.add_relationship(img_ds, :format_of,datastreams['content'])
       end
       self.save
     end

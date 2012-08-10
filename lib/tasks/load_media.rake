@@ -79,7 +79,7 @@ namespace :bag do
 
       manifest = Bag::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
       manifest.each_resource do |resource|
-        resource.derivatives!(:override=>false)
+        resource.derivatives!(:override=>true)
         unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
           all_media.add_member(resource)
         end
