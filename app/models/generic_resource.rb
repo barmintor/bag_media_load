@@ -92,8 +92,14 @@ class GenericResource < ::ActiveFedora::Base
     def derivatives!(opts={:override=>false})
       ds = datastreams["content"]
       if ds and IMAGE_EXT.include? ds.mimeType
-        width = relationships(:image_width).first.to_s.to_i
-        length = relationships(:image_length).first.to_s.to_i
+        unless rels_int.relationships(ds,:image_width).blank?
+          width = rels_int.relationships(ds,:image_width).first.object.to_s.to_i
+        end
+        unless rels_int.relationships(ds,:image_length).blank?
+          length = rels_int.relationships(ds,:image_length).first.object.to_s.to_i
+        end
+        width ||= relationships(:cul_image_width).first.to_s.to_i
+        length ||= relationships(:cul_image_length).first.to_s.to_i
         long = (width > length) ? width : length
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
@@ -134,6 +140,9 @@ class GenericResource < ::ActiveFedora::Base
           else
             puts "INFO No required derivatives for #{self.pid}"
           end
+          # generate content DS rels
+          ds_rels(File.open(dsLocation),ds)
+          self.save
         rescue Exception => e
           puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
           puts e.backtrace
@@ -208,6 +217,12 @@ class GenericResource < ::ActiveFedora::Base
         end
         nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :dsLabel=>old.dsLabel)
         add_datastream(nouv)
+        dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
+        ds_rels(File.open(dsLocation),nouv)
+        rels_ext.clear_relationships(:cul_image_length)
+        rels_ext.clear_relationships(:cul_image_width)
+        rels_ext.clear_relationships(:format)
+        rels_ext.clear_relationships(:extent)
       end
     end
     
