@@ -107,7 +107,7 @@ class GenericResource < ::ActiveFedora::Base
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
               res["thumbnail"] = [200, Tempfile.new(["thumbnail",'.png'])]
-              rels_int.clear_relationships(ds, :foaf_thumbnail)
+              rels_int.clear_relationship(ds, :foaf_thumbnail)
               rels_int.add_relationship(ds,:foaf_thumbnail, internal_uri + "/thumbnail")
             end
           end
@@ -165,9 +165,9 @@ class GenericResource < ::ActiveFedora::Base
       img_ds.content = img_content
       add_datastream(img_ds)
       puts "INFO #{dsid}.content.length = #{img_content.stat.size}"
-      ds_rels(File.open(image.path,:encoding=>'BINARY'),ds)
+      ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
       derivatives = rels_int.relationships(img_ds,:format_of)
-      unless derivatives.inject(false) {|memo, rel| memo || rel.target == "#{internal_uri}/content"}
+      unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{internal_uri}/content"}
         rels_int.add_relationship(img_ds, :format_of,datastreams['content'])
       end
       self.save
@@ -180,7 +180,7 @@ class GenericResource < ::ActiveFedora::Base
         image_prop_nodes.each do |node|
           value = node["resource"] || node.text
           predicate = "#{node.namespace.href}#{node.name}"
-          rels_int.clear_relationships(ds, predicate)
+          rels_int.clear_relationship(ds, predicate)
           rels_int.add_relationship(ds, predicate, value, node["resource"].blank?)
         end
       end
@@ -219,10 +219,10 @@ class GenericResource < ::ActiveFedora::Base
         add_datastream(nouv)
         dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
         ds_rels(File.open(dsLocation),nouv)
-        rels_ext.clear_relationships(:cul_image_length)
-        rels_ext.clear_relationships(:cul_image_width)
-        rels_ext.clear_relationships(:format)
-        rels_ext.clear_relationships(:extent)
+        rels_ext.clear_relationship(:cul_image_length)
+        rels_ext.clear_relationship(:cul_image_width)
+        rels_ext.clear_relationship(:format)
+        rels_ext.clear_relationship(:extent)
       end
     end
     

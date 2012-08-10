@@ -47,7 +47,7 @@ GEM
       activesupport (~> 3.2.0)
       nokogiri
       rubydora (~> 0.5.9)
-    active_fedora_relsint (0.1.0)
+    active_fedora_relsint (0.1.1)
       active-fedora (>= 4.2.0)
       activesupport (~> 3.2.0)
       rubydora (~> 0.5.11)
@@ -117,7 +117,7 @@ GEM
       rails (~> 3.2.5)
       rubydora (~> 0.5.8)
       solrizer (~> 1.2.0)
-    daemons (1.1.8)
+    daemons (1.1.9)
     deprecation (0.0.5)
       activesupport
     devise (2.1.2)
