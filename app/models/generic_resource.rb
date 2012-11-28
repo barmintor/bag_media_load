@@ -200,11 +200,24 @@ class GenericResource < ::ActiveFedora::Base
         migrate_content
         assert_content_model
         remove_cmodel("info:fedora/ldpd:Resource")
+        migrate_membership
       else
         puts "INFO: No content migration necessary for #{self.pid}"
       end
       collapse_ids
       save
+    end
+
+    def migrate_membership
+      relationships(:cul_member_of).clone.each do |parent_uri|
+        parent_pid = parent_uri.split('/')[-1]
+        parent = ActiveFedora::Base.find(parent_pid)
+        if parent.relationships(:has_model).include?("info:fedora/ldpd:StaticImageAggregator")
+          gp_uris = parent.relationships(:cul_member_of)
+          gp_uris.each {|gp_uri| self.add_relationship(:cul_member_of, gp_uri)}
+          remove_relationship(:cul_member_of, parent_uri)
+        end
+      end
     end
     
     def migrate_content
