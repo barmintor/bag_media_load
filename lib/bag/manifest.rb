@@ -18,6 +18,7 @@ module Bag
     def each_resource
       file= open(@manifest)
       file.each do |line|
+        next if line =~ /\.md5$/ # don't load checksum files
         rel_path = line.split(' ')[1]
         source = File.join(@bagdir, rel_path)
         yield Manifest.find_or_create_resource(source)

@@ -214,7 +214,12 @@ class GenericResource < ::ActiveFedora::Base
         parent = ActiveFedora::Base.find(parent_pid)
         if parent.relationships(:has_model).include?("info:fedora/ldpd:StaticImageAggregator")
           gp_uris = parent.relationships(:cul_member_of)
-          gp_uris.each {|gp_uri| self.add_relationship(:cul_member_of, gp_uri)}
+          gp_uris.each { |gp_uri|
+            self.add_relationship(:cul_member_of, gp_uri)
+            parent.add_relationship(:cul_obsolete_from, gp_uri)
+            parent.remove_relationship(:cul_member_of, gp_uri)
+            parent.save
+          }
           remove_relationship(:cul_member_of, parent_uri)
         end
       end
