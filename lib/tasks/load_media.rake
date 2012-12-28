@@ -18,11 +18,18 @@ def get_bag_pid(bag_id)
   BagAggregator.find_by_identifier(bag_id)
 end
 
+def rubydora
+  ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
+  ActiveFedora::Base.fedora_connection[0].connection
+end
+
+def next_pid
+  Bag.next_pid
+end
+
 namespace :bag do
   task :pid do
-    ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
-    rubydora = ActiveFedora::Base.fedora_connection[0].connection
-    puts rubydora.next_pid(:namespace=>'ldpd')
+    puts Bag.next_pid
   end
   task :load_fixtures do
     ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
@@ -57,7 +64,7 @@ namespace :bag do
       puts "Searching for \"#{bag_info.external_id}\""
       bag_agg = BagAggregator.find_by_identifier(bag_info.external_id)
       if bag_agg.blank?
-        bag_agg = BagAggregator.new(:namespace=>'ldpd')
+        bag_agg = BagAggregator.new(:pid=>next_pid)
         bag_agg.dc.identifier = bag_info.external_id
         bag_agg.dc.title = bag_info.external_desc
         bag_agg.dc.dc_type = 'Collection'
@@ -68,7 +75,7 @@ namespace :bag do
       all_media_id = bag_info.external_id + "#all-media"
       all_media = ContentAggregator.find_by_identifier(all_media_id)
       if all_media.blank?
-        all_media = ContentAggregator.new(:namespace=>'ldpd')
+        all_media = ContentAggregator.new(:pid=>next_pid)
         all_media.dc.identifier = all_media_id
         all_media.dc.dc_type = 'Collection'
         title = 'All Media From Bag at ' + bag_path
