@@ -63,7 +63,7 @@ namespace :bag do
         bag_agg.dc.dc_type = 'Collection'
         bag_agg.label = bag_info.external_desc
         bag_agg.save
-        all_ldpd_content.add_member(bag_agg) unless all_content.nil?
+        all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
       end
       all_media_id = bag_info.external_id + "#all-media"
       all_media = ContentAggregator.find_by_identifier(all_media_id)
