@@ -179,7 +179,7 @@ class GenericResource < ::ActiveFedora::Base
         image_prop_nodes = image_properties.nodeset
         image_prop_nodes.each do |node|
           value = node["resource"] || node.text
-          predicate = "#{node.namespace.href}#{node.name}"
+          predicate = RDF::URI.new("#{node.namespace.href}#{node.name}")
           rels_int.clear_relationship(ds, predicate)
           rels_int.add_relationship(ds, predicate, value, node["resource"].blank?)
         end
@@ -213,6 +213,7 @@ class GenericResource < ::ActiveFedora::Base
         parent_pid = parent_uri.split('/')[-1]
         parent = ActiveFedora::Base.find(parent_pid)
         if parent.relationships(:has_model).include?("info:fedora/ldpd:StaticImageAggregator")
+          parent = parent.adapt_to StaticImageAggregator
           gp_uris = parent.relationships(:cul_member_of)
           gp_uris.each { |gp_uri|
             self.add_relationship(:cul_member_of, gp_uri)
@@ -237,10 +238,10 @@ class GenericResource < ::ActiveFedora::Base
         add_datastream(nouv)
         dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
         ds_rels(File.open(dsLocation),nouv)
-        rels_ext.clear_relationship(:cul_image_length)
-        rels_ext.clear_relationship(:cul_image_width)
-        rels_ext.clear_relationship(:format)
-        rels_ext.clear_relationship(:extent)
+        clear_relationship(:cul_image_length)
+        clear_relationship(:cul_image_width)
+        clear_relationship(:format)
+        clear_relationship(:extent)
       end
     end
     

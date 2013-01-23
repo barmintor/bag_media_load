@@ -9,15 +9,23 @@ module Bag
     autoload :ResourceTypes
   end
   VERSION = '0.1.0'
-  def self.next_pid
+  def self.exists?(pid)
+    begin
+      return ActiveFedora::Base.exists? pid
+    rescue
+      return false
+    end
+  end
+  def self.next_pid(namespace="ldpd")
   	ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
     repo = ActiveFedora::Base.fedora_connection[0].connection
     pid = nil
-	repo = fedora
-	begin
-	  pid = repo.next_pid(:namespace=>namespace)
-	end while ActiveFedora::Base.exists? pid
-	pid
+    begin
+      pid = repo.next_pid(:namespace=>namespace)
+      pid =~ /<pid>(.*)<\/pid>/
+      pid = $1
+    end while exists? pid
+    pid
   end
 end
   

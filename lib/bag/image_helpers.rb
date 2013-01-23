@@ -13,14 +13,14 @@ module Bag
           uri = ds.dsLocation.sub(/file:/,'')
         end
         open(uri) { |blob|
-          resource.ds_rels(blob,ds)
+          obj.ds_rels(blob,ds)
         }
       else
         blob = Tempfile.new("blob")
         blob.write(ds.content)
         blob.close
         blob.open
-        resource.ds_rels(blob,ds)
+        obj.ds_rels(blob,ds)
         blob.close unless blob.closed?
       end
     end

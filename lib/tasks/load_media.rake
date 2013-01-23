@@ -64,7 +64,9 @@ namespace :bag do
       puts "Searching for \"#{bag_info.external_id}\""
       bag_agg = BagAggregator.find_by_identifier(bag_info.external_id)
       if bag_agg.blank?
-        bag_agg = BagAggregator.new(:pid=>next_pid)
+        pid = next_pid
+        puts "NEXT PID: #{pid}"
+        bag_agg = BagAggregator.new(:pid=>pid)
         bag_agg.dc.identifier = bag_info.external_id
         bag_agg.dc.title = bag_info.external_desc
         bag_agg.dc.dc_type = 'Collection'

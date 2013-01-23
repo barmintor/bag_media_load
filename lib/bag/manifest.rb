@@ -40,7 +40,7 @@ module Bag
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
-        resource = GenericResource.new(:namespace=>'ldpd')
+        resource = GenericResource.new(:pid => Bag.next_pid)
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         if ds
