@@ -4,7 +4,7 @@ GEM
     RedCloth (4.2.9)
     RubyInline (3.12.0)
       ZenTest (~> 4.3)
-    ZenTest (4.8.3)
+    ZenTest (4.8.4)
     actionmailer (3.2.5)
       actionpack (= 3.2.5)
       mail (~> 2.4.4)
@@ -91,7 +91,7 @@ GEM
       compass (>= 0.12.2, < 0.14)
     compass-susy-plugin (0.9)
       compass (>= 0.11.1)
-    cul_image_props (0.3.1)
+    cul_image_props (0.3.4)
       nokogiri
     cul_scv_hydra (0.6.4)
       active-fedora (~> 4.0)

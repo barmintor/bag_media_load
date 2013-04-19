@@ -8,13 +8,15 @@ gem 'rails', '3.2.5'
 gem 'sqlite3'
 
 gem 'blacklight', '~>3.4.0'
-gem 'active-fedora', '~>4.3'
+gem 'active-fedora', '~>4.5.3'
+gem 'om', '~>1.6.0'
 gem 'active_fedora_finders'
 gem 'active_fedora_relsint'
 gem 'hydra-head', '~>4.0.3'
 gem 'cul_scv_hydra', '~>0.6.1'
 gem 'cul_image_props', '>=0.3.0'
-gem 'therubyracer'
+gem 'libv8', '~>3.3.10' # for therubyracer
+gem 'therubyracer', "0.10.2" # for execjs
 #gem 'rmagick', '2.13.1', :require => 'RMagick'
 gem 'RubyInline'
 gem 'image_science'
@@ -23,7 +25,6 @@ gem 'mime-types'
 gem 'devise'
 gem 'devise-encryptable'
 gem 'devise_wind'
-gem 'om', :git => 'git://github.com/projecthydra/om.git', :branch=>'master'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
