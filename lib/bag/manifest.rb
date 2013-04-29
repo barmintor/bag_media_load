@@ -14,6 +14,16 @@ module Bag
       end
       @bagdir = File.dirname(@manifest)
     end
+
+    def each_entry
+      file= open(@manifest)
+      file.each do |line|
+        next if line =~ /\.md5$/ # don't load checksum files
+        rel_path = line.split(' ')[1]
+        source = File.join(@bagdir, rel_path)
+        yield source
+      end
+    end
     
     def each_resource
       file= open(@manifest)
