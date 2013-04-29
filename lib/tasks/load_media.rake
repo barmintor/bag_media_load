@@ -1,3 +1,4 @@
+require "rake"
 require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
@@ -50,7 +51,7 @@ namespace :bag do
       end
     end
     desc "load CSS media"
-    task :load_css => :environment do
+    task :load_css => [:environment] do
       bag_path = ENV['BAG_PATH']
       # parse bag-info for external-id and title
       if File.basename(bag_path) == 'bag-info.txt'
@@ -68,7 +69,7 @@ namespace :bag do
 
       group_id = "rbml_css"
 
-      BagAggregator css = BagAggregator.find_by_identifier(group_id)
+      css = BagAggregator.find_by_identifier(group_id)
       if css.blank?
         css_pid = next_pid
         css = BagAggregator.new(:pid=>css_pid)
@@ -91,7 +92,7 @@ namespace :bag do
         bag_agg.dc.title = bag_info.external_desc
         bag_agg.dc.dc_type = 'Collection'
         bag_agg.label = bag_info.external_desc
-        bag_agg.descMetadata = open(File.join(bag_path,'data', bag_id, "#{bag_id}_mods.xml"))
+        bag_agg.descMetadata.content = open(File.join(bag_path,'data', bag_id, "#{bag_id}_mods.xml"))
         bag_agg.save
         css.add_member(bag_agg) unless css.nil?
       end
