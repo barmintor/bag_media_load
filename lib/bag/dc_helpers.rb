@@ -1,7 +1,7 @@
 module Bag
   module DcHelpers
     def set_dc_extent(val)
-      self.dc.update_indexed_attributes([:format=>0]=>val)
+      self.dc.update_indexed_attributes([:extent=>0]=>val)
       self.dc.dirty = true
     end
     def set_dc_format(val)
