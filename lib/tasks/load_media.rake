@@ -50,7 +50,7 @@ namespace :bag do
       end
     end
     desc "load CSS media"
-    test :load_css => :environment do
+    task :load_css => :environment do
       bag_path = ENV['BAG_PATH']
       # parse bag-info for external-id and title
       if File.basename(bag_path) == 'bag-info.txt'
