@@ -2,7 +2,7 @@ require "rake"
 require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
-require "bag"
+require "bag_it"
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
@@ -25,12 +25,12 @@ def rubydora
 end
 
 def next_pid
-  Bag.next_pid
+  BagIt.next_pid
 end
 
 namespace :bag do
   task :pid do
-    puts Bag.next_pid
+    puts BagIt.next_pid
   end
   task :load_fixtures do
     ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
@@ -52,25 +52,12 @@ namespace :bag do
     end
     desc "load CSS media"
     task :load_css => [:environment] do
-      bag_path = ENV['BAG_PATH']
-      # parse bag-info for external-id and title
-      if File.basename(bag_path) == 'bag-info.txt'
-        bag_path = File.dirname(bag_path)
-      end
-
-      bag_info = Bag::Info.new(File.join(bag_path,'bag-info.txt'))
-      if bag_info.external_id.blank?
-        bag_info.external_id = bag_path.split('/')[-1]
-      end
-
-      bag_id = bag_info.external_id
-
-      all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
 
       group_id = "rbml_css"
 
       css = BagAggregator.find_by_identifier(group_id)
       if css.blank?
+        all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
         css_pid = next_pid
         css = BagAggregator.new(:pid=>css_pid)
         css.dc.identifier = group_id
@@ -80,58 +67,24 @@ namespace :bag do
         css.save
         all_ldpd_content.add_member(css) unless all_ldpd_content.nil?
         css.save
-      end  
-      
-      puts "Searching for \"#{bag_info.external_id}\""
-      bag_agg = ContentAggregator.find_by_identifier(bag_info.external_id)
-      if bag_agg.blank?
-        pid = next_pid
-        puts "NEXT PID: #{pid}"
-        bag_agg = ContentAggregator.new(:pid=>pid)
-        bag_agg.dc.identifier = bag_info.external_id
-        bag_agg.dc.title = bag_info.external_desc
-        bag_agg.dc.dc_type = 'Collection'
-        bag_agg.label = bag_info.external_desc
-        bag_agg.descMetadata.content = open(File.join(bag_path,'data', bag_id, "#{bag_id}_mods.xml"))
-        bag_agg.save
-        css.add_member(bag_agg) unless css.nil?
       end
 
-      recto_path = File.join(bag_path,'data', bag_id, "#{bag_id}r.tif")
-      verso_path = File.join(bag_path,'data', bag_id, "#{bag_id}v.tif")
-      if File.file? recto_path
-        recto = Bag::Manifest.find_or_create_resource(recto_path)
-        recto.set_title_and_label("#{bag_id} (recto)")
-        recto.set_dc_identifier("#{bag_id}r")
-        recto.derivatives!
-        tech_md_path = recto_path + ".fits.xml"
-        tech_md_sources = Bag::Manifest.sources(tech_md_path)
-        tech_md = recto.create_datastream(ActiveFedora::Datastream, "techMetadata",
-                                         :controlGroup => 'M', :dsLabel => tech_md_sources[0])
-        tech_md.content = open(tech_md_path)
-        recto.add_datastream(tech_md)
-        recto.save
-        bag_agg.add_member(recto)
-        recto.save
+      bag_paths = []
+
+      if ENV['BAG_PATH']
+        bag_paths << ENV['BAG_PATH']
       end
 
-      if File.file? verso_path
-        verso = Bag::Manifest.find_or_create_resource(verso_path)
-        verso.set_title_and_label("#{bag_id} (verso)")
-        verso.set_dc_identifier("#{bag_id}v")
-        verso.derivatives!
-        tech_md_path = verso_path + ".fits.xml"
-        tech_md_sources = Bag::Manifest.sources(tech_md_path)
-        tech_md = verso.create_datastream(ActiveFedora::Datastream, "techMetadata",
-                                         :controlGroup => 'M', :dsLabel => tech_md_sources[0])
-        tech_md.content = open(tech_md_path)
-        verso.add_datastream(tech_md)
-        verso.save
-        bag_agg.add_member(verso)
-        verso.save
+      if ENV['BAG_LIST']
+        bag_paths = ENV['BAG_LIST']
       end
-      # create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
-      puts "INFO: Finished loading #{bag_path}"
+
+      bag_paths.each { |bag_path|
+
+        css_bag = BagIt::Bags::CssBag.new(css, bag_path)
+        css_bag.load
+      }
+
     end
 
     desc "load resource objects for all the file resources in a bag"
@@ -142,7 +95,7 @@ namespace :bag do
         bag_path = File.dirname(bag_path)
       end
       
-      bag_info = Bag::Info.new(File.join(bag_path,'bag-info.txt'))
+      bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
       group_id = bag_info.group_id || LDPD_COLLECTIONS_ID
@@ -171,7 +124,7 @@ namespace :bag do
         all_media.save
       end
 
-      manifest = Bag::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
       manifest.each_resource do |resource|
         resource.derivatives!(:override=>false)
         unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid

@@ -1,7 +1,7 @@
 require 'uri'
 require 'open-uri'
 require 'tempfile'
-module Bag
+module BagIt
   module ImageHelpers
     def setImageProperties(obj)
       ds = obj.datastreams['content']

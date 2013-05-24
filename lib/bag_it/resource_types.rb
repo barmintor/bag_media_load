@@ -1,4 +1,4 @@
-module Bag
+module BagIt
   module Resource
     module Thumbnails
       # Create thumbnail requires that the characterization has already been run (so mime_type, width and height is available)

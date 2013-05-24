@@ -1,9 +1,9 @@
 require 'active_support'
 require 'mime/types'
-module Bag
+module BagIt
   class Manifest
-    include Bag::DcHelpers
-    extend Bag::ImageHelpers
+    include BagIt::DcHelpers
+    extend BagIt::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     OCTETSTREAM = "application/octet-stream"
     def initialize(manifest)

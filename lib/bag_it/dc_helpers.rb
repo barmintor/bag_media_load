@@ -1,4 +1,4 @@
-module Bag
+module BagIt
   module DcHelpers
     def set_dc_extent(val)
       self.dc.update_indexed_attributes([:extent=>0]=>val)

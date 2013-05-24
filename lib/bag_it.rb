@@ -1,5 +1,5 @@
 require 'active_support'
-module Bag
+module BagIt
   extend ActiveSupport::Autoload
   eager_autoload do
     autoload :DcHelpers
@@ -7,6 +7,7 @@ module Bag
     autoload :Manifest
     autoload :ImageHelpers
     autoload :ResourceTypes
+    autoload :Bags
   end
   VERSION = '0.1.0'
   def self.exists?(pid)
