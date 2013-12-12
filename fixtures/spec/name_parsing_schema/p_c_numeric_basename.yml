@@ -1,0 +1,9 @@
+id_from_basename:
+- '(ldpd_leh_[\d]+_[\d]+_[\d]+)\.tif'
+- '${1}'
+parent_from_basename: 
+- '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
+- '${1}'
+side_from_basename:
+- '(ldpd_leh_[\d]+_[\d]+)_[\d]+([rvRV]?)\.tif'
+- '${2:V}'

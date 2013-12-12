@@ -1,0 +1,6 @@
+id_from_basename:
+- '(\d+)(_(\d+))?\.tif'
+- 'ldpd.treasures.${1}.${3:000}'
+parent_from_basename: 
+- '(\d+)(_\d+)?\.tif'
+- 'ldpd.treasures.${1}'
