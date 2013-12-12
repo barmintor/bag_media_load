@@ -1,26 +1,27 @@
-require 'default'
 module BagIt
-	module Bags
-		class CssBag < BagIt::Bags::DefaultBag
+  module Bags
+    class CssBag < BagIt::Bags::DefaultBag
       def load
         puts "Searching for \"#{@bag_info.external_id}\""
-        bag_agg = ContentAggregator.find_by_identifier(@bag_info.external_id)
+        bag_id = @bag_info.external_id
+        bag_agg = ContentAggregator.find_by_identifier(bag_id)
         if bag_agg.blank?
           pid = next_pid
           puts "NEXT PID: #{pid}"
           bag_agg = ContentAggregator.new(:pid=>pid)
-          bag_agg.dc.identifier = bag_info.external_id
-          bag_agg.dc.title = bag_info.external_desc
+          bag_agg.dc.identifier = bag_id
+          bag_agg.dc.title = @bag_info.external_desc
           bag_agg.dc.dc_type = 'Collection'
-          bag_agg.label = bag_info.external_desc
+          bag_agg.label = @bag_info.external_desc
           bag_agg.descMetadata.content = 
-            open(File.join(bag_path,'data', bag_id, "#{bag_id}_mods.xml"))
+            open(File.join(@bag_path,'data', bag_id, "#{bag_id}_mods.xml"))
           bag_agg.save
           @parent.add_member(bag_agg) unless @parent.nil?
         end
 
-         recto_path = File.join(bag_path,'data', bag_id, "#{bag_id}r.tif")
-        verso_path = File.join(bag_path,'data', bag_id, "#{bag_id}v.tif")
+        recto_path = File.join(@bag_path,'data', bag_id, "#{bag_id}r.tif")
+        recto_path = File.join(@bag_path,'data', bag_id, "#{bag_id}.tif") unless File.file? recto_path
+        verso_path = File.join(@bag_path,'data', bag_id, "#{bag_id}v.tif")
         if File.file? recto_path
           recto = BagIt::Manifest.find_or_create_resource(recto_path)
           recto.set_title_and_label("#{bag_id} (recto)")
@@ -53,8 +54,8 @@ module BagIt
           verso.save
         end
         # create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
-        puts "INFO: Finished loading #{bag_path}"
-     end
-		end
-	end
+        puts "INFO: Finished loading #{@bag_path}"
+      end
+    end
+  end
 end

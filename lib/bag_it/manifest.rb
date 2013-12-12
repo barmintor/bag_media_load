@@ -50,7 +50,7 @@ module BagIt
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
-        resource = GenericResource.new(:pid => Bag.next_pid)
+        resource = GenericResource.new(:pid => BagIt.next_pid)
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         if ds

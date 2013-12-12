@@ -14,9 +14,9 @@ class DefaultBag
       @bag_path = bag_dir
     end
     
-    @bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
+    @bag_info = BagIt::Info.new(File.join(@bag_path,'bag-info.txt'))
     if @bag_info.external_id.blank?
-      @bag_info.external_id = bag_path.split('/')[-1]
+      @bag_info.external_id = @bag_path.split('/')[-1]
     end
 
   end

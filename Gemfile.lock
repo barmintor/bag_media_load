@@ -92,7 +92,7 @@ GEM
       compass (>= 0.12.2, < 0.14)
     compass-susy-plugin (0.9)
       compass (>= 0.11.1)
-    cul_image_props (0.3.4)
+    cul_image_props (0.3.5)
       nokogiri
     cul_scv_hydra (0.6.4)
       active-fedora (~> 4.0)
@@ -284,7 +284,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   compass-rails (~> 1.0.0)
   compass-susy-plugin (~> 0.9.0)
-  cul_image_props (>= 0.3.0)
+  cul_image_props (>= 0.3.5)
   cul_scv_hydra (~> 0.6.1)
   devise
   devise-encryptable
