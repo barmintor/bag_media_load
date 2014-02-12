@@ -39,6 +39,17 @@ module BagIt
       end
     end
 
+    def verso(input)
+      if @blocks[:verso]
+        _r = @blocks[:verso].yield input
+        if _r
+          true
+        else
+          false
+        end
+      end
+    end
+
     def self.regex_proc(pattern, substitution, &src)
       regex = Regexp.new(pattern)
       Proc.new do |input|
@@ -69,4 +80,24 @@ module BagIt
       end
     end
   end
+
+  class DefaultNameParser
+    def initialize(opts={})
+    end
+
+    def id(input)
+      nil
+    end
+
+    def parent(input)
+      nil
+    end
+
+    def side(input)
+      nil
+    end
+
+    def verso(input)
+      false
+    end
 end

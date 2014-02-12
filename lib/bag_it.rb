@@ -3,12 +3,12 @@ module BagIt
   extend ActiveSupport::Autoload
   eager_autoload do
     autoload :DcHelpers
+    autoload :NameParser
     autoload :Info
     autoload :Manifest
     autoload :ImageHelpers
     autoload :ResourceTypes
     autoload :Bags
-    autoload :NameParser
   end
   VERSION = '0.1.0'
   def self.exists?(pid)
