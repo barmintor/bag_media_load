@@ -14,6 +14,8 @@
 #   :oai_item_id => ["info:fedora/oai:example.edu:changeme:500"]
 #
 :predicate_mapping:
+  http://creativecommons.org/ns#:
+    :cc_license: license
   http://purl.oclc.org/NET/CUL/:
     :cul_member_of: memberOf
     :cul_metadata_for: metadataFor

@@ -1,4 +1,4 @@
-module Bag
+module BagIt
   class Info
     attr_accessor :external_id, :external_desc, :group_id
     def initialize(src_file)

@@ -4,7 +4,7 @@ require "mime/types"
 require "uri"
 require "open-uri"
 require "tempfile"
-require "bag"
+require "bag_it"
 require "image_science"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
@@ -13,7 +13,7 @@ class GenericResource < ::ActiveFedora::Base
   include ::ActiveFedora::Relationships
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
-  include Bag::DcHelpers
+  include BagIt::DcHelpers
   include ::ActiveFedora::RelsInt
   alias :file_objects :resources
   
@@ -136,16 +136,16 @@ class GenericResource < ::ActiveFedora::Base
               derivative!(v[1],k)
               v[1].unlink
             end
-            puts "INFO Generated derivatives for #{self.pid}"
+            Rails.logger.info "Generated derivatives for #{self.pid}"
           else
-            puts "INFO No required derivatives for #{self.pid}"
+            Rails.logger.info "No required derivatives for #{self.pid}"
           end
           # generate content DS rels
           ds_rels(File.open(dsLocation),ds)
           self.save
         rescue Exception => e
-          puts "ERROR Cannot generate derivatives for #{self.pid} : #{e.message}"
-          puts e.backtrace
+          Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}"
+          Rails.logger.error e.backtrace
         end
       end
     end
@@ -164,7 +164,7 @@ class GenericResource < ::ActiveFedora::Base
       # How can we get to the PUT without reading the file into memory?
       img_ds.content = img_content
       add_datastream(img_ds)
-      puts "INFO #{dsid}.content.length = #{img_content.stat.size}"
+      Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
       ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{internal_uri}/content"}
@@ -196,13 +196,13 @@ class GenericResource < ::ActiveFedora::Base
     
     def migrate!
       if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
-        puts "INFO: #{self.pid} appears to be an old-style ldpd:Resource"
+        Rails.logger.info "#{self.pid} appears to be an old-style ldpd:Resource"
         migrate_content
         assert_content_model
         remove_cmodel("info:fedora/ldpd:Resource")
         migrate_membership
       else
-        puts "INFO: No content migration necessary for #{self.pid}"
+        Rails.logger.info "No content migration necessary for #{self.pid}"
       end
       collapse_ids
       save

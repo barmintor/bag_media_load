@@ -1,9 +1,9 @@
 require 'active_support'
 require 'mime/types'
-module Bag
+module BagIt
   class Manifest
-    include Bag::DcHelpers
-    extend Bag::ImageHelpers
+    include BagIt::DcHelpers
+    extend BagIt::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     OCTETSTREAM = "application/octet-stream"
     def initialize(manifest)
@@ -13,6 +13,16 @@ module Bag
         @manifest = manifest
       end
       @bagdir = File.dirname(@manifest)
+    end
+
+    def each_entry
+      file= open(@manifest)
+      file.each do |line|
+        next if line =~ /\.md5$/ # don't load checksum files
+        rel_path = line.split(' ')[1]
+        source = File.join(@bagdir, rel_path)
+        yield source
+      end
     end
     
     def each_resource
@@ -40,7 +50,7 @@ module Bag
         sources = Manifest.sources(dc_source)
         mimetype = mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
-        resource = GenericResource.new(:pid => Bag.next_pid)
+        resource = GenericResource.new(:pid => BagIt.next_pid)
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         if ds
