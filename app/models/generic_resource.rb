@@ -14,6 +14,7 @@ class GenericResource < ::ActiveFedora::Base
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
   include BagIt::DcHelpers
+  include BagIt::Resource
   include ::ActiveFedora::RelsInt
   alias :file_objects :resources
   
@@ -85,7 +86,7 @@ class GenericResource < ::ActiveFedora::Base
     
     def image_blob(dsLocation)
       img = Magick::Image.ping(dsLocation)
-      img = img.first if img.is_a? Array
+      img = Array(img).first
       img
     end      
     
@@ -104,6 +105,7 @@ class GenericResource < ::ActiveFedora::Base
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
           res = {}
+          make_vector = false;
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
               res["thumbnail"] = [200, Tempfile.new(["thumbnail",'.png'])]
@@ -122,14 +124,19 @@ class GenericResource < ::ActiveFedora::Base
             end
           end
           if datastreams["jp2"].nil? or opts[:override]
-            #zoomable!(img, "jp2")
+            make_vector = true
+            rels_int.clear_relationship(ds, :foaf_zooming)
+            rels_int.add_relationship(ds,:foaf_zooming, internal_uri + "/jp2")
           end
-          unless res.empty?
+          unless (res.empty? and not make_vector) 
             ImageScience.with_image(dsLocation) do |img|
               res.each do |k,v|
-                img.thumbnail(v[0]) do |scaled|
-                  scaled.save(v[1].path)
-                end
+                create_scaled_image(img, v[0], v[1])
+              end
+              if make_vector
+                vector = Tempfile.new(["zoom",'.jp2'])
+                # do the conversion
+                derivative!(vector, "jp2",'image/jp2')
               end
             end
             res.each do |k,v|

@@ -66,5 +66,6 @@
   http://xmlns.com/foaf/0.1/:
     :foaf_thumbnail: thumbnail
     :foaf_image: image
+    :foaf_zooming: zoomingImage
   http://www.w3.org/1999/02/22-rdf-syntax-ns#:
     :rdf_type: type

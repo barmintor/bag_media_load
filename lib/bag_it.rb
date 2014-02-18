@@ -7,7 +7,7 @@ module BagIt
     autoload :Info
     autoload :Manifest
     autoload :ImageHelpers
-    autoload :ResourceTypes
+    autoload :Resource
     autoload :Bags
   end
   VERSION = '0.1.0'
@@ -30,5 +30,4 @@ module BagIt
     pid
   end
 end
-  
   
