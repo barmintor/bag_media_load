@@ -18,9 +18,14 @@ class GenericResource < ::ActiveFedora::Base
   include ::ActiveFedora::RelsInt
   alias :file_objects :resources
   
-  IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg', "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp'}
+  IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg',
+   "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp',
+   "image/jp2" => 'jp2'}
   WIDTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_width))
   LENGTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_length))
+  EXTENT = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:extent))
+  FORMAT = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format))
+  FORMAT_OF = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format_of))
   
   has_relationship "image_width", :cul_image_width
   has_relationship "image_length", :cul_image_length
@@ -101,7 +106,7 @@ class GenericResource < ::ActiveFedora::Base
         end
         width ||= relationships(:cul_image_width).first.to_s.to_i
         length ||= relationships(:cul_image_length).first.to_s.to_i
-        long = (width > length) ? width : length
+        long = max(width, length)
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
           res = {}
@@ -123,26 +128,22 @@ class GenericResource < ::ActiveFedora::Base
               res["web1500"] = [1500, Tempfile.new(["web1500",'.png'])]
             end
           end
-          if datastreams["jp2"].nil? or opts[:override]
+          if datastreams["zoom"].nil? or opts[:override]
             make_vector = true
             rels_int.clear_relationship(ds, :foaf_zooming)
-            rels_int.add_relationship(ds,:foaf_zooming, internal_uri + "/jp2")
+            rels_int.add_relationship(ds,:foaf_zooming, internal_uri + "/zoom")
           end
           unless (res.empty? and not make_vector) 
             ImageScience.with_image(dsLocation) do |img|
               res.each do |k,v|
                 create_scaled_image(img, v[0], v[1])
               end
-              if make_vector
-                vector = Tempfile.new(["zoom",'.jp2'])
-                # do the conversion
-                derivative!(vector, "jp2",'image/jp2')
-              end
             end
             res.each do |k,v|
               derivative!(v[1],k)
               v[1].unlink
             end
+            zoomable!(dsLocation, width, length) if make_vector
             Rails.logger.info "Generated derivatives for #{self.pid}"
           else
             Rails.logger.info "No required derivatives for #{self.pid}"
@@ -156,8 +157,24 @@ class GenericResource < ::ActiveFedora::Base
         end
       end
     end
-    
-    def derivative!(image, dsid, mimeType = 'image/png')
+
+    def zoomable!(src_path, width, length)
+      # do the conversion
+      vector = convert_to_jp2(dsLocation)
+      # add the ds
+      jp2 = derivative(vector, "zoom",'image/jp2')
+      # add the ds rdf statements
+      rels_int.clear_relationship(jp2, WIDTH)
+      rels_int.add_relationship(jp2, WIDTH, width, true)
+      rels_int.clear_relationship(jp2, LENGTH)
+      rels_int.add_relationship(jp2, LENGTH, length, true)
+      rels_int.clear_relationship(jp2, FORMAT)
+      rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
+      self.save
+      vector.unlink
+    end
+
+    def derivative(image, dsid, mimeType = 'image/png')
       ext = IMAGE_EXT[mimeType]
       ds_label = "#{dsid}.#{ext}"
       img_ds = datastreams[dsid]
@@ -175,9 +192,15 @@ class GenericResource < ::ActiveFedora::Base
       ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{internal_uri}/content"}
-        rels_int.add_relationship(img_ds, :format_of,datastreams['content'])
+        rels_int.add_relationship(img_ds, :format_of, datastreams['content'])
       end
+      img_ds
+    end
+    
+    def derivative!(image, dsid, mimeType = 'image/png')
+      img_ds = derivative(image, dsid, mimeType)
       self.save
+      img_ds
     end
     
     def ds_rels(blob, ds)
@@ -194,13 +217,7 @@ class GenericResource < ::ActiveFedora::Base
     ensure
       blob.close
     end
-    
-    def zoomable!(image, dsid)
-      ext = 'jp2'
-      ds_label = "#{dsid}.#{ext}"
-      self.save
-    end
-    
+        
     def migrate!
       if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
         Rails.logger.info "#{self.pid} appears to be an old-style ldpd:Resource"

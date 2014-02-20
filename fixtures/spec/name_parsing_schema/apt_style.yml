@@ -1,6 +1,6 @@
-id_from_basename:
-- 'ldpd_leh_([\d]+)_([\d]+)_([\d]+)([rvRV])?\.tif'
-- 'ldpd.leh.${1}.${2}.${3}.${4:R}.image'
+id_from_path:
+- '.*'
+- 'apt://columbia.edu/ldpd.leh/${0}'
 parent_from_basename: 
 - '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
 - '${1}'

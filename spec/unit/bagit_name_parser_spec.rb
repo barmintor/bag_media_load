@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-describe "NameParser" do
+describe BagIt::NameParser do
 	before(:all) do
   end
 
@@ -9,8 +9,16 @@ describe "NameParser" do
   describe " simple parent-child id parsing" do
     it "should parse ids from basename" do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/p_c_numeric_basename.yml")))
-      test.id("data/foo/ldpd_leh_12_34_56.tif").should == "ldpd_leh_12_34_56"
+      test.id("data/foo/ldpd_leh_12_34_56.tif").should == "ldpd.leh.12.34.56.R.image"
+      test.id("data/foo/ldpd_leh_12_34_56V.tif").should == "ldpd.leh.12.34.56.V.image"
       test.parent("data/foo/ldpd_leh_12_34_56.tif").should == "ldpd_leh_12_34"
+    end
+  end
+
+  describe "APT-style file IDs" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/apt_style.yml")))
+      test.id("data/foo/ldpd_leh_12_34_56.tif").should == "apt://columbia.edu/ldpd.leh/data/foo/ldpd_leh_12_34_56.tif"
     end
   end
 

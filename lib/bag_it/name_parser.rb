@@ -100,4 +100,5 @@ module BagIt
     def verso(input)
       false
     end
+  end
 end

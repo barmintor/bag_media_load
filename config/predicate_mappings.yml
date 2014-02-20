@@ -69,3 +69,5 @@
     :foaf_zooming: zoomingImage
   http://www.w3.org/1999/02/22-rdf-syntax-ns#:
     :rdf_type: type
+  http://www.jpeg.org/jpx/1.0/xml/:
+    :dwt_levels: dwtLevels

@@ -17,7 +17,7 @@ gem 'cul_scv_hydra', '~>0.6.1'
 gem 'cul_image_props', '>=0.3.5'
 gem 'libv8', '~>3.3.10' # for therubyracer
 gem 'therubyracer', "0.10.2" # for execjs
-#gem 'rmagick', '2.13.1', :require => 'RMagick'
+gem 'mini_magick', '3.7.0'
 gem 'RubyInline'
 gem 'image_science'
 gem 'mime-types'
