@@ -6,7 +6,7 @@ module BagIt
     extend BagIt::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     OCTETSTREAM = "application/octet-stream"
-    def initialize(manifest, name_parser=BagIt::DefaultNameParser.new)
+    def initialize(manifest, name_parser=BagIt::NameParser::Default.new)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
       else
@@ -32,7 +32,7 @@ module BagIt
         next if line =~ /\.md5$/ # don't load checksum files
         rel_path = line.split(' ')[1]
         source = File.join(@bagdir, rel_path)
-        yield Manifest.find_or_create_resource(source)
+        yield rel_path, Manifest.find_or_create_resource(source)
       end
     end
     

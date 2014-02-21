@@ -22,9 +22,6 @@ gem 'RubyInline'
 gem 'image_science'
 gem 'mime-types'
 
-gem 'devise'
-gem 'devise-encryptable'
-gem 'devise_wind'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do

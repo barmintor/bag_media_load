@@ -107,26 +107,27 @@ module BagIt
       string =~ /^true$/i or string =~ /^yes$/i or string =~ /^[YyTt]$/
     end
 
+    class Default
+      def initialize(opts={})
+      end
+
+      def id(input)
+        input
+      end
+
+      def parent(input)
+        nil
+      end
+
+      def side(input)
+        nil
+      end
+
+      def verso(input)
+        false
+      end
+    end
+
   end
 
-  class DefaultNameParser
-    def initialize(opts={})
-    end
-
-    def id(input)
-      input
-    end
-
-    def parent(input)
-      nil
-    end
-
-    def side(input)
-      nil
-    end
-
-    def verso(input)
-      false
-    end
-  end
 end
