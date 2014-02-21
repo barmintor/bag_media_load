@@ -1,19 +1,16 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.5'
+gem 'rails', '3.2.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3'
 
-gem 'blacklight', '~>3.4.0'
-gem 'active-fedora', '~>4.5.3'
-gem 'om', '~>1.6.0'
+gem 'active-fedora', '~>6.1'
 gem 'active_fedora_finders'
 gem 'active_fedora_relsint'
-gem 'hydra-head', '~>4.0.3'
-gem 'cul_scv_hydra', '~>0.6.1'
+gem 'cul_scv_hydra', '~>0.9.0'
 gem 'cul_image_props', '>=0.3.5'
 gem 'libv8', '~>3.3.10' # for therubyracer
 gem 'therubyracer', "0.10.2" # for execjs
