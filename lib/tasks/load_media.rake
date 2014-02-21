@@ -124,7 +124,7 @@ namespace :bag do
         all_media.save
       end
 
-      name_parser = bag_info.name_parser
+      name_parser = bag_info.id_schema
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       manifest.each_resource do |rel_path, resource|
         resource.derivatives!(:override=>false)

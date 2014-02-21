@@ -24,5 +24,5 @@ module BagIt
         blob.close unless blob.closed?
       end
     end
-
+  end
 end

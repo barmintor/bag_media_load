@@ -10,8 +10,7 @@ class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
   include ::ActiveFedora::DatastreamCollections
-  include ::ActiveFedora::Relationships
-  include ::Hydra::ModelMethods
+  #include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
   include BagIt::DcHelpers
   include BagIt::Resource
@@ -27,12 +26,12 @@ class GenericResource < ::ActiveFedora::Base
   FORMAT = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format))
   FORMAT_OF = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format_of))
   
-  has_relationship "image_width", :cul_image_width
-  has_relationship "image_length", :cul_image_length
-  has_relationship "x_sampling", :x_sampling
-  has_relationship "y_sampling", :y_sampling
-  has_relationship "sampling_unit", :sampling_unit
-  has_relationship "extent", :extent
+  #has_relationship "image_width", :cul_image_width
+  #has_relationship "image_length", :cul_image_length
+  #has_relationship "x_sampling", :x_sampling
+  #has_relationship "y_sampling", :y_sampling
+  #has_relationship "sampling_unit", :sampling_unit
+  #has_relationship "extent", :extent
   
   has_datastream :name => "content", :type=>::ActiveFedora::Datastream, :versionable => true
   
@@ -51,8 +50,8 @@ class GenericResource < ::ActiveFedora::Base
 
   def to_solr(solr_doc = Hash.new, opts={})
     super
-    unless solr_doc["extent_s"] || self.datastreams["content"].nil?
-      solr_doc["extent_s"] = [self.datastreams["content"].size]
+    unless solr_doc["extent_ssi"] || self.datastreams["content"].nil?
+      solr_doc["extent_ssi"] = [self.datastreams["content"].size]
     end
     solr_doc
   end
@@ -98,19 +97,21 @@ class GenericResource < ::ActiveFedora::Base
     def derivatives!(opts={:override=>false})
       ds = datastreams["content"]
       if ds and IMAGE_EXT.include? ds.mimeType
+        width = 0
+        length = 0
         unless rels_int.relationships(ds,:image_width).blank?
           width = rels_int.relationships(ds,:image_width).first.object.to_s.to_i
         end
         unless rels_int.relationships(ds,:image_length).blank?
           length = rels_int.relationships(ds,:image_length).first.object.to_s.to_i
         end
-        width ||= relationships(:cul_image_width).first.to_s.to_i
-        length ||= relationships(:cul_image_length).first.to_s.to_i
+        width = relationships(:cul_image_width).first.to_s.to_i if width == 0
+        length = relationships(:cul_image_length).first.to_s.to_i if length == 0
         long = max(width, length)
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         begin
           res = {}
-          make_vector = false;
+          make_vector = false
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
               res["thumbnail"] = [200, Tempfile.new(["thumbnail",'.png'])]
@@ -152,24 +153,25 @@ class GenericResource < ::ActiveFedora::Base
           ds_rels(File.open(dsLocation),ds)
           self.save
         rescue Exception => e
-          Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}"
-          Rails.logger.error e.backtrace
+          Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
         end
       end
     end
 
     def zoomable!(src_path, width, length)
       # do the conversion
-      vector = convert_to_jp2(dsLocation)
+      vector = convert_to_jp2(src_path)
       # add the ds
       jp2 = derivative(vector, "zoom",'image/jp2')
       # add the ds rdf statements
       rels_int.clear_relationship(jp2, WIDTH)
-      rels_int.add_relationship(jp2, WIDTH, width, true)
+      rels_int.add_relationship(jp2, WIDTH, width.to_s, true)
       rels_int.clear_relationship(jp2, LENGTH)
-      rels_int.add_relationship(jp2, LENGTH, length, true)
+      rels_int.add_relationship(jp2, LENGTH, length.to_s, true)
       rels_int.clear_relationship(jp2, FORMAT)
       rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
+      rels_int.serialize!
+      puts rels_int.content
       self.save
       vector.unlink
     end
@@ -184,12 +186,12 @@ class GenericResource < ::ActiveFedora::Base
       else
         img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
+      add_datastream(img_ds)
+      ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
       img_content = File.open(image.path,:encoding=>'BINARY')
       # How can we get to the PUT without reading the file into memory?
       img_ds.content = img_content
-      add_datastream(img_ds)
       Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
-      ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{internal_uri}/content"}
         rels_int.add_relationship(img_ds, :format_of, datastreams['content'])
@@ -254,6 +256,7 @@ class GenericResource < ::ActiveFedora::Base
       old = datastreams["CONTENT"]
       nouv = datastreams["content"]
       if old and not nouv
+        puts "datastreams/content@dsLocation = #{old.dsLocation}"
         dsLocation = old.dsLocation
         if old.controlGroup == 'M' or old.controlGroup == 'X'
           raise "WWW URL for DS content not yet implemented!" 
@@ -275,15 +278,16 @@ class GenericResource < ::ActiveFedora::Base
     end
     
     def collapse_ids
-      ids = dc.term_values(:identifier)
+      dc = datastreams["DC"]
+      ids = dc.term_values(:dc_identifier)
       new_ids = ids.uniq
       return if new_ids.sort.eql? ids.sort
-      if dc.respond_to?(:identifier_values)
-        dc.identifier_values = ids.uniq
+      if dc.respond_to?(:dc_identifier_values)
+        dc.dc_identifier_values = ids.uniq
       else
-        dc.identifier = ids.uniq
+        dc.dc_identifier = ids.uniq
       end
-      self.dc.dirty = true
+      dc.dirty = true
     end
     
 end
