@@ -1,9 +1,11 @@
 id_from_path:
-- '.*'
-- 'apt://columbia.edu/ldpd.leh/${0}'
+  pattern: '.*'
+  output: 'apt://columbia.edu/ldpd.leh/%s'
+  subs: '${0}'
 parent_from_basename: 
-- '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
-- '${1}'
+  pattern: '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
+  subs: '${1}'
 side_from_basename:
-- '(ldpd_leh_[\d]+_[\d]+)_[\d]+([rvRV]?)\.tif'
-- '${2:V}'
+  pattern: '(ldpd_leh_[\d]+_[\d]+)_[\d]+([rvRV]?)\.tif'
+  subs: '${2:V}'
+  output: '%s'

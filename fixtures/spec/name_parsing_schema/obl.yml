@@ -1,0 +1,11 @@
+id_from_basename:
+  pattern: '([\d]+)\.tif'
+  output: 'osamabinladen.%02d#image'
+  subs: '${1},integer'
+parent_from_basename: 
+  pattern: '([\d]+)\.tif'
+  output: 'osamabinladen.%02d'
+  subs: '${1}'
+side_from_basename:
+  pattern: '.*'
+  output: 'R'

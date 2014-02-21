@@ -41,4 +41,13 @@ describe BagIt::NameParser do
       test.parent("data/foo/12.tif").should == "ldpd.treasures.12"
     end
   end
+
+  describe "OBL" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/obl.yml")))
+      test.id("data/foo/1.tif").should == "osamabinladen.01#image"
+      test.id("data/foo/12.tif").should == "osamabinladen.12#image"
+      test.parent("data/foo/1.tif").should == "osamabinladen.01"
+    end
+  end    
 end

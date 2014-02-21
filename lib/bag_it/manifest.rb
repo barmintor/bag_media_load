@@ -6,13 +6,14 @@ module BagIt
     extend BagIt::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     OCTETSTREAM = "application/octet-stream"
-    def initialize(manifest)
+    def initialize(manifest, name_parser=BagIt::DefaultNameParser.new)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
       else
         @manifest = manifest
       end
       @bagdir = File.dirname(@manifest)
+      @name_parser = name_parser
     end
 
     def each_entry
@@ -75,7 +76,8 @@ module BagIt
         else
           puts "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
         end
-        resource.set_dc_identifier sources[0]
+        bag_entry = sources[0].slice(sources[0].index('/data/')..-1)
+        resource.set_dc_identifier @name_parser.id(bag_entry)
         resource.set_dc_source sources[0]
         resource.set_dc_extent ds_size
         resource.save if create

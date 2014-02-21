@@ -1,9 +1,10 @@
 id_from_basename:
-- 'ldpd_leh_([\d]+)_([\d]+)_([\d]+)([rvRV])?\.tif'
-- 'ldpd.leh.${1}.${2}.${3}.${4:R}.image'
+  pattern: 'ldpd_leh_([\d]+)_([\d]+)_([\d]+)([rvRV])?\.tif'
+  subs: ['${1}', '${2}', '${3}', '${4:R}']
+  output: 'ldpd.leh.%s.%s.%s.%s.image'
 parent_from_basename: 
-- '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
-- '${1}'
+  pattern: '(ldpd_leh_[\d]+_[\d]+)_[\d]+\.tif'
+  subs: '${1}'
 side_from_basename:
-- '(ldpd_leh_[\d]+_[\d]+)_[\d]+([rvRV]?)\.tif'
-- '${2:V}'
+  pattern: '(ldpd_leh_[\d]+_[\d]+)_[\d]+([rvRV]?)\.tif'
+  subs: '${2:V}'

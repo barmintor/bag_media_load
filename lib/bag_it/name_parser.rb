@@ -11,9 +11,10 @@ module BagIt
         parts = k.to_s.split "_from_"
         key = parts[0].to_sym
         source = parts[1].to_sym
-        pattern = v[0]
-        subs = v[1]
-        @blocks[key] = NameParser.regex_proc(pattern, subs, &@blocks[source])
+        pattern = v["pattern"]
+        subs = Array(v["subs"] || ['${0}']) # default to the match pattern
+        output = v['output'] || '%s' # default to whatver the match was
+        @blocks[key] = NameParser.regex_proc(pattern, subs, output, &@blocks[source])
       end
     end
 
@@ -50,35 +51,62 @@ module BagIt
       end
     end
 
-    def self.regex_proc(pattern, substitution, &src)
+    def self.regex_proc(pattern, subs, output, &src)
       regex = Regexp.new(pattern)
       Proc.new do |input|
          match = regex.match(src.call(input))
-         substitute(substitution, match)
+         subst = substitutes(subs, match)
+         puts "output pattern: #{output}"
+         puts subst.inspect
+         output % subst
       end
     end
 
-    def self.substitute(input, matchdata)
-      if matchdata[0]
+    def self.substitutes(inputs, matchdata)
+      if matchdata
         subs = {}
-        input.scan(/\$\{([^}]+)\}/).each {|s| subs[s[0]] = nil}
-        if subs.length != 0
-          # do substitutions
-          subs.each_key do |patt|
-            _p = Regexp.new('\$\{' + Regexp.escape(patt.to_s) + '\}')
-            _default = patt.index(':') ? patt.slice(patt.index(':') + 1..-1) : nil
-            if matchdata[patt.to_i] and matchdata[patt.to_i].length > 0
-              input = input.gsub(_p, matchdata[patt.to_i])
-            elsif _default
-              input = input.gsub(_p, _default)
+        inputs.collect do |input|
+          
+          input.scan(/\$\{([^}]+)\}/).each {|s| subs[s[0]] = nil}
+          if subs.length != 0
+            # do substitutions
+            subs.each_key do |patt|
+              group = patt.split(':').first
+              method = input.index(',').nil? ? nil : input.split(',')[1]
+              _default = patt.index(':').nil? ? nil : patt.split(':')[1]
+              #puts "patt: #{patt} group: #{group} method: #{method} default: #{_default}"
+              if matchdata[group.to_i] and matchdata[group.to_i].length > 0
+                input = matchdata[group.to_i]
+              elsif _default
+                input = _default
+              end
+              input = self.send(method.to_sym, input) if method
             end
           end
+          input
         end
-        input
       else
-        nil
+        []
       end
     end
+
+    def self.integer(string)
+      string.to_i
+    end
+
+    def self.float(string)
+      string.to_f
+    end
+
+    def self.complex(string)
+      string.to_c
+    end
+
+    def self.boolean(string)
+      string = string.strip
+      string =~ /^true$/i or string =~ /^yes$/i or string =~ /^[YyTt]$/
+    end
+
   end
 
   class DefaultNameParser
@@ -86,7 +114,7 @@ module BagIt
     end
 
     def id(input)
-      nil
+      input
     end
 
     def parent(input)

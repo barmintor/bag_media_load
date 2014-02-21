@@ -124,7 +124,10 @@ namespace :bag do
         all_media.save
       end
 
-      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'))
+      name_parser = File.exists?(File.join(bag_path,'ids.yml')) ?
+        BagIt::NameParser.new(YAML.load(File.join(bag_path,'ids.yml'))) :
+        BagIt::DefaultNameParser.new
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       manifest.each_resource do |resource|
         resource.derivatives!(:override=>false)
         unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
