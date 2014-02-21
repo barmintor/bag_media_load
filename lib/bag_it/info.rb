@@ -1,3 +1,4 @@
+require 'pathname'
 module BagIt
   class Info
     attr_accessor :external_id, :external_desc, :group_id, :id_schema
@@ -16,7 +17,13 @@ module BagIt
           @group_id = parts[1].strip
         end
         if parts[0] == "Local-Identifier-Schema"
-          @id_schema = BagIt::NameParser.new(YAML.load(open(parts[1].strip)))
+          path = parts[1].strip
+          path = Pathname.new(path)
+          if (path.relative?)
+            path = Pathname.new(src_file.path).dirname + path
+          end
+          path = path.cleanpath
+          @id_schema = BagIt::NameParser.new(YAML.load(File.open(path)))
         end
       end
     end

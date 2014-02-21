@@ -56,8 +56,6 @@ module BagIt
       Proc.new do |input|
          match = regex.match(src.call(input))
          subst = substitutes(subs, match)
-         puts "output pattern: #{output}"
-         puts subst.inspect
          output % subst
       end
     end
