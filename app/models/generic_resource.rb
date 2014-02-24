@@ -149,6 +149,9 @@ class GenericResource < ::ActiveFedora::Base
           else
             Rails.logger.info "No required derivatives for #{self.pid}"
           end
+          if rels_int.relationships(ds,:foaf_thumbnail).blank? and datastreams["thumbnail"]
+              rels_int.add_relationship(ds,:foaf_thumbnail, internal_uri + "/thumbnail")
+          end            
           # generate content DS rels
           ds_rels(File.open(dsLocation),ds)
           self.save
