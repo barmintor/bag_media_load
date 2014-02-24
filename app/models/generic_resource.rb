@@ -174,7 +174,6 @@ class GenericResource < ::ActiveFedora::Base
       rels_int.clear_relationship(jp2, FORMAT)
       rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
       rels_int.serialize!
-      puts rels_int.content
       self.save
       vector.unlink
     end
