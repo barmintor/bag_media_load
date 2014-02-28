@@ -1,0 +1,4 @@
+id_from_path:
+  pattern: '.*'
+  subs: '${0}'
+  output: '%s_id'
