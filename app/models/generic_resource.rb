@@ -10,7 +10,6 @@ class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
   include ::ActiveFedora::DatastreamCollections
-  #include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::ActiveFedora::Model::Common
   include BagIt::DcHelpers
   include BagIt::Resource
@@ -25,6 +24,10 @@ class GenericResource < ::ActiveFedora::Base
   EXTENT = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:extent))
   FORMAT = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format))
   FORMAT_OF = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:format_of))
+  # valid EXIF Rotation values are 1,2,3,4,5,6,7,8
+  # but 2,4,5,7 represent horizontal flipping that is undetectable ex post facto
+  # without recourse to the photographed object, so treat as closest fit
+  DEROTATION_OFFSET = {1 => 0, 2 => 0, 3 => 180, 4 => 180,  5=> 90, 6 => 90, 7=> 270, 8 => 270}
   
   #has_relationship "image_width", :cul_image_width
   #has_relationship "image_length", :cul_image_length
@@ -99,11 +102,15 @@ class GenericResource < ::ActiveFedora::Base
       if ds and IMAGE_EXT.include? ds.mimeType
         width = 0
         length = 0
+        orientation = nil
         unless rels_int.relationships(ds,:image_width).blank?
           width = rels_int.relationships(ds,:image_width).first.object.to_s.to_i
         end
         unless rels_int.relationships(ds,:image_length).blank?
           length = rels_int.relationships(ds,:image_length).first.object.to_s.to_i
+        end
+        unless rels_int.relationships(ds,:orientation).blank?
+          orientation = rels_int.relationships(ds,:orientation).first.object.to_s.to_i
         end
         width = relationships(:cul_image_width).first.to_s.to_i if width == 0
         length = relationships(:cul_image_length).first.to_s.to_i if length == 0
@@ -161,7 +168,7 @@ class GenericResource < ::ActiveFedora::Base
       end
     end
 
-    def zoomable!(src_path, width, length)
+    def zoomable!(src_path, width, length, orientation = nil)
       # do the conversion
       vector = convert_to_jp2(src_path)
       # add the ds
@@ -178,7 +185,7 @@ class GenericResource < ::ActiveFedora::Base
       vector.unlink
     end
 
-    def derivative(image, dsid, mimeType = 'image/png')
+    def derivative(image, dsid, orientation = nil, mimeType = 'image/png')
       ext = IMAGE_EXT[mimeType]
       ds_label = "#{dsid}.#{ext}"
       img_ds = datastreams[dsid]

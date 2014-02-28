@@ -2,6 +2,7 @@ require 'active_support'
 module BagIt
   extend ActiveSupport::Autoload
   eager_autoload do
+    autoload :PairTree
     autoload :DcHelpers
     autoload :NameParser
     autoload :Info

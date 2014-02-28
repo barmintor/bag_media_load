@@ -50,4 +50,19 @@ describe BagIt::NameParser do
       test.parent("data/foo/1.tif").should == "osamabinladen.01"
     end
   end    
+  describe "Urashima" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/urashima.yml")))
+      test.id("data/foo/01boxcover.tif").should == "prd.urashima.001#01boxcover"
+      test.id("data/foo/volume2_02.tif").should == "prd.urashima.001#volume2_02"
+      test.parent("data/foo/1.tif").should == "prd.urashima.001"
+    end
+  end    
+  describe "Shurin" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/shurin.yml")))
+      test.id("data/foo/fish_18.tif").should == "prd.shurin.001#18"
+      test.parent("data/foo/18.tif").should == "prd.shurin.001"
+    end
+  end    
 end

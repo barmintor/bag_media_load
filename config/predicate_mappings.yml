@@ -62,7 +62,8 @@
     :image_length: imageLength
     :x_resolution: xResolution
     :y_resolution: yResolution
-    :resolution_unti: resolutionUnit
+    :resolution_unit: resolutionUnit
+    :orientation: orientation
   http://xmlns.com/foaf/0.1/:
     :foaf_thumbnail: thumbnail
     :foaf_image: image
