@@ -106,11 +106,14 @@ module BagIt
     end
 
     class Default
-      def initialize(opts={})
+      def initialize(project_id, opts={})
+        @project_id = project_id
       end
 
       def id(input)
-        input
+        id = ('' << @project_id << input)
+        id.gsub(/\/+/,'/')
+        id
       end
 
       def parent(input)

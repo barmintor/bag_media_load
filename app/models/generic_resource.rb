@@ -121,25 +121,25 @@ class GenericResource < ::ActiveFedora::Base
           make_vector = false
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
-              res["thumbnail"] = [200, Tempfile.new(["thumbnail",'.png'])]
+              res["thumbnail"] = [200, tempfile(["thumbnail",'.png'])]
               rels_int.clear_relationship(ds, :foaf_thumbnail)
-              rels_int.add_relationship(ds,:foaf_thumbnail, internal_uri + "/thumbnail")
+              rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
             end
           end
           if datastreams["web850"].nil? or opts[:override]
             if long > 850
-              res["web850"] = [850, Tempfile.new(["web850",'.png'])]
+              res["web850"] = [850, tempfile(["web850",'.png'])]
             end
           end
           if datastreams["web1500"].nil? or opts[:override]
             if long > 1500
-              res["web1500"] = [1500, Tempfile.new(["web1500",'.png'])]
+              res["web1500"] = [1500, tempfile(["web1500",'.png'])]
             end
           end
           if datastreams["zoom"].nil? or opts[:override]
             make_vector = true
             rels_int.clear_relationship(ds, :foaf_zooming)
-            rels_int.add_relationship(ds,:foaf_zooming, internal_uri + "/zoom")
+            rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
           end
           unless (res.empty? and not make_vector) 
             ImageScience.with_image(dsLocation) do |img|
@@ -157,7 +157,7 @@ class GenericResource < ::ActiveFedora::Base
             Rails.logger.info "No required derivatives for #{self.pid}"
           end
           if rels_int.relationships(ds,:foaf_thumbnail).blank? and datastreams["thumbnail"]
-              rels_int.add_relationship(ds,:foaf_thumbnail, internal_uri + "/thumbnail")
+              rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
           end            
           # generate content DS rels
           ds_rels(File.open(dsLocation),ds)
@@ -202,7 +202,7 @@ class GenericResource < ::ActiveFedora::Base
       img_ds.content = img_content
       Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
       derivatives = rels_int.relationships(img_ds,:format_of)
-      unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{internal_uri}/content"}
+      unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{self.internal_uri}/content"}
         rels_int.add_relationship(img_ds, :format_of, datastreams['content'])
       end
       img_ds
@@ -265,7 +265,7 @@ class GenericResource < ::ActiveFedora::Base
       old = datastreams["CONTENT"]
       nouv = datastreams["content"]
       if old and not nouv
-        puts "datastreams/content@dsLocation = #{old.dsLocation}"
+        Rails.logger.info "datastreams/content@dsLocation = #{old.dsLocation}"
         dsLocation = old.dsLocation
         if old.controlGroup == 'M' or old.controlGroup == 'X'
           raise "WWW URL for DS content not yet implemented!" 
@@ -298,5 +298,7 @@ class GenericResource < ::ActiveFedora::Base
       end
       dc.dirty = true
     end
-    
+    def tempfile(name_parts)
+      Tempfile.new(name_parts, '/var/tmp/bag_media_load')
+    end
 end

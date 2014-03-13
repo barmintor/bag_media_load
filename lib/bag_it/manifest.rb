@@ -6,7 +6,7 @@ module BagIt
     extend BagIt::ImageHelpers
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
     OCTETSTREAM = "application/octet-stream"
-    def initialize(manifest, name_parser=BagIt::NameParser::Default.new)
+    def initialize(manifest, name_parser)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
       else
@@ -26,13 +26,13 @@ module BagIt
       end
     end
     
-    def each_resource
+    def each_resource(create=false)
       file= open(@manifest)
       file.each do |line|
         next if line =~ /\.md5$/ # don't load checksum files
         rel_path = line.split(' ')[1]
         source = File.join(@bagdir, rel_path)
-        yield rel_path, Manifest.find_or_create_resource(source)
+        yield rel_path, Manifest.find_or_create_resource(source, @name_parser, create)
       end
     end
     
@@ -41,43 +41,52 @@ module BagIt
       sources(dc_source).each do |source|
         source = source.sub(/~/,'?') # tilde is an operator in search
         resource ||= GenericResource.find_by_source(source)
+        if resource
+          break
+        end
       end
       return resource
     end
     
-    def self.find_or_create_resource(dc_source, create=false)
+    def self.find_or_create_resource(dc_source, name_parser, create=false)
+      sources = Manifest.sources(dc_source)
       resource = find_resource(dc_source)
       if resource.blank?
-        sources = Manifest.sources(dc_source)
+        return nil unless create
+        resource = GenericResource.new(:pid => BagIt.next_pid)
+        resource.save
+      end
+      unless resource.datastreams['CONTENT'] and !resource.datastreams['CONTENT'].new?
         mimetype = mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
-        resource = GenericResource.new(:pid => BagIt.next_pid)
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
-        if ds
+        if ds and !ds.new?
           ds.dsLocation = sources[1]
           ds.dsLabel = sources[0]
+          ds.save
         else
           ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0])
           resource.add_datastream(ds)
+          ds.save
         end
         if IMAGE_TYPES.include? mimetype
           begin
             setImageProperties(resource)
             resource.set_dc_format mimetype
             resource.set_dc_type 'Image'
-            resource.set_title 'Preservation Image' if resource.dc.title.blank?
+            resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
           rescue Exception => e
-            puts "WARN failed to analyze image at #{sources[0]} : #{e.message}"
-            puts "WARN ingesting as unidentified bytestream"
+            Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
+            Rails.logger.warn "WARN ingesting as unidentified bytestream"
             resource.set_dc_format OCTETSTREAM
-            resource.set_title 'Preservation File Artifact' if resource.dc.title.blank?
+            resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
           end
         else
-          puts "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
+          Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
         end
         bag_entry = sources[0].slice(sources[0].index('/data/')..-1)
-        resource.set_dc_identifier @name_parser.id(bag_entry)
+        resource.set_dc_identifier name_parser.id(bag_entry)
         resource.set_dc_source sources[0]
         resource.set_dc_extent ds_size
         resource.save if create
@@ -90,6 +99,16 @@ module BagIt
     def self.sources(dc_source)
       uri = nil
       alt_uri = nil
+      dc_source.sub!(/^file\:[\/]+/,'/')
+      if dc_source
+        sources = [
+          dc_source,
+          'file:' + dc_source,
+          'file:/' + dc_source,
+          'file://' + dc_source
+        ]
+        return sources
+      end
       if dc_source =~ /(^file\:)(\/\/)?(.*)/
         unless $2.blank?
           uri = $1 + $3
