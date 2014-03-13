@@ -25,7 +25,7 @@ module BagIt
       end
     end
 
-    def convert_to_jp2(src_path)
+    def convert_to_jp2(src_path, temp_root=nil)
       src_path = to_absolute_path(src_path)
       rels = {}
       File.open(src_path) do |blob|
@@ -45,7 +45,7 @@ module BagIt
           # for grayscale:
           # image.colorspace "Gray"
           image.format 'jp2'
-          result = Tempfile.new(["temp", ".jp2"])
+          result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
           image.write result.path
         end
         # convert $tiff -define jp2:rate=0.1 -define jp2:numrlvls=$levels $grayscale $jp2"

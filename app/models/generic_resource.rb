@@ -99,6 +99,7 @@ class GenericResource < ::ActiveFedora::Base
     
     def derivatives!(opts={:override=>false})
       ds = datastreams["content"]
+      opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
         width = 0
         length = 0
@@ -121,7 +122,7 @@ class GenericResource < ::ActiveFedora::Base
           make_vector = false
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
-              res["thumbnail"] = [200, tempfile(["thumbnail",'.png'])]
+              res["thumbnail"] = [200, tempfile(["thumbnail",'.png'], opts[:upload_dir])]
               rels_int.clear_relationship(ds, :foaf_thumbnail)
               rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
             end
@@ -151,7 +152,7 @@ class GenericResource < ::ActiveFedora::Base
               derivative!(v[1],k)
               v[1].unlink
             end
-            zoomable!(dsLocation, width, length) if make_vector
+            zoomable!(dsLocation, width, length, opts) if make_vector
             Rails.logger.info "Generated derivatives for #{self.pid}"
           else
             Rails.logger.info "No required derivatives for #{self.pid}"
@@ -160,7 +161,9 @@ class GenericResource < ::ActiveFedora::Base
               rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
           end            
           # generate content DS rels
-          ds_rels(File.open(dsLocation),ds)
+          File.open(dsLocation,:encoding=>'BINARY') do |blob|
+            ds_rels(blob,ds)
+          end
           self.save
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
@@ -172,9 +175,9 @@ class GenericResource < ::ActiveFedora::Base
       end
     end
 
-    def zoomable!(src_path, width, length, orientation = nil)
+    def zoomable!(src_path, width, length, opts = {})
       # do the conversion
-      vector = convert_to_jp2(src_path)
+      vector = convert_to_jp2(src_path, opts[:upload_dir])
       # add the ds
       jp2 = derivative(vector, "zoom",'image/jp2')
       # add the ds rdf statements
@@ -200,10 +203,22 @@ class GenericResource < ::ActiveFedora::Base
         img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
       add_datastream(img_ds)
-      ds_rels(File.open(image.path,:encoding=>'BINARY'),img_ds)
-      img_content = File.open(image.path,:encoding=>'BINARY')
-      # How can we get to the PUT without reading the file into memory?
-      img_ds.content = img_content
+      File.open(image.path,:encoding=>'BINARY') do |blob|
+        ds_rels(blob,img_ds)
+      end
+      upload_hack = ActiveFedora.config.credentials[:upload_dir]
+        and image.path.start_with? ActiveFedora.config.credentials[:upload_dir]
+      if upload_hack
+        # the upload dir should map to $FEDORA_HOME/server/management/upload
+        # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
+        hacked_location = image.path.slice(ActiveFedora.config.credentials[:upload_dir].length .. -1) 
+        hacked_location.sub!(/^\//,'')
+        hacked_location = 'uploaded://' + hacked_location
+        img_ds.dsLocation = hacked_location
+      else
+        # How can we get to the PUT without reading the file into memory?
+        img_ds.content = File.open(image.path,:encoding=>'BINARY')
+      end
       Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{self.internal_uri}/content"}
@@ -302,7 +317,8 @@ class GenericResource < ::ActiveFedora::Base
       end
       dc.dirty = true
     end
-    def tempfile(name_parts)
-      Tempfile.new(name_parts, '/var/tmp/bag_media_load')
+
+    def tempfile(name_parts, temp_root='/var/tmp/bag_media_load')
+      Tempfile.new(name_parts, temp_root)
     end
 end

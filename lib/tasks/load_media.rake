@@ -90,11 +90,14 @@ namespace :bag do
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
       bag_path = ENV['BAG_PATH']
+      override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
       # parse bag-info for external-id and title
       if File.basename(bag_path) == 'bag-info.txt'
         bag_path = File.dirname(bag_path)
       end
-      
+      derivative_options = {:override => override}
+      derivative_options[:upload_dir] = upload_dir if upload_dir
+      upload_dir = ActiveFedora.config.credentials[:upload_dir]
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
@@ -128,7 +131,7 @@ namespace :bag do
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       manifest.each_resource(true) do |rel_path, resource|
         begin
-        resource.derivatives!(:override=>false)
+        resource.derivatives!(derivative_options)
         unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
           all_media.add_member(resource)
         end
