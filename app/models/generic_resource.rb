@@ -116,8 +116,8 @@ class GenericResource < ::ActiveFedora::Base
         length = relationships(:cul_image_length).first.to_s.to_i if length == 0
         long = max(width, length)
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
+        res = {}
         begin
-          res = {}
           make_vector = false
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
@@ -164,6 +164,10 @@ class GenericResource < ::ActiveFedora::Base
           self.save
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
+          # clean up temp files
+          res.each do |k,v|
+            v[1].unlink
+          end
         end
       end
     end
