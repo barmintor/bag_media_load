@@ -40,11 +40,12 @@ module BagIt
 
         File.open(src_path) do |blob|
           image = MiniMagick::Image.read(blob)
-          image.define "jp2:rate=0.1"
-          image.define "jp2:numrlvls=#{levels}"
           # for grayscale:
           # image.colorspace "Gray"
-          image.format 'jp2'
+          image.format 'jp2' do |cb|
+            cb.add_command('define', "jp2:rate=0.1")
+            cb.add_command('define', "jp2:numrlvls=#{levels}")
+          end
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
           image.write result.path
         end

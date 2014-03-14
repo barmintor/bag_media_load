@@ -103,7 +103,7 @@ namespace :bag do
         only_data = "data/#{parts[1..-1].join('')}"
       end
       derivative_options = {:override => override}
-      derivative_options[:upload_dir] = upload_dir if upload_dir
+      derivative_options[:upload_dir] = untaint(upload_dir.clone) if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
