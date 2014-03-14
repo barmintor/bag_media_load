@@ -206,8 +206,7 @@ class GenericResource < ::ActiveFedora::Base
       File.open(image.path,:encoding=>'BINARY') do |blob|
         ds_rels(blob,img_ds)
       end
-      upload_hack = ActiveFedora.config.credentials[:upload_dir]
-        and image.path.start_with? ActiveFedora.config.credentials[:upload_dir]
+      upload_hack = ActiveFedora.config.credentials[:upload_dir] and image.path.start_with? ActiveFedora.config.credentials[:upload_dir]
       if upload_hack
         # the upload dir should map to $FEDORA_HOME/server/management/upload
         # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
@@ -215,11 +214,13 @@ class GenericResource < ::ActiveFedora::Base
         hacked_location.sub!(/^\//,'')
         hacked_location = 'uploaded://' + hacked_location
         img_ds.dsLocation = hacked_location
+        Rails.logger.info "#{dsid}.dsLocation = #{hacked_location}"
       else
         # How can we get to the PUT without reading the file into memory?
-        img_ds.content = File.open(image.path,:encoding=>'BINARY')
+        img_content = File.open(image.path,:encoding=>'BINARY')
+        img_ds.content = img_content
+        Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
       end
-      Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{self.internal_uri}/content"}
         rels_int.add_relationship(img_ds, :format_of, datastreams['content'])

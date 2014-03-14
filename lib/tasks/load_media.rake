@@ -91,13 +91,13 @@ namespace :bag do
     task :load => :environment do
       bag_path = ENV['BAG_PATH']
       override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+      upload_dir = ActiveFedora.config.credentials[:upload_dir]
       # parse bag-info for external-id and title
       if File.basename(bag_path) == 'bag-info.txt'
         bag_path = File.dirname(bag_path)
       end
       derivative_options = {:override => override}
       derivative_options[:upload_dir] = upload_dir if upload_dir
-      upload_dir = ActiveFedora.config.credentials[:upload_dir]
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
