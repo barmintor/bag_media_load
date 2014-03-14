@@ -96,6 +96,12 @@ namespace :bag do
       if File.basename(bag_path) == 'bag-info.txt'
         bag_path = File.dirname(bag_path)
       end
+      only_data = nil
+      if bag_path =~ /\/data\//
+        parts = bag_path.split(/\/data\//)
+        bag_path = parts[0]
+        only_data = "data/#{parts[1..-1].join('')}"
+      end
       derivative_options = {:override => override}
       derivative_options[:upload_dir] = upload_dir if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
@@ -129,7 +135,7 @@ namespace :bag do
 
       name_parser = bag_info.id_schema
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
-      manifest.each_resource(true) do |rel_path, resource|
+      manifest.each_resource(true, only_data) do |rel_path, resource|
         begin
         resource.derivatives!(derivative_options)
         unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
