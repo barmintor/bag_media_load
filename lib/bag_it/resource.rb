@@ -20,6 +20,7 @@ module BagIt
     end
 
     def create_scaled_image(image, scale, temp_file)
+      temp_file.close(false)
       image.thumbnail(scale) do |scaled|
         scaled.save(temp_file.path)
       end
@@ -47,7 +48,11 @@ module BagIt
             cb.add_command('define', "jp2:numrlvls=#{levels}")
           end
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
-          image.write result.path
+          temp_path = result.path
+          result.unlink
+          result = File.open(temp_path, 'wb')
+          image.write result
+          result.close
         end
         # convert $tiff -define jp2:rate=0.1 -define jp2:numrlvls=$levels $grayscale $jp2"
         # convert fixtures/spec/resources/CCITT_2.TIF -define jp2:rate=0.1 -define jp2:numrlvls=4 CCITT_2.jp2

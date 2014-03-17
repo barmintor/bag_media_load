@@ -150,7 +150,6 @@ class GenericResource < ::ActiveFedora::Base
             end
             res.each do |k,v|
               derivative!(v[1],k)
-              v[1].unlink
             end
             zoomable!(dsLocation, width, length, opts) if make_vector
             Rails.logger.info "Generated derivatives for #{self.pid}"
@@ -167,9 +166,10 @@ class GenericResource < ::ActiveFedora::Base
           self.save
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
+        ensure
           # clean up temp files
           res.each do |k,v|
-            v[1].unlink
+            File.unlink(v[1].path)
           end
         end
       end
@@ -188,8 +188,11 @@ class GenericResource < ::ActiveFedora::Base
       rels_int.clear_relationship(jp2, FORMAT)
       rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
       rels_int.serialize!
-      self.save
-      vector.unlink
+      begin
+        self.save
+      ensure
+        File.unlink(vector.path)
+      end
     end
 
     def derivative(image, dsid, orientation = nil, mimeType = 'image/png')
@@ -203,18 +206,22 @@ class GenericResource < ::ActiveFedora::Base
         img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
       end
       add_datastream(img_ds)
-      File.open(image.path,:encoding=>'BINARY') do |blob|
-        ds_rels(blob,img_ds)
+      unless mimeType =~ /jp2$/
+        File.open(image.path,:encoding=>'BINARY') do |blob|
+          ds_rels(blob,img_ds)
+        end
       end
       upload_hack = ActiveFedora.config.credentials[:upload_dir] and image.path.start_with? ActiveFedora.config.credentials[:upload_dir]
       if upload_hack
         # the upload dir should map to $FEDORA_HOME/server/management/upload
         # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
-        hacked_location = image.path.slice(ActiveFedora.config.credentials[:upload_dir].length .. -1) 
-        hacked_location.sub!(/^\//,'')
-        hacked_location = 'uploaded://' + hacked_location
-        img_ds.dsLocation = hacked_location
-        Rails.logger.info "#{dsid}.dsLocation = #{hacked_location}"
+        Rails.logger.info "image.path: #{image.path}"
+        Rails.logger.info "File.exists?(image.path) #{File.exists?(image.path)}"
+        #hacked_location = image.path.slice(ActiveFedora.config.credentials[:upload_dir].length .. -1) 
+        #hacked_location.sub!(/^\//,'')
+        #hacked_location = 'uploaded://' + hacked_location
+        img_ds.dsLocation = "file:#{image.path}"
+        Rails.logger.info "#{dsid}.dsLocation = file:#{image.path}"
       else
         # How can we get to the PUT without reading the file into memory?
         img_content = File.open(image.path,:encoding=>'BINARY')

@@ -28,15 +28,15 @@ module BagIt
     
     def each_resource(create=false, only_data=nil)
       file= open(@manifest)
-      if only_datum.is_a? String
-        only_datum = only_datum.dup
-        only_datum.sub!(/^\/data/,'data')
-        only_datum = Regexp.compile(Regexp.escape(only_datum))
+      if only_data.is_a? String
+        only_data = only_data.dup
+        only_data.sub!(/^\/data/,'data')
+        only_data = Regexp.compile(Regexp.escape(only_data))
       end
       file.each do |line|
         next if line =~ /\.md5$/ # don't load checksum files
         rel_path = line.split(' ')[1]
-        next if only_datum and !(rel_path =~ only_datum)
+        next if only_data and !(rel_path =~ only_data)
         source = File.join(@bagdir, rel_path)
         yield rel_path, Manifest.find_or_create_resource(source, @name_parser, create)
       end
