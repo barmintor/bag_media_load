@@ -143,13 +143,15 @@ class GenericResource < ::ActiveFedora::Base
             rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
           end
           unless (res.empty? and not make_vector) 
-            ImageScience.with_image(dsLocation) do |img|
-              res.each do |k,v|
-                create_scaled_image(img, v[0], v[1])
+            unless res.empty?
+              ImageScience.with_image(dsLocation) do |img|
+                res.each do |k,v|
+                  create_scaled_image(img, v[0], v[1])
+                end
               end
-            end
-            res.each do |k,v|
-              derivative!(v[1],k)
+              res.each do |k,v|
+                derivative!(v[1],k)
+              end
             end
             zoomable!(dsLocation, width, length, opts) if make_vector
             Rails.logger.info "Generated derivatives for #{self.pid}"
@@ -160,8 +162,10 @@ class GenericResource < ::ActiveFedora::Base
               rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
           end            
           # generate content DS rels
-          File.open(dsLocation,:encoding=>'BINARY') do |blob|
-            ds_rels(blob,ds)
+          if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override]
+            File.open(dsLocation,:encoding=>'BINARY') do |blob|
+              ds_rels(blob,ds)
+            end
           end
           self.save
         rescue Exception => e
