@@ -24,7 +24,7 @@ module BagIt
       image.thumbnail(scale) do |scaled|
         scaled.save(temp_file.path)
       end
-      File.chmod(644, temp_file.path)
+      File.chmod(0644, temp_file.path)
     end
 
     def convert_to_jp2(src_path, temp_root=nil)
@@ -51,7 +51,7 @@ module BagIt
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
           temp_path = result.path
           result.unlink
-          result = File.open(temp_path, 'wb', 644)
+          result = File.open(temp_path, 'wb', 0644)
           image.write result
           result.close
         end
