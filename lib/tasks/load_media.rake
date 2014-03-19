@@ -60,9 +60,9 @@ namespace :bag do
         all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
         css_pid = next_pid
         css = BagAggregator.new(:pid=>css_pid)
-        css.dc.identifier = group_id
-        css.dc.title = "Community Service Society Records"
-        css.dc.dc_type = 'Collection'
+        css.datastreams["DC"].identifier = group_id
+        css.datastreams["DC"].title = "Community Service Society Records"
+        css.datastreams["DC"].dc_type = 'Collection'
         css.label = "Community Service Society Records"
         css.save
         all_ldpd_content.add_member(css) unless all_ldpd_content.nil?
@@ -114,9 +114,9 @@ namespace :bag do
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
         bag_agg = BagAggregator.new(:pid=>pid)
-        bag_agg.dc.update_values({[:dc_identifier] => bag_info.external_id})
-        bag_agg.dc.update_values({[:dc_title] => bag_info.external_desc})
-        bag_agg.dc.update_values({[:dc_type] => 'Collection'})
+        bag_agg.datastreams["DC"].update_values({[:dc_identifier] => bag_info.external_id})
+        bag_agg.datastreams["DC"].update_values({[:dc_title] => bag_info.external_desc})
+        bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         bag_agg.label = bag_info.external_desc
         bag_agg.save
         all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
@@ -125,10 +125,10 @@ namespace :bag do
       all_media = ContentAggregator.find_by_identifier(all_media_id)
       if all_media.blank?
         all_media = ContentAggregator.new(:pid=>next_pid)
-        all_media.dc.update_values({[:dc_identifier] => all_media_id})
-        all_media.dc.update_values({[:dc_type] => 'Collection'})
+        all_media.datastreams["DC"].update_values({[:dc_identifier] => all_media_id})
+        all_media.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         title = 'All Media From Bag at ' + bag_path
-        all_media.dc.update_values({[:dc_title] => title})
+        all_media.datastreams["DC"].update_values({[:dc_title] => title})
         all_media.label = title
         all_media.save
       end
@@ -146,8 +146,8 @@ namespace :bag do
             parent = ContentAggregator.find_by_identifier(parent_id)
             if parent.blank?
               parent = ContentAggregator.new(:pid=>next_pid)
-              parent.dc.update_values({[:dc_identifier] => parent_id})
-              parent.dc.update_values({[:dc_type] => 'InteractiveResource'})
+              parent.datastreams["DC"].update_values({[:dc_identifier] => parent_id})
+              parent.datastreams["DC"].update_values({[:dc_type] => 'InteractiveResource'})
               parent.save
               bag_agg.add_member(parent)
             end
