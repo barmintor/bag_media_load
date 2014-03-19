@@ -137,10 +137,24 @@ namespace :bag do
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       manifest.each_resource(true, only_data) do |rel_path, resource|
         begin
-        resource.derivatives!(derivative_options)
-        unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
-          all_media.add_member(resource)
-        end
+          resource.derivatives!(derivative_options)
+          unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
+            all_media.add_member(resource)
+          end
+          parent_id = name_parser.parent(rel_path)
+          unless parent_id.blank?
+            parent = ContentAggregator.find_by_identifier(parent_id)
+            if parent.blank?
+              parent = ContentAggregator.new(:pid=>next_pid)
+              parent.dc.update_values({[:dc_identifier] => parent_id})
+              parent.dc.update_values({[:dc_type] => 'InteractiveResource'})
+              parent.save
+              bag_agg.add_member(parent)
+            end
+            unless resource.ids_for_outbound(:cul_member_of).include? parent.pid
+              parent.add_member(resource)
+            end
+          end
         rescue Exception => e
           Rails.logger.error(e.message)
           e.backtrace.each {|line| Rails.logger.error(line) }

@@ -27,6 +27,12 @@ describe BagIt::Info do
       test =BagIt::Info.new(fixture('schema_bag/bag-info.txt'))
       test.id_schema.id('test').should == 'test_id'
     end
+
+    it "should work without a specified name parser" do
+      test =BagIt::Info.new(fixture('no_schema_bag/bag-info.txt'))
+      # the default is an APT-style ID
+      test.id_schema.id('test').should == 'apt://columbia.edu/foo/test'
+    end
   end
 
   describe "#sidecar" do

@@ -1,0 +1,10 @@
+{
+	"@context" : {"dc": "http://purl.org/dc/elements/1.1/"},
+  [
+    {
+      "@subject" : "payload:data/test.bin",
+      "dc:identifier" : "jsonld.test.id",
+      "dc:title" : "[Test Title]"
+    }
+  ]
+}

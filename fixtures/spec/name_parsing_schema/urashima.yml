@@ -1,0 +1,8 @@
+id_from_path:
+  output: 'apt://columbia.edu/prd.urashima/%s'
+  subs: '${0}'
+parent_from_basename: 
+  output: 'prd.urashima.001'
+side_from_basename:
+  pattern: '.*'
+  output: 'R'

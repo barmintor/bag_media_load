@@ -51,7 +51,8 @@ module BagIt
       end
     end
 
-    def self.regex_proc(pattern, subs, output, &src)
+    def self.regex_proc(pattern=nil, subs, output, &src)
+      pattern ||= '.*'
       regex = Regexp.new(pattern)
       Proc.new do |input|
          match = regex.match(src.call(input))
@@ -111,7 +112,7 @@ module BagIt
       end
 
       def id(input)
-        id = ('' << @project_id << input)
+        id = ('apt://columbia.edu/' << @project_id << '/' << input)
         id.gsub(/\/+/,'/')
         id
       end

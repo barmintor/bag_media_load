@@ -1,0 +1,9 @@
+id_from_path:
+  output: 'apt://columbia.edu/prd.shurin/%s'
+  subs: '${0}'
+parent_from_basename: 
+  pattern: 'fish_([\d]+)\.tif'
+  output: 'prd.shurin.001'
+side_from_basename:
+  pattern: '.*'
+  output: 'R'

@@ -2,3 +2,5 @@ id_from_path:
   pattern: '.*'
   subs: '${0}'
   output: '%s_id'
+parent_from_basename:
+  output: 'parent_id'
