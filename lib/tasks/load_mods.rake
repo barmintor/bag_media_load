@@ -3,7 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
-require "uri-open"
+require "open-uri"
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
