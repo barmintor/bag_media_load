@@ -199,7 +199,7 @@ class GenericResource < ::ActiveFedora::Base
       end
     end
 
-    def derivative(image, dsid, orientation = nil, mimeType = 'image/png')
+    def derivative(image, dsid, mimeType = 'image/png')
       ext = IMAGE_EXT[mimeType]
       ds_label = "#{dsid}.#{ext}"
       img_ds = datastreams[dsid]
@@ -215,7 +215,7 @@ class GenericResource < ::ActiveFedora::Base
           ds_rels(blob,img_ds)
         end
       end
-      upload_hack = ActiveFedora.config.credentials[:upload_dir] and image.path.start_with? ActiveFedora.config.credentials[:upload_dir]
+      upload_hack = (ActiveFedora.config.credentials[:upload_dir] and image.path.start_with? ActiveFedora.config.credentials[:upload_dir])
       if upload_hack
         # the upload dir should map to $FEDORA_HOME/server/management/upload
         # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
