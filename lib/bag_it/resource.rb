@@ -27,11 +27,19 @@ module BagIt
       File.chmod(0644, temp_file.path)
     end
 
-    def convert_to_jp2(src_path, temp_root=nil)
+    def convert_to_jp2(src_path, opts={})
       src_path = to_absolute_path(src_path)
       rels = {}
-      File.open(src_path) do |blob|
-        rels = Cul::Image::Properties.identify(blob)
+      if opts[:length] != 0 and opts[:length]
+        rels['http://www.w3.org/2003/12/exif/ns#imageLength'] = opts[:length]
+      end
+      if opts[:width] != 0 and opts[:width]
+        rels['http://www.w3.org/2003/12/exif/ns#imageWidth'] = opts[:width]
+      end
+      unless rels and !rels.empty?
+        File.open(src_path) do |blob|
+          rels = Cul::Image::Properties.identify(blob)
+        end
       end
       max = nil
       result = nil
@@ -52,6 +60,7 @@ module BagIt
             # don't use more than half GB for pixel cache
             cb.add_command('limit', "area 512M")
           end
+          temp_root = opts[:upload_dir]
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
           temp_path = result.path
           result.unlink

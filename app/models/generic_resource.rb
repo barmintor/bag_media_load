@@ -138,6 +138,13 @@ class GenericResource < ::ActiveFedora::Base
           if datastreams["zoom"].nil? or opts[:override]
             make_vector = true
           end
+          content_ds_props = nil
+          # generate content DS rels
+          if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override]
+            File.open(dsLocation,:encoding=>'BINARY') do |blob|
+              content_ds_props = ds_rels(blob,ds, content_ds_props)
+            end
+          end
           unless (res.empty? and not make_vector) 
             unless res.empty?
               ImageScience.with_image(dsLocation) do |img|
@@ -154,7 +161,7 @@ class GenericResource < ::ActiveFedora::Base
               end
             end
             if make_vector
-              zoomable!(dsLocation, width, length, opts)
+              zoomable!(dsLocation, opts.merge({:width => width, :length => length}))
               rels_int.clear_relationship(ds, :foaf_zooming)
               rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
             end
@@ -165,12 +172,6 @@ class GenericResource < ::ActiveFedora::Base
           if rels_int.relationships(ds,:foaf_thumbnail).blank? and datastreams["thumbnail"]
               rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
           end            
-          # generate content DS rels
-          if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override]
-            File.open(dsLocation,:encoding=>'BINARY') do |blob|
-              ds_rels(blob,ds)
-            end
-          end
           self.save
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
@@ -183,9 +184,9 @@ class GenericResource < ::ActiveFedora::Base
       end
     end
 
-    def zoomable!(src_path, width, length, opts = {})
+    def zoomable!(src_path, opts = {})
       # do the conversion
-      vector = convert_to_jp2(src_path, opts[:upload_dir])
+      vector = convert_to_jp2(src_path, opts)
       # add the ds
       jp2 = derivative(vector, "zoom",'image/jp2')
       # add the ds rdf statements
@@ -260,6 +261,7 @@ class GenericResource < ::ActiveFedora::Base
           rels_int.add_relationship(ds, predicate, value, node["resource"].blank?)
         end
       end
+      image_properties
     ensure
       blob.close
     end
