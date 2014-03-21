@@ -45,15 +45,24 @@ module BagIt
           # for grayscale:
           # image.colorspace "Gray"
           image.format 'jp2' do |cb|
+            # 10% compression
             cb.add_command('define', "jp2:rate=0.1")
+            # dwtLevels as calculated
             cb.add_command('define', "jp2:numrlvls=#{levels}")
+            # don't use more than half GB for pixel cache
+            cb.add_command('limit', "area 512M")
           end
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
           temp_path = result.path
           result.unlink
-          result = File.open(temp_path, 'wb', 0644)
-          image.write result
-          result.close
+          result = nil
+          begin
+            result = File.open(temp_path, 'wb', 0644)
+            image.write result
+          ensure
+            File.unlink(image.path) if File.exists?(image.path)
+            result.close if result
+          end
         end
         # convert $tiff -define jp2:rate=0.1 -define jp2:numrlvls=$levels $grayscale $jp2"
         # convert fixtures/spec/resources/CCITT_2.TIF -define jp2:rate=0.1 -define jp2:numrlvls=4 CCITT_2.jp2

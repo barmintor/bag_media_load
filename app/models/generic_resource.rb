@@ -123,8 +123,6 @@ class GenericResource < ::ActiveFedora::Base
           if datastreams["thumbnail"].nil? or opts[:override]
             if long > 200
               res["thumbnail"] = [200, tempfile(["thumbnail",'.png'], opts[:upload_dir])]
-              rels_int.clear_relationship(ds, :foaf_thumbnail)
-              rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
             end
           end
           if datastreams["web850"].nil? or opts[:override]
@@ -139,8 +137,6 @@ class GenericResource < ::ActiveFedora::Base
           end
           if datastreams["zoom"].nil? or opts[:override]
             make_vector = true
-            rels_int.clear_relationship(ds, :foaf_zooming)
-            rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
           end
           unless (res.empty? and not make_vector) 
             unless res.empty?
@@ -151,9 +147,17 @@ class GenericResource < ::ActiveFedora::Base
               end
               res.each do |k,v|
                 derivative!(v[1],k)
+                if k == 'thumbnail'
+                  rels_int.clear_relationship(ds, :foaf_thumbnail)
+                  rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
+                end
               end
             end
-            zoomable!(dsLocation, width, length, opts) if make_vector
+            if make_vector
+              zoomable!(dsLocation, width, length, opts)
+              rels_int.clear_relationship(ds, :foaf_zooming)
+              rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
+            end
             Rails.logger.info "Generated derivatives for #{self.pid}"
           else
             Rails.logger.info "No required derivatives for #{self.pid}"
