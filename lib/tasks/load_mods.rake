@@ -29,6 +29,12 @@ def next_pid
   BagIt.next_pid
 end
 
+def remove_member(member, container)
+  member.remove_relationship(:cul_member_of, container.internal_uri)
+  member.datastreams["RELS-EXT"].content_will_change!
+  member.save
+end
+
 namespace :bag do
   task :pid do
     Rails.logger.info BagIt.next_pid
@@ -38,19 +44,45 @@ namespace :bag do
     rubydora = ActiveFedora::Base.fedora_connection[0].connection
     Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| Rails.logger.info rubydora.ingest :file=>open(f)}
   end
+  namespace :tree do
+    desc "put prd_fish into custord"
+    task :prd_fish => :environment do
+      custord = BagAggregator.find_by_identifier('prd.custord')
+      all = BagAggregator.find_by_identifier('http://libraries.columbia.edu/projects/aggregation')
+      ids = ['prd.urashima.001', 'prd.urashima.002', 'prd.shurin.001']
+
+      ids.each do |id|
+        Rails.logger.info "Re-parenting #{id}"
+        obj = ContentAggregator.find_by_identifier(id)
+        unless obj.blank?
+          custord.add_member(obj)
+          remove_member(obj, all)
+        else
+          Rails.logger.info "No object for #{id}"
+        end
+      end
+    end
+  end
+
   namespace :mods do
     desc "attach some MODS to objects"
     task :prd_fish => :environment do
       ids = ['prd.urashima.001', 'prd.urashima.002', 'prd.shurin.001']
       base_path = 'https://raw.githubusercontent.com/cul/urashima_mods/master/data/'
       ids.each do |id|
+        Rails.logger.info "Loading #{id}"
         mods_path = base_path + id + '.xml'
-        open(mods_path) do |mods|
+        uri = URI(mods_path)
+        ssl_opts = {:use_ssl => true, :ssl_version => :SSLv3, :verify_mode => OpenSSL::SSL::VERIFY_PEER}
+        Net::HTTP.start(uri.host, uri.port, ssl_opts) do |http|
+          mods = http.get(mods_path)
           obj = ContentAggregator.find_by_identifier(id)
           unless obj.blank?
-            obj.datastreams['descMetadata'].content = mods.read
-            puts obj.datastreams['descMetadata'].content
-            Rails.logger.info "Finished loading #{mods_path}"
+            obj.datastreams['descMetadata'].content = mods.body
+            obj.save
+            Rails.logger.info "Finished loading #{id} from #{mods_path}"
+          else
+            Rails.logger.info "No object for #{id}"
           end
         end
       end
