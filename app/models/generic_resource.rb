@@ -142,7 +142,7 @@ class GenericResource < ::ActiveFedora::Base
           # generate content DS rels
           if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override]
             File.open(dsLocation,:encoding=>'BINARY') do |blob|
-              content_ds_props = ds_rels(blob,ds, content_ds_props)
+              content_ds_props = ds_rels(blob,ds)
             end
           end
           unless (res.empty? and not make_vector) 
@@ -186,6 +186,8 @@ class GenericResource < ::ActiveFedora::Base
 
     def zoomable!(src_path, opts = {})
       # do the conversion
+      width = opts[:width] || 0
+      length = opts[:length] || 0
       vector = convert_to_jp2(src_path, opts)
       # add the ds
       jp2 = derivative(vector, "zoom",'image/jp2')

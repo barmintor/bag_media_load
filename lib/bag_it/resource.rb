@@ -58,7 +58,8 @@ module BagIt
             # dwtLevels as calculated
             cb.add_command('define', "jp2:numrlvls=#{levels}")
             # don't use more than half GB for pixel cache
-            cb.add_command('limit', "area 512M")
+            cb.limit('memory', '512MiB')
+            cb.limit('map', '512MiB')
           end
           temp_root = opts[:upload_dir]
           result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
