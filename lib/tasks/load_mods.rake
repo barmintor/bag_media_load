@@ -64,6 +64,32 @@ namespace :bag do
     end
   end
 
+  namespace :dc do
+    desc "fix the ids according to the schema"
+    task :ids do
+      bag_path = ENV['BAG_PATH']
+      # parse bag-info for external-id and title
+      if File.basename(bag_path) == 'bag-info.txt'
+        bag_path = File.dirname(bag_path)
+      end
+      only_data = nil
+      if bag_path =~ /\/data\//
+        parts = bag_path.split(/\/data\//)
+        bag_path = parts[0]
+        only_data = "data/#{parts[1..-1].join('')}"
+      end
+      derivative_options = {}
+      bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
+      raise "External-Identifier for bag is required" if bag_info.external_id.blank?
+      name_parser = bag_info.id_schema
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      manifest.each_resource(true, only_data) do |rel_path, resource|
+        resource.set_dc_identifier name_parser.id(rel_path)
+        resource.save
+      end
+    end
+  end
+
   namespace :mods do
     desc "attach some MODS to objects"
     task :prd_fish => :environment do
