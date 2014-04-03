@@ -1,7 +1,7 @@
 require 'pathname'
 module BagIt
   class Info
-    attr_accessor :external_id, :external_desc, :group_id, :id_schema
+    attr_accessor :external_id, :external_desc, :group_id, :id_schema, :count
     def initialize(src_file)
       src_file = open(src_file) if src_file.is_a? String
       src_file.each do |line|
@@ -15,6 +15,9 @@ module BagIt
         end
         if parts[0] == "Bag-Group-Identifier"
           @group_id = parts[1].strip
+        end
+        if parts[0] == "Payload-Oxum"
+          @count = parts[1].strip.to_i
         end
         if parts[0] == "Local-Identifier-Schema"
           path = parts[1].strip

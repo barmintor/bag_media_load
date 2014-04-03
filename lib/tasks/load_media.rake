@@ -135,13 +135,18 @@ namespace :bag do
 
       name_parser = bag_info.id_schema
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      ctr = 0
       manifest.each_resource(true, only_data) do |rel_path, resource|
         begin
+          ctr += 1
+          Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           resource.derivatives!(derivative_options)
           unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
             all_media.add_member(resource)
           end
-          parent_id = name_parser.parent(rel_path)
+          parent_id = nil
+          parent_id = (resource.ids_for_outbound(:cul_member_of).select {|x| x != all_media.pid}).first
+          parent_id ||= name_parser.parent(rel_path)
           unless parent_id.blank?
             parent = ContentAggregator.find_by_identifier(parent_id)
             if parent.blank?

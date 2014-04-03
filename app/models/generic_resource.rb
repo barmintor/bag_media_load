@@ -276,7 +276,7 @@ class GenericResource < ::ActiveFedora::Base
         remove_cmodel("info:fedora/ldpd:Resource")
         migrate_membership
       else
-        Rails.logger.info "No content migration necessary for #{self.pid}"
+        Rails.logger.debug "No content migration necessary for #{self.pid}"
       end
       collapse_ids
       save
