@@ -17,7 +17,7 @@ module BagIt
           @group_id = parts[1].strip
         end
         if parts[0] == "Payload-Oxum"
-          @count = parts[1].strip.to_i
+          @count = parts[1].strip.split('.')[1].to_i
         end
         if parts[0] == "Local-Identifier-Schema"
           path = parts[1].strip
