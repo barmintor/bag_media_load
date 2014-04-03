@@ -101,37 +101,22 @@ class GenericResource < ::ActiveFedora::Base
       ds = datastreams["content"]
       opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
-        width = 0
-        length = 0
-        orientation = nil
-        unless rels_int.relationships(ds,:image_width).blank?
-          width = rels_int.relationships(ds,:image_width).first.object.to_s.to_i
-        end
-        unless rels_int.relationships(ds,:image_length).blank?
-          length = rels_int.relationships(ds,:image_length).first.object.to_s.to_i
-        end
-        unless rels_int.relationships(ds,:orientation).blank?
-          orientation = rels_int.relationships(ds,:orientation).first.object.to_s.to_i
-        end
-        width = relationships(:cul_image_width).first.to_s.to_i if width == 0
-        length = relationships(:cul_image_length).first.to_s.to_i if length == 0
-        long = max(width, length)
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
         res = {}
         begin
           make_vector = false
           if datastreams["thumbnail"].nil? or opts[:override]
-            if long > 200
+            if long() > 200
               res["thumbnail"] = [200, tempfile(["thumbnail",'.png'], opts[:upload_dir])]
             end
           end
           if datastreams["web850"].nil? or opts[:override]
-            if long > 850
+            if long() > 850
               res["web850"] = [850, tempfile(["web850",'.png'])]
             end
           end
           if datastreams["web1500"].nil? or opts[:override]
-            if long > 1500
+            if long() > 1500
               res["web1500"] = [1500, tempfile(["web1500",'.png'])]
             end
           end
@@ -153,24 +138,25 @@ class GenericResource < ::ActiveFedora::Base
                 end
               end
               res.each do |k,v|
-                derivative!(v[1],k)
                 if k == 'thumbnail'
                   rels_int.clear_relationship(ds, :foaf_thumbnail)
                   rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
                 end
+                derivative(v[1],k)
               end
+              rels_int.serialize!
+              self.save
             end
             if make_vector
-              zoomable!(dsLocation, opts.merge({:width => width, :length => length}))
-              rels_int.clear_relationship(ds, :foaf_zooming)
-              rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
+              zoomable!(dsLocation, opts.merge({:width => width(), :length => length()}))
             end
             Rails.logger.info "Generated derivatives for #{self.pid}"
           else
             Rails.logger.info "No required derivatives for #{self.pid}"
           end
           if rels_int.relationships(ds,:foaf_thumbnail).blank? and datastreams["thumbnail"]
-              rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
+            rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
+            rels_int.serialize!
           end            
           self.save
         rescue Exception => e
@@ -186,8 +172,8 @@ class GenericResource < ::ActiveFedora::Base
 
     def zoomable!(src_path, opts = {})
       # do the conversion
-      width = opts[:width] || 0
-      length = opts[:length] || 0
+      width = opts[:width] || width()
+      length = opts[:length] || length()
       vector = convert_to_jp2(src_path, opts)
       # add the ds
       jp2 = derivative(vector, "zoom",'image/jp2')
@@ -198,6 +184,9 @@ class GenericResource < ::ActiveFedora::Base
       rels_int.add_relationship(jp2, LENGTH, length.to_s, true)
       rels_int.clear_relationship(jp2, FORMAT)
       rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
+      ds = datastreams['content']
+      rels_int.clear_relationship(ds, :foaf_zooming)
+      rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
       rels_int.serialize!
       begin
         self.save
@@ -226,18 +215,18 @@ class GenericResource < ::ActiveFedora::Base
       if upload_hack
         # the upload dir should map to $FEDORA_HOME/server/management/upload
         # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
-        Rails.logger.info "image.path: #{image.path}"
-        Rails.logger.info "File.exists?(image.path) #{File.exists?(image.path)}"
+        Rails.logger.debug "image.path: #{image.path}"
+        Rails.logger.debug "File.exists?(image.path) #{File.exists?(image.path)}"
         #hacked_location = image.path.slice(ActiveFedora.config.credentials[:upload_dir].length .. -1) 
         #hacked_location.sub!(/^\//,'')
         #hacked_location = 'uploaded://' + hacked_location
         img_ds.dsLocation = "file:#{image.path}"
-        Rails.logger.info "#{dsid}.dsLocation = file:#{image.path}"
+        Rails.logger.debug "#{dsid}.dsLocation = file:#{image.path}"
       else
         # How can we get to the PUT without reading the file into memory?
         img_content = File.open(image.path,:encoding=>'BINARY')
         img_ds.content = img_content
-        Rails.logger.info "#{dsid}.content.length = #{img_content.stat.size}"
+        Rails.logger.debug "#{dsid}.content.length = #{img_content.stat.size}"
       end
       derivatives = rels_int.relationships(img_ds,:format_of)
       unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{self.internal_uri}/content"}
@@ -340,5 +329,33 @@ class GenericResource < ::ActiveFedora::Base
 
     def tempfile(name_parts, temp_root='/var/tmp/bag_media_load')
       Tempfile.new(name_parts, temp_root)
+    end
+
+    private
+    def long
+      @long_side ||= max(width(), length())
+    end
+
+    def width
+      @width ||= begin
+        ds = datastreams["content"]
+        width = 0
+        unless rels_int.relationships(ds,:image_width).blank?
+          width = rels_int.relationships(ds,:image_width).first.object.to_s.to_i
+        end
+        width = relationships(:cul_image_width).first.to_s.to_i if width == 0
+        width
+      end
+    end
+    def length
+      @length ||= begin
+        ds = datastreams["content"]
+        length = 0
+        unless rels_int.relationships(ds,:image_length).blank?
+          length = rels_int.relationships(ds,:image_length).first.object.to_s.to_i
+        end
+        length = relationships(:cul_image_length).first.to_s.to_i if length == 0
+        length
+      end
     end
 end
