@@ -16,7 +16,7 @@ class GenericResource < ::ActiveFedora::Base
   include ::ActiveFedora::RelsInt
   alias :file_objects :resources
   
-  IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "imag/jpeg" => 'jpg',
+  IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "image/jpeg" => 'jpg',
    "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp',
    "image/jp2" => 'jp2'}
   WIDTH = RDF::URI(ActiveFedora::Predicates.find_graph_predicate(:image_width))
@@ -105,6 +105,14 @@ class GenericResource < ::ActiveFedora::Base
         res = {}
         begin
           make_vector = false
+          content_ds_props = nil
+          # generate content DS rels
+          if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override] or long() == 0
+            File.open(dsLocation,:encoding=>'BINARY') do |blob|
+              content_ds_props = ds_rels(blob,ds)
+              @width = @length = nil
+            end
+          end
           if datastreams["thumbnail"].nil? or opts[:override]
             if long() > 200
               res["thumbnail"] = [200, tempfile(["thumbnail",'.png'], opts[:upload_dir])]
@@ -122,13 +130,6 @@ class GenericResource < ::ActiveFedora::Base
           end
           if datastreams["zoom"].nil? or opts[:override]
             make_vector = true
-          end
-          content_ds_props = nil
-          # generate content DS rels
-          if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override]
-            File.open(dsLocation,:encoding=>'BINARY') do |blob|
-              content_ds_props = ds_rels(blob,ds)
-            end
           end
           unless (res.empty? and not make_vector) 
             unless res.empty?
