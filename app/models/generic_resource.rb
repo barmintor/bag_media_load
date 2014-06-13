@@ -267,6 +267,7 @@ class GenericResource < ::ActiveFedora::Base
         migrate_membership
       else
         Rails.logger.debug "No content migration necessary for #{self.pid}"
+        migrate_membership
       end
       collapse_ids
       save

@@ -62,7 +62,7 @@ module BagIt
         resource = GenericResource.new(:pid => BagIt.next_pid)
         resource.save
       end
-      unless resource.datastreams['CONTENT'] and !resource.datastreams['CONTENT'].new?
+      unless resource.datastreams['content'] and !resource.datastreams['content'].new?
         mimetype = mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
         ds_size = File.stat(dc_source).size.to_s
@@ -95,7 +95,7 @@ module BagIt
         resource.set_dc_identifier name_parser.id(bag_entry)
         resource.set_dc_source sources[0]
         resource.set_dc_extent ds_size
-        resource.save if create
+        resource.migrate!
       else
         resource.migrate!
       end
