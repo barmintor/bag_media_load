@@ -71,5 +71,26 @@ describe BagIt::NameParser do
       test.id("data/S_LEH_K14/ldpd_leh_0483_0033_001.tif").should == "apt://columbia.edu/ldpd.leh/data/S_LEH_K14/ldpd_leh_0483_0033_001.tif"
       test.parent("data/S_LEH_K14/ldpd_leh_0483_0033_001.tif").should == "ldpd_leh_0483_0033"
     end
-  end    
+  end
+  describe "Urban" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/urban.yml")))
+      test.id("data/color_urban/3508020101.tif").should == "apt://columbia.edu/rbml.urban/data/color_urban/3508020101.tif"
+      test.parent("data/color_urban/3508020101.tif").should == "rbml.urban.3508020101"
+    end
+  end
+  describe BagIt::NameParser::Default do
+    it "should parse ids when the external id is already apt-style" do
+      test = BagIt::NameParser::Default.new('apt://foo')
+      test.id("data/bar.txt").should == "apt://foo/data/bar.txt"
+    end
+    it "should parse ids when the external id is not an apt-style uri" do
+      test = BagIt::NameParser::Default.new('foo')
+      test.id("data/bar.txt").should == "apt://columbia.edu/foo/data/bar.txt"
+      test.id("/data/bar.txt").should == "apt://columbia.edu/foo/data/bar.txt"
+      test = BagIt::NameParser::Default.new('/foo/')
+      test.id("data/bar.txt").should == "apt://columbia.edu/foo/data/bar.txt"
+      test.id("/data/bar.txt").should == "apt://columbia.edu/foo/data/bar.txt"
+    end
+  end
 end

@@ -168,4 +168,42 @@ namespace :bag do
       Rails.logger.info "Finished loading #{bag_path}"
     end
   end
+  namespace :ricop do
+    task :repair => :environment do
+      bag_path = ENV['BAG_PATH']
+      override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+      upload_dir = ActiveFedora.config.credentials[:upload_dir]
+      # parse bag-info for external-id and title
+      if File.basename(bag_path) == 'bag-info.txt'
+        bag_path = File.dirname(bag_path)
+      end
+      only_data = nil
+      if bag_path =~ /\/data\//
+        parts = bag_path.split(/\/data\//)
+        bag_path = parts[0]
+        only_data = "data/#{parts[1..-1].join('')}"
+      end
+      derivative_options = {:override => override}
+      derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
+      bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
+      raise "External-Identifier for bag is required" if bag_info.external_id.blank?
+      name_parser = bag_info.id_schema
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      ctr = 0
+      manifest.each_resource(true, only_data) do |rel_path, resource|
+        begin
+          ctr += 1
+          Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
+          resource.set_dc_identifier( name_parser.id(rel_path))
+          content = resource.datastreams['content']
+          content.dsLabel = content.dsLocation.split('/')[-1]
+          resource.derivatives!(derivative_options)
+        rescue Exception => e
+          Rails.logger.error(e.message)
+          e.backtrace.each {|line| Rails.logger.error(line) }
+        end
+      end
+      Rails.logger.info "Finished repairing #{bag_path}"
+    end
+  end
 end

@@ -300,7 +300,8 @@ class GenericResource < ::ActiveFedora::Base
         if old.controlGroup == 'M' or old.controlGroup == 'X'
           raise "WWW URL for DS content not yet implemented!" 
         end
-        nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :dsLabel=>old.dsLabel)
+        dsLabel = dsLocation.split('/')[-1]
+        nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :dsLabel=>dsLabel)
         add_datastream(nouv)
         dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
         ds_rels(File.open(dsLocation),nouv)

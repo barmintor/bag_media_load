@@ -112,8 +112,22 @@ module BagIt
       end
 
       def id(input)
-        id = ('apt://columbia.edu/' << @project_id << '/' << input)
-        id.gsub(/\/+/,'/')
+        id = ''
+        if @project_id =~ /^apt\:/
+          id = @project_id
+        else
+          if @project_id =~ /^\//
+            id = ('apt://columbia.edu' << @project_id)
+          else
+            id = ('apt://columbia.edu/' << @project_id)
+          end
+        end
+        id << '/' unless id =~ /\/$/ or input =~ /^\//
+        if id =~ /\/$/ and input =~ /^\//
+          id << input[1..-1]
+        else
+          id << input
+        end
         id
       end
 

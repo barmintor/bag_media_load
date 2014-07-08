@@ -1,0 +1,12 @@
+id_from_path:
+  pattern: '.*'
+  output: 'apt://columbia.edu/rbml.urban/%s'
+  subs: '${0}'
+parent_from_basename: 
+  pattern: '([\d]+)\.tif'
+  output: 'rbml.urban.%s'
+  subs: '${1}'
+side_from_basename:
+  pattern: '.*'
+  subs: '${0}'
+  output: 'R'
