@@ -10,12 +10,16 @@ class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
   include ::ActiveFedora::DatastreamCollections
-  include Cul::Scv::Hydra::ActiveFedora::Model::Common
+  include ::Hydra::ModelMethods
+  include Cul::Scv::Hydra::Models::Common
+  include Cul::Scv::Hydra::Models::ImageResource
+  include Cul::Scv::Fedora::UrlHelperBehavior
   include BagIt::DcHelpers
   include BagIt::Resource
   include ::ActiveFedora::RelsInt
-  alias :file_objects :resources
-  
+
+  has_and_belongs_to_many :containers, :property=>:cul_member_of, :class_name=>'ActiveFedora::Base'  
+
   IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "image/jpeg" => 'jpg',
    "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp',
    "image/jp2" => 'jp2'}
