@@ -46,7 +46,7 @@ module BagIt
       resource = nil
       sources(dc_source).each do |source|
         source = source.sub(/~/,'?') # tilde is an operator in search
-        resource ||= GenericResource.find_by_source(source)
+        resource ||= GenericResource.search_repo(source: source).first
         if resource
           break
         end

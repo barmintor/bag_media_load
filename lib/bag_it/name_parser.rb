@@ -114,7 +114,7 @@ module BagIt
       def id(input)
         id = ''
         if @project_id =~ /^apt\:/
-          id = @project_id
+          id << @project_id
         else
           if @project_id =~ /^\//
             id = ('apt://columbia.edu' << @project_id)
