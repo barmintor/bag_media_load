@@ -145,9 +145,9 @@ namespace :bag do
             all_media.add_member(resource)
           end
           parent_id = nil
-          parent_id = (resource.ids_for_outbound(:cul_member_of).select {|x| x != all_media.pid}).first
+          parent_id = (resource.container_ids.select {|x| x != all_media.pid}).first
           parent_id ||= name_parser.parent(rel_path)
-          unless parent_id.blank?
+          unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
             parent = ContentAggregator.find_by_identifier(parent_id)
             if parent.blank?
               parent = ContentAggregator.new(:pid=>next_pid)
