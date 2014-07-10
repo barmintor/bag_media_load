@@ -282,6 +282,14 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-mocks (3.0.2)
       rspec-support (~> 3.0.0)
+    rspec-rails (3.0.1)
+      actionpack (>= 3.0)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-core (~> 3.0.0)
+      rspec-expectations (~> 3.0.0)
+      rspec-mocks (~> 3.0.0)
+      rspec-support (~> 3.0.0)
     rspec-support (3.0.2)
     rubydora (1.7.5)
       activemodel
@@ -360,6 +368,7 @@ DEPENDENCIES
   mocha
   rails (= 3.2.6)
   rspec
+  rspec-rails
   sass-rails (~> 3.2.3)
   sqlite3
   therubyracer (= 0.12.0)

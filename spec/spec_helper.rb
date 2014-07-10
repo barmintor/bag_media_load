@@ -1,10 +1,8 @@
 require 'yaml'
 ENV["environment"] ||= 'test'
 ENV["RAILS_ENV"] ||= 'test'
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'app','models'))
-libs = File.expand_path(File.dirname(__FILE__) + '/../lib/*.rb')
+require File.expand_path("../../config/environment", __FILE__)
+require 'rspec/rails'
 require 'pathname'
 require 'bag_it'
 require 'tempfile' 

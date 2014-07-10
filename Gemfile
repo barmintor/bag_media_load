@@ -53,5 +53,6 @@ gem "compass-susy-plugin", "~> 0.9.0", :group => :assets
 
 group :development do
   gem 'rspec'
+  gem 'rspec-rails'
   gem 'mocha'
 end
