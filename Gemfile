@@ -9,7 +9,7 @@ gem 'sqlite3'
 
 gem 'active-fedora', '~>7.0'
 gem 'active_fedora_finders'
-gem 'active_fedora_relsint'
+gem 'active_fedora_relsint', :git=>'git://github.com/cul/active_fedora_relsint'
 gem 'cul_scv_hydra', :git=>'git://github.com/cul/cul_scv_hydra' #'~>0.9.0'
 gem 'cul_image_props', '>=0.3.5'
 gem 'libv8', '~>3.16' # for therubyracer
