@@ -25,7 +25,7 @@ module BagIt
         if File.file? recto_path
           recto = BagIt::Manifest.find_or_create_resource(recto_path)
           recto.set_title_and_label("#{bag_id} (recto)")
-          recto.set_dc_identifier("#{bag_id}r")
+          recto.add_dc_identifier("#{bag_id}r")
           recto.derivatives!
           tech_md_path = recto_path + ".fits.xml"
           tech_md_sources = BagIt::Manifest.sources(tech_md_path)
@@ -41,7 +41,7 @@ module BagIt
         if File.file? verso_path
           verso = BagIt::Manifest.find_or_create_resource(verso_path)
           verso.set_title_and_label("#{bag_id} (verso)")
-          verso.set_dc_identifier("#{bag_id}v")
+          verso.add_dc_identifier("#{bag_id}v")
           verso.derivatives!
           tech_md_path = verso_path + ".fits.xml"
           tech_md_sources = BagIt::Manifest.sources(tech_md_path)

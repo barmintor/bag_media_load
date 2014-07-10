@@ -92,7 +92,7 @@ module BagIt
           Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
         end
         bag_entry = sources[0].slice((sources[0].index('/data/') + 1)..-1)
-        resource.set_dc_identifier name_parser.id(bag_entry)
+        resource.add_dc_identifier name_parser.id(bag_entry)
         resource.set_dc_source sources[0]
         resource.set_dc_extent ds_size
         resource.migrate!

@@ -194,7 +194,7 @@ namespace :bag do
         begin
           ctr += 1
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
-          resource.set_dc_identifier( name_parser.id(rel_path))
+          resource.add_dc_identifier( name_parser.id(rel_path))
           content = resource.datastreams['content']
           content.dsLabel = content.dsLocation.split('/')[-1]
           resource.derivatives!(derivative_options)

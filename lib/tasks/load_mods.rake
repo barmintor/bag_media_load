@@ -84,7 +84,7 @@ namespace :bag do
       name_parser = bag_info.id_schema
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       manifest.each_resource(true, only_data) do |rel_path, resource|
-        resource.set_dc_identifier name_parser.id(rel_path)
+        resource.add_dc_identifier name_parser.id(rel_path)
         resource.save
       end
     end
