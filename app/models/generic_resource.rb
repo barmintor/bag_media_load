@@ -50,7 +50,15 @@ class GenericResource < ::ActiveFedora::Base
     Cul::Scv::Fedora.repository.api.modify_datastream(pid: self.pid, dsid: 'RELS-EXT', content: content, content_type: "application/rdf+xml")
     self.rels_ext.send :reset_profile_attributes
   end
-  
+
+  def container_uris_for(obj,obs=false)
+    r = obj.relationships(:cul_member_of)
+    if obs # clean up from failed runs previous
+      r += obj.relationships(:cul_obsolete_from)
+    end
+    r
+  end
+
   def assert_content_model
     super
     add_relationship(:has_model, RDF::URI('info:fedora/ldpd:GenericResource'))
@@ -279,29 +287,32 @@ class GenericResource < ::ActiveFedora::Base
         assert_content_model
         remove_cmodel("info:fedora/ldpd:Resource")
         migrate_membership
-        hack_rels!
+        #hack_rels!
       else
         Rails.logger.debug "No content migration necessary for #{self.pid}"
+        migrate_content
         migrate_membership
-        hack_rels!
+        #hack_rels!
       end
       collapse_ids
       save
     end
 
     def migrate_membership
-      self.container_ids.clone.each do |parent_uri|
+      container_uris_for(self).clone.each do |parent_uri|
         parent_pid = parent_uri.split('/')[-1]
         parent = ActiveFedora::Base.find(parent_pid, cast: true)
         if parent.relationships(:has_model).include? StaticImageAggregator.to_class_uri
-          gp_uris = parent.container_ids
+          gp_uris = container_uris_for(parent, true)
           gp_uris.each { |gp_uri|
-            self.add_relationship(:cul_member_of, gp_uri)
-            parent.add_relationship(:cul_obsolete_from, gp_uri)
-            parent.remove_relationship(:cul_member_of, gp_uri)
+            self.add_relationship(:cul_member_of, RDF::URI(gp_uri.to_s))
+            parent.add_relationship(:cul_obsolete_from, RDF::URI(gp_uri.to_s))
+            parent.remove_relationship(:cul_member_of, RDF::URI(gp_uri.to_s))
             parent.save
           }
           self.remove_relationship(:cul_member_of, parent)
+        else
+          p "didn't match SIA class" + parent.relationships(:has_model).inspect
         end
       end
     end
