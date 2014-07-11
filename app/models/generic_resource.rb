@@ -278,19 +278,18 @@ class GenericResource < ::ActiveFedora::Base
     end
 
     def migrate_membership
-      relationships(:cul_member_of).clone.each do |parent_uri|
+      self.container_ids.clone.each do |parent_uri|
         parent_pid = parent_uri.split('/')[-1]
-        parent = ActiveFedora::Base.find(parent_pid)
-        if parent.relationships(:has_model).include?("info:fedora/ldpd:StaticImageAggregator")
-          parent = parent.adapt_to StaticImageAggregator
-          gp_uris = parent.relationships(:cul_member_of)
+        parent = ActiveFedora::Base.find(parent_pid, cast: true)
+        if parent.is_a? StaticImageAggregator
+          gp_uris = parent.container_ids
           gp_uris.each { |gp_uri|
             self.add_relationship(:cul_member_of, gp_uri)
             parent.add_relationship(:cul_obsolete_from, gp_uri)
             parent.remove_relationship(:cul_member_of, gp_uri)
             parent.save
           }
-          remove_relationship(:cul_member_of, parent_uri)
+          self.remove_relationship(:cul_member_of, parent)
         end
       end
     end
@@ -317,7 +316,7 @@ class GenericResource < ::ActiveFedora::Base
     end
     
     def remove_cmodel(cmodel)
-      object_relations.delete(:has_model, cmodel)
+      self.remove_relationship(:has_model, cmodel)
       relationships_are_dirty=true
     end
     
@@ -326,11 +325,8 @@ class GenericResource < ::ActiveFedora::Base
       ids = dc.term_values(:dc_identifier)
       new_ids = ids.uniq
       return if new_ids.sort.eql? ids.sort
-      if dc.respond_to?(:dc_identifier_values)
-        dc.dc_identifier_values = ids.uniq
-      else
-        dc.dc_identifier = ids.uniq
-      end
+      self.set_dc_identifier(self.pid)
+      new_ids.each {|idval| self.add_dc_identifier(idval) if idval != self.pid}
       dc.dirty = true
     end
 
