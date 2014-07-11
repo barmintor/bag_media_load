@@ -106,11 +106,12 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
+      all_ldpd_content = BagAggregator.search_repo(identifier: (LDPD_COLLECTIONS_ID)).first
       group_id = bag_info.group_id || LDPD_COLLECTIONS_ID
       Rails.logger.info "Searching for \"#{bag_info.external_id}\""
-      bag_agg = BagAggregator.find_by_identifier(bag_info.external_id)
+      bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
       if bag_agg.blank?
+        raise 'check into missing bag: ' + bag_info.external_id
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
         bag_agg = BagAggregator.new(:pid=>pid)
@@ -122,7 +123,7 @@ namespace :bag do
         all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
       end
       all_media_id = bag_info.external_id + "#all-media"
-      all_media = ContentAggregator.find_by_identifier(all_media_id)
+      all_media = ContentAggregator.search_repo(identifier: (all_media_id)).first
       if all_media.blank?
         all_media = ContentAggregator.new(:pid=>next_pid)
         all_media.datastreams["DC"].update_values({[:dc_identifier] => all_media_id})
@@ -141,14 +142,14 @@ namespace :bag do
           ctr += 1
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           resource.derivatives!(derivative_options)
-          unless resource.ids_for_outbound(:cul_member_of).include? all_media.pid
+          unless resource.container_ids.include? all_media.pid
             all_media.add_member(resource)
           end
           parent_id = nil
           parent_id = (resource.container_ids.select {|x| x != all_media.pid}).first
           parent_id ||= name_parser.parent(rel_path)
           unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
-            parent = ContentAggregator.find_by_identifier(parent_id)
+            parent = ContentAggregator.search_repo(identifier: parent_id).first
             if parent.blank?
               parent = ContentAggregator.new(:pid=>next_pid)
               parent.datastreams["DC"].update_values({[:dc_identifier] => parent_id})
@@ -156,7 +157,7 @@ namespace :bag do
               parent.save
               bag_agg.add_member(parent)
             end
-            unless resource.ids_for_outbound(:cul_member_of).include? parent.pid
+            unless resource.container_ids.include? parent.pid
               parent.add_member(resource)
             end
           end
@@ -194,7 +195,7 @@ namespace :bag do
         begin
           ctr += 1
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
-          resource.add_dc_identifier( name_parser.id(rel_path))
+          resource.set_dc_identifier( name_parser.id(rel_path))
           content = resource.datastreams['content']
           content.dsLabel = content.dsLocation.split('/')[-1]
           resource.derivatives!(derivative_options)

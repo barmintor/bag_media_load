@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/cul/active_fedora_relsint
+  revision: c61e39296b2ebdb207438f2a9684c7f858abbc31
+  specs:
+    active_fedora_relsint (0.3.0)
+      active-fedora (>= 7.0)
+      activesupport (>= 3.2.0, < 5.0)
+
+GIT
   remote: git://github.com/cul/cul_scv_hydra
   revision: ad2600e9370318f79d31b9fa4b126aee590e750f
   specs:
@@ -45,9 +53,6 @@ GEM
       active-fedora (>= 7.0.0)
       activerecord
       nokogiri
-    active_fedora_relsint (0.3.0)
-      active-fedora (>= 6.6)
-      activesupport (>= 3.2.0, < 5.0)
     activemodel (3.2.6)
       activesupport (= 3.2.6)
       builder (~> 3.0.0)
@@ -354,7 +359,7 @@ DEPENDENCIES
   RubyInline
   active-fedora (~> 7.0)
   active_fedora_finders
-  active_fedora_relsint
+  active_fedora_relsint!
   coffee-rails (~> 3.2.1)
   compass-rails (~> 1.0.0)
   compass-susy-plugin (~> 0.9.0)
