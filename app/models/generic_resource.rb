@@ -41,10 +41,20 @@ class GenericResource < ::ActiveFedora::Base
   #has_relationship "extent", :extent
   
   has_datastream :name => "content", :type=>::ActiveFedora::Datastream, :versionable => true
+
+  def hack_rels!
+    # and now for super hacks
+    content = self.rels_ext.content
+    self.rels_ext.content = self.rels_ext.datastream_content
+    self.rels_ext.model.relationships_are_not_dirty!
+    Cul::Scv::Fedora.repository.api.modify_datastream(pid: self.pid, dsid: 'RELS-EXT', content: content, content_type: "application/rdf+xml")
+    self.rels_ext.send :reset_profile_attributes
+  end
   
   def assert_content_model
     super
-    add_relationship(:rdf_type, Cul::Scv::Hydra::ActiveFedora::RESOURCE_TYPE.to_s)
+    add_relationship(:has_model, RDF::URI('info:fedora/ldpd:GenericResource'))
+    add_relationship(:rdf_type, RDF::URI(Cul::Scv::Hydra::Models::RESOURCE_TYPE.to_s))
   end
 
   def route_as
@@ -269,9 +279,11 @@ class GenericResource < ::ActiveFedora::Base
         assert_content_model
         remove_cmodel("info:fedora/ldpd:Resource")
         migrate_membership
+        hack_rels!
       else
         Rails.logger.debug "No content migration necessary for #{self.pid}"
         migrate_membership
+        hack_rels!
       end
       collapse_ids
       save
@@ -281,7 +293,7 @@ class GenericResource < ::ActiveFedora::Base
       self.container_ids.clone.each do |parent_uri|
         parent_pid = parent_uri.split('/')[-1]
         parent = ActiveFedora::Base.find(parent_pid, cast: true)
-        if parent.is_a? StaticImageAggregator
+        if parent.relationships(:has_model).include? StaticImageAggregator.to_class_uri
           gp_uris = parent.container_ids
           gp_uris.each { |gp_uri|
             self.add_relationship(:cul_member_of, gp_uri)
@@ -308,16 +320,18 @@ class GenericResource < ::ActiveFedora::Base
         add_datastream(nouv)
         dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
         ds_rels(File.open(dsLocation),nouv)
-        clear_relationship(:cul_image_length)
-        clear_relationship(:cul_image_width)
-        clear_relationship(:format)
-        clear_relationship(:extent)
       end
+      clear_relationship(:cul_image_length)
+      clear_relationship(:cul_image_width)
+      clear_relationship(:format)
+      clear_relationship(:extent)
+      clear_relationship(:x_sampling)
+      clear_relationship(:y_sampling)
+      clear_relationship(:sampling_unit)
     end
     
     def remove_cmodel(cmodel)
-      self.remove_relationship(:has_model, cmodel)
-      relationships_are_dirty=true
+      self.remove_relationship(:has_model, RDF::URI(cmodel))
     end
     
     def collapse_ids
