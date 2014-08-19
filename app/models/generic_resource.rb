@@ -171,7 +171,11 @@ class GenericResource < ::ActiveFedora::Base
               self.save
             end
             if make_vector
-              zoomable!(dsLocation, opts.merge({:width => width(), :length => length()}))
+              begin
+                zoomable!(dsLocation, opts.merge({:width => width(), :length => length()}))
+              rescue Exception=>e
+                Rails.logger.error "Could not generate JP2 for #{self.pid}: #{e.message}"
+              end
             end
             Rails.logger.info "Generated derivatives for #{self.pid}"
           else
