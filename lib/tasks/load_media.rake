@@ -189,6 +189,42 @@ namespace :bag do
     end
   end
   namespace :ricop do
+    task :clean => :environment do 
+      manifest = ENV['manifest']
+      entries = []
+      open(manifest) do |blob|
+        blob.each {|line| entries << line.split[1].strip}
+      end
+      ids = entries.map{|entry| 'apt://columbia.edu/prd.russianpages/' + entry}
+      ALL_MEDIA = 'ldpd:144192'
+      ids.each do |resource_id|
+        resource = GenericResource.search_repo(identifier: resource_id).first
+        if resource
+          p "Found #{resource_id} at #{resource.pid}"
+        else
+          p "Missing resource for #{resource_id}"
+        end
+        containers = resource.containers
+        containers.each do |container|
+
+          dc = container.datastreams['DC']
+          if container.pid == ALL_MEDIA || dc.term_values(:dc_identifier).include?('prd.russianpages#all-media')
+            p 'Skipping all-media'
+            next
+          end
+          desc = container.nil? ? nil : container.datastreams['descMetadata']
+          if desc.nil? || desc.new?
+            if container.pid != ALL_MEDIA
+              resource.remove_relationship(:cul_member_of, container)
+              resource.save
+              container.delete
+              break
+            end
+          end
+        end
+        break
+      end
+    end 
     task :repair => :environment do
       bag_path = ENV['BAG_PATH']
       override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
