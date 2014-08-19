@@ -28,6 +28,19 @@ def next_pid
   BagIt.next_pid
 end
 
+def container_uris_for(obj,obs=false)
+  r = obj.relationships(:cul_member_of)
+  if obs # clean up from failed runs previous
+    r += obj.relationships(:cul_obsolete_from)
+  end
+  r
+end
+
+def container_pids_for(obj,obs=false)
+  r = container_uris_for(obj,obs) || []
+  r.map {|x| x.to_s.split('/')[-1]}
+end
+
 namespace :bag do
   task :pid do
     Rails.logger.info BagIt.next_pid
@@ -142,11 +155,16 @@ namespace :bag do
           ctr += 1
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           resource.derivatives!(derivative_options)
-          unless resource.container_ids.include? all_media.pid
-            all_media.add_member(resource)
+          unless container_pids_for(resource).include? all_media.pid
+            resource.add_relationship(:cul_member_of, all_media)
+            begin
+              resource.save
+            rescue
+              Rails.logger.warn("could not add #{resource.pid} to all-media agg #{all_media.pid}")
+            end
           end
           parent_id = nil
-          parent_id = (resource.container_ids.select {|x| x != all_media.pid}).first
+          parent_id = container_pids_for(resource).select{|x| x != all_media.pid }.first
           parent_id ||= name_parser.parent(rel_path)
           unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
             parent = ContentAggregator.search_repo(identifier: parent_id).first
@@ -157,8 +175,9 @@ namespace :bag do
               parent.save
               bag_agg.add_member(parent)
             end
-            unless resource.container_ids.include? parent.pid
-              parent.add_member(resource)
+            unless container_pids_for(resource).include? parent.pid
+              resource.add_relationship(:cul_member_of, parent)
+              resource.hack_rels!
             end
           end
         rescue Exception => e
@@ -199,6 +218,47 @@ namespace :bag do
           content = resource.datastreams['content']
           content.dsLabel = content.dsLocation.split('/')[-1]
           resource.derivatives!(derivative_options)
+        rescue Exception => e
+          Rails.logger.error(e.message)
+          e.backtrace.each {|line| Rails.logger.error(line) }
+        end
+      end
+      Rails.logger.info "Finished repairing #{bag_path}"
+    end
+  end
+  namespace :jay do
+    task :jp2rels => :environment do
+      bag_path = ENV['BAG_PATH']
+      override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+      upload_dir = ActiveFedora.config.credentials[:upload_dir]
+      # parse bag-info for external-id and title
+      if File.basename(bag_path) == 'bag-info.txt'
+        bag_path = File.dirname(bag_path)
+      end
+      only_data = nil
+      if bag_path =~ /\/data\//
+        parts = bag_path.split(/\/data\//)
+        bag_path = parts[0]
+        only_data = "data/#{parts[1..-1].join('')}"
+      end
+      derivative_options = {:override => override}
+      derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
+      bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
+      raise "External-Identifier for bag is required" if bag_info.external_id.blank?
+      name_parser = bag_info.id_schema
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      ctr = 0
+      manifest.each_resource(true, only_data) do |rel_path, resource|
+        begin
+          ctr += 1
+          Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
+          if resource.datastreams["zoom"]
+            ds_c = resource.datastreams["content"]
+            ds_z = resource.datastreams["zoom"]
+            resource.rels_int.add_relationship(ds_c, :foaf_zooming, ds_z)
+            resource.rels_int.serialize!
+            resource.save
+          end
         rescue Exception => e
           Rails.logger.error(e.message)
           e.backtrace.each {|line| Rails.logger.error(line) }
