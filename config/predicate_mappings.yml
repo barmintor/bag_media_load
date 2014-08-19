@@ -20,6 +20,13 @@
     :cul_member_of: memberOf
     :cul_metadata_for: metadataFor
     :cul_obsolete_from: obsoleteFrom
+  http://purl.oclc.org/NET/CUL/RESOURCE/STILLIMAGE/ASSESSMENT/:
+    :x_sampling: xSamplingFrequency
+    :y_sampling: ySamplingFrequency
+    :sampling_unit: samplingFrequencyUnit
+  http://purl.oclc.org/NET/CUL/RESOURCE/STILLIMAGE/BASIC/:
+    :cul_image_width: imageWidth
+    :cul_image_length: imageLength
   info:fedora/fedora-system:def/relations-external#: 
     :conforms_to: conformsTo
     :has_annotation: hasAnnotation
@@ -46,13 +53,6 @@
     :is_subset_of: isSubsetOf
   info:fedora/fedora-system:def/model#:
     :has_model: hasModel
-  http://purl.oclc.org/NET/CUL/RESOURCE/STILLIMAGE/BASIC/:
-    :cul_image_width: imageWidth
-    :cul_image_length: imageLength
-  http://purl.oclc.org/NET/CUL/RESOURCE/STILLIMAGE/ASSESSMENT/:
-    :x_sampling: xSamplingFrequency
-    :y_sampling: ySamplingFrequency
-    :sampling_unit: samplingFrequencyUnit
   http://purl.org/dc/terms/:
     :extent: extent
     :format: format
