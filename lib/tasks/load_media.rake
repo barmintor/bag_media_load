@@ -4,6 +4,7 @@ require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
+LDPD_STORAGE_ID = 'apt://columbia.edu'
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
   mods_collection = Nokogiri::XML.parse(file)
@@ -39,6 +40,23 @@ end
 def container_pids_for(obj,obs=false)
   r = container_uris_for(obj,obs) || []
   r.map {|x| x.to_s.split('/')[-1]}
+end
+
+def apt_project_id(project_id)
+  id = ''
+  if project_id =~ /^apt\:/
+    id << project_id
+  else
+    if project_id =~ /^\//
+      id = ('apt://columbia.edu' << project_id)
+    else
+      id = ('apt://columbia.edu/' << project_id)
+    end
+  end
+  if id =~ /\/$/ and id =~ /^\//
+    id = id[0...-1]
+  end
+  id
 end
 
 namespace :bag do
@@ -119,23 +137,24 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      all_ldpd_content = BagAggregator.search_repo(identifier: (LDPD_COLLECTIONS_ID)).first
-      group_id = bag_info.group_id || LDPD_COLLECTIONS_ID
+      all_ldpd_content = BagAggregator.search_repo(identifier: LDPD_STORAGE_ID).first
+      group_id = bag_info.group_id || LDPD_STORAGE_ID
       Rails.logger.info "Searching for \"#{bag_info.external_id}\""
       bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
+      bag_agg_id = apt_project_id(bag_info.external_id)
       if bag_agg.blank?
         raise 'check into missing bag: ' + bag_info.external_id
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
         bag_agg = BagAggregator.new(:pid=>pid)
-        bag_agg.datastreams["DC"].update_values({[:dc_identifier] => bag_info.external_id})
+        bag_agg.datastreams["DC"].update_values({[:dc_identifier] => [bag_info.external_id, bag_agg_id]})
         bag_agg.datastreams["DC"].update_values({[:dc_title] => bag_info.external_desc})
         bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         bag_agg.label = bag_info.external_desc
         bag_agg.save
         all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
       end
-      all_media_id = bag_info.external_id + "#all-media"
+      all_media_id = bag_agg_id + "/data"
       all_media = ContentAggregator.search_repo(identifier: (all_media_id)).first
       if all_media.blank?
         all_media = ContentAggregator.new(:pid=>next_pid)
@@ -172,8 +191,8 @@ namespace :bag do
               parent = ContentAggregator.new(:pid=>next_pid)
               parent.datastreams["DC"].update_values({[:dc_identifier] => parent_id})
               parent.datastreams["DC"].update_values({[:dc_type] => 'InteractiveResource'})
+              parent.add_relationship(:cul_member_of, bag_agg)
               parent.save
-              bag_agg.add_member(parent)
             end
             unless container_pids_for(resource).include? parent.pid
               resource.add_relationship(:cul_member_of, parent)

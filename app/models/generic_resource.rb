@@ -1,11 +1,11 @@
 require "active-fedora"
 require "cul_image_props"
 require "mime/types"
+require "net/http"
 require "uri"
 require "open-uri"
 require "tempfile"
 require "bag_it"
-require "image_science"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
   include ::ActiveFedora::Finders
@@ -124,9 +124,7 @@ class GenericResource < ::ActiveFedora::Base
       opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
         dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
-        res = {}
         begin
-          make_vector = false
           content_ds_props = nil
           # generate content DS rels
           if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override] or long() == 0
@@ -135,139 +133,22 @@ class GenericResource < ::ActiveFedora::Base
               @width = @length = nil
             end
           end
-          if datastreams["thumbnail"].nil? or opts[:override]
-            if long() > 200
-              res["thumbnail"] = [200, tempfile(["thumbnail",'.png'], opts[:upload_dir])]
-            end
-          end
-          if datastreams["web850"].nil? or opts[:override]
-            if long() > 850
-              res["web850"] = [850, tempfile(["web850",'.png'])]
-            end
-          end
-          if datastreams["web1500"].nil? or opts[:override]
-            if long() > 1500
-              res["web1500"] = [1500, tempfile(["web1500",'.png'])]
-            end
-          end
-          if datastreams["zoom"].nil? or opts[:override]
-            make_vector = true
-          end
-          unless (res.empty? and not make_vector) 
-            unless res.empty?
-              ImageScience.with_image(dsLocation) do |img|
-                res.each do |k,v|
-                  create_scaled_image(img, v[0], v[1])
-                end
-              end
-              res.each do |k,v|
-                if k == 'thumbnail'
-                  rels_int.clear_relationship(ds, :foaf_thumbnail)
-                  rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
-                end
-                derivative(v[1],k)
-              end
-              rels_int.serialize!
-              self.save
-            end
-            if make_vector
-              begin
-                zoomable!(dsLocation, opts.merge({:width => width(), :length => length()}))
-              rescue Exception=>e
-                Rails.logger.error "Could not generate JP2 for #{self.pid}: #{e.message}"
-              end
-            end
-            Rails.logger.info "Generated derivatives for #{self.pid}"
-          else
-            Rails.logger.info "No required derivatives for #{self.pid}"
-          end
-          if rels_int.relationships(ds,:foaf_thumbnail).blank? and datastreams["thumbnail"]
-            rels_int.add_relationship(ds,:foaf_thumbnail, self.internal_uri + "/thumbnail")
-            rels_int.serialize!
-          end            
+          rels_int.serialize!
           self.save
+          uri = URI.parse(derivative_url())
+          deriv_req = Net::HTTP::Head.new(uri.request_uri)
+          Net::HTTP.new(uri.host, uri.port) {|http| http.request(deriv_req)}
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
-        ensure
-          # clean up temp files
-          res.each do |k,v|
-            File.unlink(v[1].path)
-          end
         end
       end
     end
 
-    def zoomable!(src_path, opts = {})
-      # do the conversion
-      width = opts[:width] || width()
-      length = opts[:length] || length()
-      vector = convert_to_jp2(src_path, opts)
-      # add the ds
-      jp2 = derivative(vector, "zoom",'image/jp2')
-      # add the ds rdf statements
-      rels_int.clear_relationship(jp2, WIDTH)
-      rels_int.add_relationship(jp2, WIDTH, width.to_s, true)
-      rels_int.clear_relationship(jp2, LENGTH)
-      rels_int.add_relationship(jp2, LENGTH, length.to_s, true)
-      rels_int.clear_relationship(jp2, FORMAT)
-      rels_int.add_relationship(jp2, FORMAT, 'image/jp2', true)
-      ds = datastreams['content']
-      rels_int.clear_relationship(ds, :foaf_zooming)
-      rels_int.add_relationship(ds,:foaf_zooming, self.internal_uri + "/zoom")
-      rels_int.serialize!
-      begin
-        self.save
-      ensure
-        File.unlink(vector.path)
-      end
+    def derivative_url(opts={})
+      opts = {size:1, id: self.pid, type: 'scaled', format:'jpg'}.merge(opts)
+      "#{IMG_CONFIG['base']}/#{opts[:id]}/#{opts[:type]}/#{opts[:size]}.#{opts[:format]}"
     end
 
-    def derivative(image, dsid, mimeType = 'image/png')
-      ext = IMAGE_EXT[mimeType]
-      ds_label = "#{dsid}.#{ext}"
-      img_ds = datastreams[dsid]
-      if img_ds
-        img_ds.dsLabel = ds_label unless img_ds.dsLabel == ds_label
-        img_ds.mimeType = mimeType unless img_ds.mimeType == mimeType
-      else
-        img_ds = create_datastream(ActiveFedora::Datastream, dsid, :controlGroup => 'M', :mimeType=>mimeType, :dsLabel=>ds_label, :versionable=>false)
-      end
-      add_datastream(img_ds)
-      unless mimeType =~ /jp2$/
-        File.open(image.path,:encoding=>'BINARY') do |blob|
-          ds_rels(blob,img_ds)
-        end
-      end
-      upload_hack = (ActiveFedora.config.credentials[:upload_dir] and image.path.start_with? ActiveFedora.config.credentials[:upload_dir])
-      if upload_hack
-        # the upload dir should map to $FEDORA_HOME/server/management/upload
-        # the location in that directory maps to replacing upload dir with 'uploaded://$RELATIVE_PATH'
-        Rails.logger.debug "image.path: #{image.path}"
-        Rails.logger.debug "File.exists?(image.path) #{File.exists?(image.path)}"
-        #hacked_location = image.path.slice(ActiveFedora.config.credentials[:upload_dir].length .. -1) 
-        #hacked_location.sub!(/^\//,'')
-        #hacked_location = 'uploaded://' + hacked_location
-        img_ds.dsLocation = "file:#{image.path}"
-        Rails.logger.debug "#{dsid}.dsLocation = file:#{image.path}"
-      else
-        # How can we get to the PUT without reading the file into memory?
-        img_content = File.open(image.path,:encoding=>'BINARY')
-        img_ds.content = img_content
-        Rails.logger.debug "#{dsid}.content.length = #{img_content.stat.size}"
-      end
-      derivatives = rels_int.relationships(img_ds,:format_of)
-      unless derivatives.inject(false) {|memo, rel| memo || rel.object == "#{self.internal_uri}/content"}
-        rels_int.add_relationship(img_ds, :format_of, datastreams['content'])
-      end
-      img_ds
-    end
-    
-    def derivative!(image, dsid, mimeType = 'image/png')
-      img_ds = derivative(image, dsid, mimeType)
-      self.save
-      img_ds
-    end
-    
     def ds_rels(blob, ds)
       image_properties = Cul::Image::Properties.identify(blob)
       if image_properties
