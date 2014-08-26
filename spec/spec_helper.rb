@@ -13,16 +13,16 @@ RSpec.configure do |config|
   config.mock_with :mocha
 end
 
-def fixture_path(file)
+def path_to_fixture(file)
   path = File.join(File.dirname(__FILE__), '..','fixtures','spec', file)
   raise "No fixture file at #{path}" unless File.exists? path
-  path
+  return path
 end
 
 def fixture(file)
-  File.new(fixture_path(file))
+  File.new(path_to_fixture(file))
 end
 
 def yaml(file)
-  return YAML.load(fixture(file))
+  return YAML.load_file(fixture(file))
 end

@@ -23,8 +23,14 @@ describe BagIt::Info do
       @mock_file = MockFile.new('/foo/bar/bag-info.txt')
     end
 
+    it "should correctly resolve relative paths up to the bag root" do
+      test = BagIt::Info.new(fixture('schema_bag/bag-info.txt'))
+      test.id_schema.id('test').should == 'test_id'
+    end
+
     it "should correctly resolve relative paths to the bag root" do
-      test =BagIt::Info.new(fixture('schema_bag/bag-info.txt'))
+      test = BagIt::Info.new(fixture('schema_bag'))
+      test.bag_path.split('/')[-1].should == 'schema_bag'
       test.id_schema.id('test').should == 'test_id'
     end
 

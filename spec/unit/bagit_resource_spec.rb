@@ -5,7 +5,7 @@ describe BagIt::Resource do
       include BagIt::Resource
     end
     @test = ResourceTest.new
-    @fixture = fixture_path("resources/CCITT_2.TIF")
+    @fixture = path_to_fixture("resources/CCITT_2.TIF")
   end
   after :all do
     Object.send(:remove_const, :ResourceTest)
