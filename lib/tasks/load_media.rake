@@ -139,8 +139,9 @@ namespace :bag do
       Rails.logger.info "Searching for \"#{bag_info.external_id}\""
       bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
       bag_agg_id = apt_project_id(bag_info.external_id)
+      bag_agg ||= BagAggregator.search_repo(identifier: bag_agg_id).first
       if bag_agg.blank?
-        raise 'check into missing bag: ' + bag_info.external_id
+        # raise 'check into missing bag: ' + bag_info.external_id
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
         bag_agg = BagAggregator.new(:pid=>pid)
