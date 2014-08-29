@@ -136,8 +136,7 @@ class GenericResource < ::ActiveFedora::Base
           rels_int.serialize!
           self.save
           uri = URI.parse(derivative_url())
-          deriv_req = Net::HTTP::Head.new(uri.request_uri)
-          Net::HTTP.new(uri.host, uri.port) {|http| http.request(deriv_req)}
+          Net::HTTP.new(uri.host, uri.port) {|http| http.head(uri.request_uri).code}
         rescue Exception => e
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
         end
