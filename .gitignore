@@ -16,3 +16,5 @@
 fedora.yml
 database.yml
 solr.yml
+images.yml
+cache_config.yml
