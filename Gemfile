@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '4.0.4'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -14,16 +14,16 @@ gem 'cul_scv_hydra', :git=>'git://github.com/cul/cul_scv_hydra' #'~>0.9.0'
 gem 'cul_image_props', '>=0.3.5'
 gem 'libv8', '~>3.16' # for therubyracer
 gem 'therubyracer', "0.12.0" # for execjs
-gem 'mini_magick', '3.7.0'
-gem 'RubyInline'
-gem 'image_science'
+gem 'free-image', :github => 'barmintor/free-image-ruby'
+# image derivative gem
+gem 'imogen', '>= 0.0.6'
 gem 'mime-types'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  gem 'sass-rails',   '~> 4.0.2'
+  gem 'coffee-rails', '~> 4.0.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
@@ -47,9 +47,6 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
-
-gem "compass-rails", "~> 1.0.0", :group => :assets
-gem "compass-susy-plugin", "~> 0.9.0", :group => :assets
 
 group :development do
   gem 'rspec'
