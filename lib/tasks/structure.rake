@@ -56,7 +56,7 @@ namespace :structure do
         end
       end
       temp_file = Tempfile.new('structMetadata')
-      open(temp_file.path), 'w') do |out|
+      open(temp_file.path, 'w') do |out|
         Structure::Mets.serialize(nil, struct, out)
       end
       # and then add it to the CAGG
