@@ -27,7 +27,7 @@ module BagIt
       pid = repo.mint(:namespace=>namespace)
       pid =~ /<pid>(.*)<\/pid>/
       pid = $1
-    end while exists? pid
+    end while pid.nil? or self.exists? pid
     pid
   end
 end
