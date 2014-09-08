@@ -127,16 +127,17 @@ namespace :util do
           logger.error "could not find  #{id} #{ctr} of #{total}"
         else
           logger.info "found #{cagg.pid} for #{id} #{ctr} of #{total}"
-          members = v['members']
+          members = v['members'] || []
           titles = []
           type = v['type']
+          sm = cagg.datastreams['structMetadata']
           members.each_with_index do |member, ix|
             gr = GenericResource.search_repo(identifier: member).first
             if gr
               gr.add_relationship(:cul_member_of,cagg.internal_uri)
               gr.save
             end
-            if type == 'item'
+            if type == 'item' and sm.new?
               suffix = /(\d{2})\.tif$/.match(member)[1]
               sc = ContentAggregator.search_repo(identifier: id + suffix).first
               title = "Item #{suffix.to_i}"
@@ -148,11 +149,7 @@ namespace :util do
               titles << "Item #{ix.to_s}"
             end
           end
-          if members.length > 1
-            sm = cagg.datastreams['structMetadata']
-            unless sm.new? # restructure
-              sm.content = sm.class.xml_template
-            end
+          if members.length > 1 and sm.new?
             sm.type = 'logical'
             sm.label = 'Items'
             members.each_with_index do |member, ix|
