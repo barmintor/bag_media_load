@@ -24,9 +24,7 @@ module BagIt
     repo = ActiveFedora::Base.fedora_connection[0].connection
     pid = nil
     begin
-      pid = repo.mint(:namespace=>namespace)
-      pid =~ /<pid>(.*)<\/pid>/
-      pid = $1
+      pid = repo.mint(namespace: namespace)
     end while self.exists? pid
     pid
   end

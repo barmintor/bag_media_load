@@ -1,6 +1,6 @@
 module BagIt
 	class NameParser
-
+    attr_accessor :default
     def initialize(opts = {})
       @blocks = {}
       # returns the path listed in the manifest
@@ -106,8 +106,8 @@ module BagIt
       string =~ /^true$/i or string =~ /^yes$/i or string =~ /^[YyTt]$/
     end
 
-    def self.default
-      @default ||= Default.new
+    def self.default(project_id, opts={})
+      Default.new(project_id, opts)
     end
 
     class Default
@@ -145,6 +145,11 @@ module BagIt
 
       def verso(input)
         false
+      end
+      def default=
+      end
+      def default
+        self
       end
     end
 

@@ -36,7 +36,9 @@ module BagIt
             path = Pathname.new(src_file.path).dirname + path
           end
           path = path.cleanpath
+          def_schema = @id_schema
           @id_schema = BagIt::NameParser.new(YAML.load(File.open(path)))
+          @id_schema.default = def_schema
         end
       end
     end
