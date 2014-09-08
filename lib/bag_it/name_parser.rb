@@ -56,8 +56,12 @@ module BagIt
       regex = Regexp.new(pattern)
       Proc.new do |input|
          match = regex.match(src.call(input))
-         subst = substitutes(subs, match)
-         output % subst
+         if match
+           subst = substitutes(subs, match)
+           output % subst
+         else
+          nil
+        end
       end
     end
 
