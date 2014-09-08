@@ -106,6 +106,10 @@ module BagIt
       string =~ /^true$/i or string =~ /^yes$/i or string =~ /^[YyTt]$/
     end
 
+    def self.default
+      @default ||= Default.new
+    end
+
     class Default
       def initialize(project_id, opts={})
         @project_id = project_id

@@ -1,0 +1,4 @@
+id_from_basename:
+  pattern: '(NYDA\.\w+\.\w+\.\w+)\.tif'
+  output: '%s'
+  subs: '${1}'

@@ -18,7 +18,7 @@ describe BagIt::NameParser do
   describe "APT-style file IDs" do
     it "should parse ids from basename" do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/apt_style.yml")))
-      test.id("data/foo/ldpd_leh_12_34_56.tif").should == "apt://columbia.edu/ldpd.leh/data/foo/ldpd_leh_12_34_56.tif"
+      test.id("data/foo/ldpd_leh_12_34_56.tif").should == "apt://columbia.edu/ldpd_leh/data/foo/ldpd_leh_12_34_56.tif"
     end
   end
 
@@ -68,7 +68,7 @@ describe BagIt::NameParser do
   describe "Lehman" do
     it "should parse ids from basename" do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/lehman.yml")))
-      test.id("data/S_LEH_K14/ldpd_leh_0483_0033_001.tif").should == "apt://columbia.edu/ldpd.leh/data/S_LEH_K14/ldpd_leh_0483_0033_001.tif"
+      test.id("data/S_LEH_K14/ldpd_leh_0483_0033_001.tif").should == "apt://columbia.edu/ldpd_leh/data/S_LEH_K14/ldpd_leh_0483_0033_001.tif"
       test.parent("data/S_LEH_K14/ldpd_leh_0483_0033_001.tif").should == "ldpd_leh_0483_0033"
     end
   end
@@ -77,6 +77,13 @@ describe BagIt::NameParser do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/urban.yml")))
       test.id("data/color_urban/3508020101.tif").should == "apt://columbia.edu/rbml.urban/data/color_urban/3508020101.tif"
       test.parent("data/color_urban/3508020101.tif").should == "rbml.urban.3508020101"
+    end
+  end
+  describe "Aviador" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/aviador.yml")))
+      test.id("data/NYDA.1960.001.03238R.tif").should == "NYDA.1960.001.03238R"
+      test.parent("NYDA.1960.001.03238R.tif").should be_nil
     end
   end
   describe BagIt::NameParser::Default do

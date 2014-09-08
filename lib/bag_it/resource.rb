@@ -1,6 +1,5 @@
 require 'cul_image_props'
 require 'tempfile'
-require 'mini_magick'
 module BagIt
   module Resource
 
@@ -25,59 +24,6 @@ module BagIt
         scaled.save(temp_file.path)
       end
       File.chmod(0644, temp_file.path)
-    end
-
-    def convert_to_jp2(src_path, opts={})
-      src_path = to_absolute_path(src_path)
-      rels = {}
-      if opts[:length] != 0 and opts[:length]
-        rels['http://www.w3.org/2003/12/exif/ns#imageLength'] = opts[:length]
-      end
-      if opts[:width] != 0 and opts[:width]
-        rels['http://www.w3.org/2003/12/exif/ns#imageWidth'] = opts[:width]
-      end
-      unless rels and !rels.empty?
-        File.open(src_path) do |blob|
-          rels = Cul::Image::Properties.identify(blob)
-        end
-      end
-      max = nil
-      result = nil
-      unless rels['http://www.w3.org/2003/12/exif/ns#imageLength'].nil?
-        length = rels['http://www.w3.org/2003/12/exif/ns#imageLength'].to_i
-        width = rels['http://www.w3.org/2003/12/exif/ns#imageWidth'].to_i
-        levels = levels_for(max(length, width))
-
-        File.open(src_path) do |blob|
-          image = MiniMagick::Image.read(blob)
-          # for grayscale:
-          # image.colorspace "Gray"
-          image.format 'jp2' do |cb|
-            # 10% compression
-            cb.add_command('define', "jp2:rate=0.1")
-            # dwtLevels as calculated
-            cb.add_command('define', "jp2:numrlvls=#{levels}")
-            # don't use more than half GB for pixel cache
-            cb.limit('memory', '512MiB')
-            cb.limit('map', '512MiB')
-          end
-          temp_root = opts[:upload_dir]
-          result = temp_root.nil? ? Tempfile.new(["temp", ".jp2"]) : Tempfile.new(["temp", ".jp2"], temp_root)
-          temp_path = result.path
-          result.unlink
-          result = nil
-          begin
-            result = File.open(temp_path, 'wb', 0644)
-            image.write result
-          ensure
-            File.unlink(image.path) if File.exists?(image.path)
-            result.close if result
-          end
-        end
-        # convert $tiff -define jp2:rate=0.1 -define jp2:numrlvls=$levels $grayscale $jp2"
-        # convert fixtures/spec/resources/CCITT_2.TIF -define jp2:rate=0.1 -define jp2:numrlvls=4 CCITT_2.jp2
-      end
-      result
     end
 
     def max(a, b)

@@ -6,7 +6,6 @@ require 'rspec/rails'
 require 'pathname'
 require 'bag_it'
 require 'tempfile' 
-require 'image_science'
 require 'cul_image_props'
 
 RSpec.configure do |config|

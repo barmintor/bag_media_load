@@ -19,9 +19,9 @@ describe BagIt::Resource do
       end
   	end
 
-  	it "should create derivatives of the right size and type" do
+  	pending "should create derivatives of the right size and type" do
       actual = Tempfile.new(["temp",'.png'])
-      ImageScience.with_image(@fixture) do |img|
+      Imogen.with_image(@fixture) do |img|
           @test.create_scaled_image(img, 200, actual)
       end
       rels = {}
@@ -56,10 +56,4 @@ describe BagIt::Resource do
     end
   end
 
-  describe '#convert_to_jp2' do
-    it "should do this thing" do
-      jp2 = @test.convert_to_jp2(@fixture)
-      jp2.path.should =~ /\.jp2$/
-    end
-  end
 end
