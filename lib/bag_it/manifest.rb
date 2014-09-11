@@ -20,7 +20,7 @@ module BagIt
       file= open(@manifest)
       file.each do |line|
         next if line =~ /\.md5$/ # don't load checksum files
-        rel_path = line.split(' ')[1]
+        rel_path = line.split(' ')[1..-1].join(' ')
         source = File.join(@bagdir, rel_path)
         yield source
       end
@@ -35,13 +35,17 @@ module BagIt
       end
       file.each do |line|
         next if line =~ /\.md5$/ # don't load checksum files
-        rel_path = line.split(' ')[1]
+        rel_path = line.split(' ')[1..-1].join(' ')
         next if only_data and !(rel_path =~ only_data)
         source = File.join(@bagdir, rel_path)
-        yield rel_path, Manifest.find_or_create_resource(source, @name_parser, create)
+        yield rel_path, find_or_create_resource(source, create)
       end
     end
-    
+
+    def find_or_create_resource(source, create=false)
+      Manifest.find_or_create_resource(source, @name_parser, create)
+    end
+
     def self.find_resource(dc_source)
       resource = nil
       sources(dc_source).each do |source|

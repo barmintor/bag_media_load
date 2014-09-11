@@ -3,6 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
+require "thread/pool"
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 LDPD_STORAGE_ID = 'apt://columbia.edu'
 def get_mods_nodes()
@@ -117,9 +118,108 @@ namespace :bag do
       }
 
     end
-
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
+      bag_path = ENV['BAG_PATH']
+      skip = (ENV['SKIP'] || 0).to_i
+      override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+      upload_dir = ActiveFedora.config.credentials[:upload_dir]
+      # parse bag-info for external-id and title
+      only_data = nil
+      if bag_path =~ /\/data\//
+        parts = bag_path.split(/\/data\//)
+        bag_path = parts[0]
+        only_data = "data/#{parts[1..-1].join('')}"
+      end
+      derivative_options = {:override => override}
+      derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
+      bag_info = BagIt::Info.new(bag_path)
+      raise "External-Identifier for bag is required" if bag_info.external_id.blank?
+      all_ldpd_content = BagAggregator.search_repo(identifier: LDPD_STORAGE_ID).first
+      group_id = bag_info.group_id || LDPD_STORAGE_ID
+      Rails.logger.info "Searching for \"#{bag_info.external_id}\""
+      bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
+      bag_agg_id = apt_project_id(bag_info.external_id)
+      bag_agg ||= BagAggregator.search_repo(identifier: bag_agg_id).first
+      if bag_agg.blank?
+        # raise 'check into missing bag: ' + bag_info.external_id
+        pid = next_pid
+        Rails.logger.info "NEXT PID: #{pid}"
+        bag_agg = BagAggregator.new(:pid=>pid)
+        bag_agg.datastreams["DC"].update_values({[:dc_identifier] => [bag_info.external_id, bag_agg_id]})
+        bag_agg.datastreams["DC"].update_values({[:dc_title] => bag_info.external_desc})
+        bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
+        bag_agg.label = bag_info.external_desc
+        bag_agg.save
+        all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
+      end
+      all_media_id = bag_agg_id + "/data"
+      all_media = ContentAggregator.search_repo(identifier: (all_media_id)).first
+      if all_media.blank?
+        all_media = ContentAggregator.new(:pid=>next_pid)
+        all_media.datastreams["DC"].update_values({[:dc_identifier] => all_media_id})
+        all_media.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
+        title = 'All Media From Bag at ' + bag_path
+        all_media.datastreams["DC"].update_values({[:dc_title] => title})
+        all_media.label = title
+        all_media.save
+      end
+
+      name_parser = bag_info.id_schema
+      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      ctr = 0
+      pool = Thread.pool(2)
+      manifest.each_entry do |dsLocation|
+        begin
+          ctr += 1
+          next if ctr < skip
+          Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
+          pool.process(dsLocation, all_media) do |source, all_media|
+            resource = manifest.find_or_create_resource(source)
+            resource.derivatives!(derivative_options)
+            container_pids = container_pids_for(resource)
+            unless container_pids.include? all_media.pid
+              resource.add_relationship(:cul_member_of, all_media)
+              begin
+                resource.save
+              rescue
+                Rails.logger.warn("could not add #{resource.pid} to all-media agg #{all_media.pid}")
+              end
+            end
+            parent_id = nil
+            parent_id = container_pids.select{|x| x != all_media.pid }.first
+            parent_id ||= name_parser.parent(rel_path)
+            unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
+              begin
+                parent = ContentAggregator.search_repo(identifier: parent_id).first
+                if parent.blank?
+                  parent = ContentAggregator.new(:pid=>next_pid)
+                  parent.datastreams["DC"].update_values({[:dc_identifier] => parent_id})
+                  parent.datastreams["DC"].update_values({[:dc_type] => 'InteractiveResource'})
+                  parent.add_relationship(:cul_member_of, bag_agg)
+                  parent.save
+                end
+                unless container_pids.include? parent.pid
+                  resource.add_relationship(:cul_member_of, parent)
+                  resource.hack_rels!
+                end
+              rescue Exception => e
+                Rails.logger.error(e.message)
+                Rails.logger.error(e.backtrace.join("\n"))
+              end
+            end
+          end
+        rescue Exception => e
+          Rails.logger.error(e.message)
+          Rails.logger.error(e.backtrace.join("\n"))
+        end
+      end
+      pool.shutdown
+      Rails.logger.info "Finished loading #{bag_path}"
+    end
+
+    desc "load/migrate resource objects for all the file resources in a bag"
+    task :migrate => :environment do
       bag_path = ENV['BAG_PATH']
       override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
       upload_dir = ActiveFedora.config.credentials[:upload_dir]
