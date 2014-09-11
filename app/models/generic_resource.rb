@@ -196,7 +196,7 @@ class GenericResource < ::ActiveFedora::Base
           }
           self.remove_relationship(:cul_member_of, parent)
         else
-          p "didn't match SIA class" + parent.relationships(:has_model).inspect
+          Rails.logger.info "didn't match SIA class" + parent.relationships(:has_model).inspect
         end
       end
     end
