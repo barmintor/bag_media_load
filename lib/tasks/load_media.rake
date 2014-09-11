@@ -173,6 +173,7 @@ namespace :bag do
         begin
           ctr += 1
           next if ctr < skip
+          rel_path = "data/" + dsLocation.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           pool.idle(dsLocation, all_media) do |source, all_media|
             resource = manifest.find_or_create_resource(source)
