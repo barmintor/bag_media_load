@@ -174,7 +174,7 @@ namespace :bag do
           ctr += 1
           next if ctr < skip
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
-          pool.process(dsLocation, all_media) do |source, all_media|
+          pool.idle(dsLocation, all_media) do |source, all_media|
             resource = manifest.find_or_create_resource(source)
             resource.derivatives!(derivative_options)
             container_pids = container_pids_for(resource)
