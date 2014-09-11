@@ -176,7 +176,7 @@ namespace :bag do
           rel_path = "data/" + source.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           #pool.process(source, all_media) do |source, all_media|
-            resource = manifest.find_or_create_resource(source)
+            resource = manifest.find_or_create_resource(source, true)
             resource.derivatives!(derivative_options)
             container_pids = container_pids_for(resource)
             unless container_pids.include? all_media.pid
