@@ -172,7 +172,8 @@ namespace :bag do
           ctr += 1
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           resource.derivatives!(derivative_options)
-          unless container_pids_for(resource).include? all_media.pid
+          container_pids = container_pids_for(resource)
+          unless container_pids.include? all_media.pid
             resource.add_relationship(:cul_member_of, all_media)
             begin
               resource.save
@@ -181,7 +182,7 @@ namespace :bag do
             end
           end
           parent_id = nil
-          parent_id = container_pids_for(resource).select{|x| x != all_media.pid }.first
+          parent_id = container_pids.select{|x| x != all_media.pid }.first
           parent_id ||= name_parser.parent(rel_path)
           unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
             parent = ContentAggregator.search_repo(identifier: parent_id).first
@@ -192,7 +193,7 @@ namespace :bag do
               parent.add_relationship(:cul_member_of, bag_agg)
               parent.save
             end
-            unless container_pids_for(resource).include? parent.pid
+            unless container_pids.include? parent.pid
               resource.add_relationship(:cul_member_of, parent)
               resource.hack_rels!
             end
