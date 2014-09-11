@@ -74,12 +74,14 @@ module BagIt
         mimetype ||= OCTETSTREAM
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
+        dsLocation = sources[1].clone
+        dsLocation.gsub!(' ','+')
         if ds and !ds.new?
-          ds.dsLocation = sources[1]
+          ds.dsLocation = dsLocation
           ds.dsLabel = sources[0]
           ds.save
         else
-          ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>sources[1], :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0])
+          ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>dsLocation, :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0])
           resource.add_datastream(ds)
           ds.save
         end
