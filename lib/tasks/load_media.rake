@@ -168,14 +168,14 @@ namespace :bag do
       name_parser = bag_info.id_schema
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       ctr = 0
-      pool = Thread.pool(2)
-      manifest.each_entry do |dsLocation|
+      #pool = Thread.pool(2)
+      manifest.each_entry do |source|
         begin
           ctr += 1
           next if ctr < skip
           rel_path = "data/" + dsLocation.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
-          pool.idle(dsLocation, all_media) do |source, all_media|
+          #pool.process(dsLocation, all_media) do |source, all_media|
             resource = manifest.find_or_create_resource(source)
             resource.derivatives!(derivative_options)
             container_pids = container_pids_for(resource)
@@ -209,13 +209,13 @@ namespace :bag do
                 Rails.logger.error(e.backtrace.join("\n"))
               end
             end
-          end
+          #end
         rescue Exception => e
           Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
         end
       end
-      pool.shutdown
+      #pool.shutdown
       Rails.logger.info "Finished loading #{bag_path}"
     end
 
