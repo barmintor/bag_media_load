@@ -49,10 +49,10 @@ module BagIt
     def self.find_resource(dc_source)
       resource = nil
       sources(dc_source).each do |source|
-        source.gsub!(/~/,'?') # tilde is an operator in search
-        source.gsub!(/'/,'?') # illegal character
-        source.gsub!(/&/,'?') # illegal character
-        source.gsub!(' ','?') # illegal character
+        source = source.gsub(/~/,'?') || source  # tilde is an operator in search
+        source = source.gsub(/'/,'?') || source # illegal character
+        source = source.gsub(/&/,'?') || source # illegal character
+        source = source.gsub(' ','?') || source # illegal character
         resource ||= GenericResource.search_repo(source: source).first
         if resource
           break
