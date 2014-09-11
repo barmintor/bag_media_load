@@ -27,6 +27,12 @@ GIT
       hydra-head (~> 7)
       mods
 
+GIT
+  remote: https://github.com/meh/ruby-thread
+  revision: ccaa4d590003047ac457dfa2477fb446fea25765
+  specs:
+    thread (0.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -361,4 +367,5 @@ DEPENDENCIES
   sass-rails (~> 4.0.2)
   sqlite3
   therubyracer (= 0.12.0)
+  thread!
   uglifier (>= 1.0.3)

@@ -18,7 +18,7 @@ gem 'free-image', :github => 'barmintor/free-image-ruby'
 # image derivative gem
 gem 'imogen', '>= 0.0.6'
 gem 'mime-types'
-
+gem 'thread', :git=>'https://github.com/meh/ruby-thread'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
