@@ -162,6 +162,7 @@ namespace :bag do
         title = 'All Media From Bag at ' + bag_path
         all_media.datastreams["DC"].update_values({[:dc_title] => title})
         all_media.label = title
+        all_media.add_relationship(:cul_member_of, bag_agg.internal_uri)
         all_media.save
       end
 
@@ -262,6 +263,7 @@ namespace :bag do
         title = 'All Media From Bag at ' + bag_path
         all_media.datastreams["DC"].update_values({[:dc_title] => title})
         all_media.label = title
+        all_media.add_relationship(:cul_member_of, bag_agg.internal_uri)
         all_media.save
       end
 
