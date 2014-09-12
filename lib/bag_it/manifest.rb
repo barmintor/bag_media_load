@@ -75,7 +75,7 @@ module BagIt
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
         dsLocation = sources[1].clone
-        dsLocation.gsub!(' ','+')
+        dsLocation.gsub!(' ','%20')
         if ds and !ds.new?
           ds.dsLocation = dsLocation
           ds.dsLabel = sources[0]
