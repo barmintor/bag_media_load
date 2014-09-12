@@ -28,7 +28,7 @@ GIT
       mods
 
 GIT
-  remote: https://github.com/meh/ruby-thread
+  remote: git@github.com:meh/ruby-thread.git
   revision: ccaa4d590003047ac457dfa2477fb446fea25765
   specs:
     thread (0.2.0)
