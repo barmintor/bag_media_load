@@ -13,6 +13,8 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+/crons
+/vendor/bundle
 fedora.yml
 database.yml
 solr.yml
