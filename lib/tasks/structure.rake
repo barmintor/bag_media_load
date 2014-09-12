@@ -68,6 +68,7 @@ namespace :structure do
         structMetadata.content = temp_content
         structMetadata.mimeType = 'text/xml'
         structMetadata.label = 'structMetadata.xml'
+        cagg.datastreams['DC'].update_values([:dc_type]=>'FileSystem')
         cagg.save
       end
 
