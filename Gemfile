@@ -16,7 +16,7 @@ gem 'libv8', '~>3.16' # for therubyracer
 gem 'therubyracer', "0.12.0" # for execjs
 gem 'free-image', :github => 'barmintor/free-image-ruby'
 # image derivative gem
-gem 'imogen', '>= 0.0.6'
+gem 'imogen', '>= 0.0.7'
 gem 'mime-types'
 gem 'thread', :git=>'git@github.com:meh/ruby-thread.git'
 # Gems used only for assets and not required

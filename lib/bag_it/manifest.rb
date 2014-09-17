@@ -89,7 +89,7 @@ module BagIt
           begin
             setImageProperties(resource)
             resource.set_dc_format mimetype
-            resource.set_dc_type 'Image'
+            resource.set_dc_type 'StillImage'
             resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
           rescue Exception => e
             Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
