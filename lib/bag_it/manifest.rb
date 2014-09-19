@@ -4,8 +4,22 @@ module BagIt
   class Manifest
     include BagIt::DcHelpers
     extend BagIt::ImageHelpers
+
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
+
+    TEXT_TYPES = MIME::Types.type_for('pdf') + MIME::Types.type_for('doc') +
+                 MIME::Types.type_for('rtf') + MIME::Types.type_for('txt')
+
+    AUDIO_TYPES = MIME::Types.type_for('mp3') + MIME::Types.type_for('wav') +
+                  MIME::Types.type_for('aiff') + MIME::Types.type_for('au') +
+                  MIME::Types.type_for('aac') + MIME::Types.type_for('oga')
+
+    VIDEO_TYPES = MIME::Types.type_for('mp4') + MIME::Types.type_for('mov') +
+                  MIME::Types.type_for('avi') + MIME::Types.type_for('ogv') +
+                  MIME::Types.type_for('webm') + MIME::Types.type_for('qt')
+
     OCTETSTREAM = "application/octet-stream"
+
     def initialize(manifest, name_parser)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
@@ -85,20 +99,36 @@ module BagIt
           resource.add_datastream(ds)
           ds.save
         end
-        if IMAGE_TYPES.include? mimetype
-          begin
-            setImageProperties(resource)
-            resource.set_dc_format mimetype
-            resource.set_dc_type 'StillImage'
-            resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          rescue Exception => e
-            Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
-            Rails.logger.warn "WARN ingesting as unidentified bytestream"
-            resource.set_dc_format OCTETSTREAM
+        begin
+          if IMAGE_TYPES.include? mimeType or mimeType.start_with? 'image'
+              setImageProperties(resource)
+              resource.set_dc_format mimetype
+              resource.set_dc_type 'StillImage'
+              resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
+          elsif TEXT_TYPES.include? mimeType or mimeType.start_with? 'text'
+            resource.set_dc_format mimeType
+            resource.set_dc_type 'Text'
+            resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
+          elsif VIDEO_TYPES.include? mimeType or mimeType.start_with? 'video'
+            resource.set_dc_format mimeType
+            resource.set_dc_type 'MovingImage'
+            resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
+          elsif AUDIO_TYPES.include? mimeType or mimeType.start_with? 'audio'
+            resource.set_dc_format mimeType
+            resource.set_dc_type 'Sound'
+            resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
+          else
+            Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
+            resource.set_dc_format mimeType
+            resource.set_dc_type 'Software'
             resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
           end
-        else
-          Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
+        rescue Exception => e
+          Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
+          Rails.logger.warn "WARN ingesting as unidentified bytestream"
+          resource.set_dc_format OCTETSTREAM
+          resource.set_dc_type 'Software'
+          resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
         end
         bag_entry = sources[0].slice((sources[0].index('/data/') + 1)..-1)
         resource.add_dc_identifier name_parser.id(bag_entry) if name_parser.id(bag_entry)
