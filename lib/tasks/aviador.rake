@@ -117,13 +117,15 @@ namespace :util do
         object['title'] = title
         object['members'].each do |member|
           ng_xml = open(member["descMetadata"]) { |f| Nokogiri::XML(f) }
-          title = ng_xml.xpath('/mods:mods/mods:titleInfo/mods:title', mods:"http://www.loc.gov/mods/v3").first.text
-          member['title'] = title
+          title = ng_xml.xpath('/mods:mods/mods:titleInfo/mods:title', mods:"http://www.loc.gov/mods/v3").first
+          member['title'] = (title.nil? ? member["id"] : title.text)
         end
         object['ctr'] = ctr
         object['total'] = total
         logger.info "#{ctr}/#{total}: Starting #{object['id']}"
-        pool.idle(object, {'ldpd.ferriss'=>@ferriss, 'ldpd.ggva'=>@ggva}, logger) do |obj, aggs, logger|
+        obj = object
+        aggs = {'ldpd.ferriss'=>@ferriss, 'ldpd.ggva'=>@ggva}
+        #pool.process(object, {'ldpd.ferriss'=>@ferriss, 'ldpd.ggva'=>@ggva}, logger) do |obj, aggs, logger|
           begin
             cagg = ContentAggregator.search_repo(identifier: obj['id']).first
             unless cagg
@@ -144,27 +146,32 @@ namespace :util do
             end
             if obj['structMetadata']
               sm = cagg.datastreams['structMetadata']
-              if sm.new? and obj['structMetadata']
+              if (sm.new? or obj['id'].eql? 'ldpd_ferriss_NYDA87-F85') and obj['structMetadata']
                 open(obj['structMetadata']) {|f| sm.content = f.read}
                 logger.info "#{obj['ctr']}/#{obj['total']}: Structured #{cagg.pid}"
               end
             end
             dm = cagg.datastreams['descMetadata']
-            if dm.new?
-              open(obj['descMetadata']) {|f| dm.content = f.read}
-            end
+            open(obj['descMetadata']) {|f| dm.content = f.read}
             cagg.save
             logger.info "#{obj['ctr']}/#{obj['total']}: Processing #{obj['members'].length} members of #{cagg.pid}"
             obj['members'].each do |member|
               gr = GenericResource.search_repo(identifier: member['id']).first
               if gr
-                gr.label = member['title'].length > 255 ? member['title'][0...255] : member['title']
-                gr.datastreams["DC"].update_values({[:dc_title] => member['title']})
-                gr.add_relationship(:cul_member_of, cagg.internal_uri)
-                dm = gr.datastreams['descMetadata']
-                if dm.new?
-                  open(member['descMetadata']) {|f| dm.content = f.read}
+                gr.label = (member['title'].length > 255 ? member['title'][0...255] : member['title'])
+                dc = gr.datastreams['DC']
+                dc.content
+                dc.update_values({[:dc_title] => member['title']})
+                if gr.datastreams['content'].dsLocation =~ /\.tif/i
+                  dc.update_values({[:dc_type] => ['StillImage']})
                 end
+                dc.content= dc.to_xml
+                dc.content_will_change!
+                dc.save
+                gr.add_relationship(:cul_member_of, cagg.internal_uri)
+                gr.save
+                dm = gr.datastreams['descMetadata']
+                open(member['descMetadata']) {|f| dm.content = f.read}
                 gr.save
               end
             end
@@ -173,7 +180,7 @@ namespace :util do
             logger.error "#{e.message}\n" + e.backtrace.join("\n")
             raise e
           end
-        end
+        #end
       end
       pool.wait_done
       pool.shutdown

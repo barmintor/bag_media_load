@@ -67,7 +67,7 @@ namespace :util do
     task :load_mods => :setup do
       paths = {}
       idp = /ldpd_leh_\d{4}_\d{4}/
-      manifest = ENV['MANIFEST'] or 'lehman_mods_manifest.txt'
+      manifest = ENV['MODS'] or 'lehman_mods_manifest.txt'
       open(manifest) do |blob|
         blob.each do |l|
           l.strip!
@@ -76,13 +76,38 @@ namespace :util do
           paths[id] = l if id
         end
       end
+      assets = {}
+      manifest = ENV['ASSETS']
+      open(manifest) do |blob|
+        blob.each do |l|
+          l.strip!
+          p = l.split(',')
+          basename = p[1].split('/')[-1]
+          id = (idp.match(basename))[0]
+          if id
+            assets[id] ||= []
+            assets[id] << {pid: p[0], source: p[1]}
+          end
+        end
+      end
+      objects = {}
+      manifest = ENV['OBJECTS']
+      open(manifest) do |blob|
+        blob.each do |l|
+          l.strip!
+          p = l.split(',')
+          objects[p[1]] = p[0]
+        end
+      end
+
       total = paths.size
       logger.info "#{total} ids found"
       raise "lehman bag was not set up" unless @lehman
       ctr = 0
       paths.each do |id, path|
         ctr = ctr + 1
-        cagg = ContentAggregator.search_repo(identifier: id).first
+        pid = objects[id]
+        cagg = pid.nil? ? nil : ContentAggregator.find(pid)
         if cagg.nil?
           cagg = ContentAggregator.new(pid: next_pid())
           cagg.label = id
@@ -97,9 +122,33 @@ namespace :util do
         descMetadata = cagg.datastreams['descMetadata']
         if descMetadata.new?
           descMetadata.mimeType = 'text/xml'
-          open(path) {|blob| descMetadata.content = blob.read}
-          cagg.save
-          logger.info "created #{cagg.pid}/descMetadata for #{id} #{ctr} of #{total}"
+        end
+        open(path) {|blob| descMetadata.content = blob.read}
+        cagg.save
+        logger.info "created #{cagg.pid}/descMetadata for #{id} #{ctr} of #{total}"
+        children = assets[id]
+        if children and children.first
+          children.each do |child|
+            gr = GenericResource.find(child[:pid])
+            gr.datastreams["DC"].update_values({[:dc_type] => 'StillImage'}) if child[:src] =~ /\.tif$/
+            gr.add_relationship(:cul_member_of, cagg.internal_uri)
+            gr.save
+          end
+          logger.info "associated #{children.length} resources with #{cagg.pid} for #{id} #{ctr} of #{total}"
+          if children.length > 1
+            children.sort! {|a,b| a[:source] <=> b[:source]}
+            ds = cagg.datastreams['structMetadata']
+            if ds.new?
+              ds.label = 'Sequence'
+              ds.type = 'logical'
+              children.each_with_index do |child, ix|
+                b1 = (1 + ix).to_s
+                ds.create_div_node(nil, {:order=>b1, :label=>"Item #{b1}", :contentids=>child[:source]})
+              end
+              cagg.save
+              logger.info "structured #{children.length} resources with #{cagg.pid} for #{id} #{ctr} of #{total}"
+            end
+          end
         end
       end
     end    
