@@ -100,26 +100,26 @@ module BagIt
           ds.save
         end
         begin
-          if IMAGE_TYPES.include? mimeType or mimeType.start_with? 'image'
+          if IMAGE_TYPES.include? mimetype or mimetype.start_with? 'image'
               setImageProperties(resource)
               resource.set_dc_format mimetype
               resource.set_dc_type 'StillImage'
               resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif TEXT_TYPES.include? mimeType or mimeType.start_with? 'text'
-            resource.set_dc_format mimeType
+          elsif TEXT_TYPES.include? mimetype or mimetype.start_with? 'text'
+            resource.set_dc_format mimetype
             resource.set_dc_type 'Text'
             resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif VIDEO_TYPES.include? mimeType or mimeType.start_with? 'video'
-            resource.set_dc_format mimeType
+          elsif VIDEO_TYPES.include? mimetype or mimetype.start_with? 'video'
+            resource.set_dc_format mimetype
             resource.set_dc_type 'MovingImage'
             resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif AUDIO_TYPES.include? mimeType or mimeType.start_with? 'audio'
-            resource.set_dc_format mimeType
+          elsif AUDIO_TYPES.include? mimetype or mimetype.start_with? 'audio'
+            resource.set_dc_format mimetype
             resource.set_dc_type 'Sound'
             resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
           else
             Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
-            resource.set_dc_format mimeType
+            resource.set_dc_format mimetype
             resource.set_dc_type 'Software'
             resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
           end
