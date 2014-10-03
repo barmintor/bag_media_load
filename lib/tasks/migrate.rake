@@ -52,6 +52,7 @@ namespace :migrate do
         gr.save
         Rails.logger.info "#{ctr} dc:type = #{image ? 'StillImage' : 'Software'}"
       end
+      sleep 10
       search_response = JSON(Cul::Scv::Fedora.repository.find_by_itql(query, ri_opts))
     end
   end
