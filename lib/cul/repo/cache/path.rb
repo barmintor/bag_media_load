@@ -1,4 +1,5 @@
-class Cul::Repo::Cache::Path
+module Cul::Repo::Cache
+class Path
 	def self.factory(opts = nil)
     opts ||= APP_CONFIG
     unless opts[:cache_directory]
@@ -57,4 +58,5 @@ class Cul::Repo::Cache::Path
 		end
 		path
 	end
+end
 end
