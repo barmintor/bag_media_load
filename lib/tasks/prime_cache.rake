@@ -7,8 +7,8 @@ end
 def cache_for_pid(pid,content_path,path_factory,override=false)
   Imogen.with_image(content_path) do |img|
 
-    scaled_cache_path = path_factory.for({:id => generic_resource.pid, :size => LARGE_SCALED_SIZE, :format => APP_CONFIG[TYPE_SCALED]['base_format'], :type => TYPE_SCALED})
-    square_cache_path = path_factory.for({:id => generic_resource.pid, :size => LARGE_SQUARE_SIZE, :format => APP_CONFIG[TYPE_SQUARE]['base_format'], :type => TYPE_SQUARE})
+    scaled_cache_path = path_factory.for({:id => pid, :size => LARGE_SCALED_SIZE, :format => APP_CONFIG[TYPE_SCALED]['base_format'], :type => TYPE_SCALED})
+    square_cache_path = path_factory.for({:id => pid, :size => LARGE_SQUARE_SIZE, :format => APP_CONFIG[TYPE_SQUARE]['base_format'], :type => TYPE_SQUARE})
 
     if override or !File.exists?(square_cache_path)
       logger.debug 'Creating base square image...'
