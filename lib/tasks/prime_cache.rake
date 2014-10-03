@@ -1,4 +1,7 @@
 APP_CONFIG = ActiveSupport::HashWithIndifferentAccess.new(YAML.load_file("#{Rails.root}/config/cache_config.yml")[Rails.env])
+SCALED_BASE_OPTS = {size: LARGE_SCALED_SIZE, format: APP_CONFIG[TYPE_SCALED]['base_format'], type: TYPE_SCALED}
+SQUARE_BASE_OPTS = {size: LARGE_SQUARE_SIZE, format: APP_CONFIG[TYPE_SQUARE]['base_format'], type: TYPE_SQUARE}
+BASE_OPTS = [SCALED_BASE_OPTS, SQUARE_BASE_OPTS]
 include Cul::Repo::Cache::DerivativeInfo
 def logger
   Rails.logger
@@ -6,31 +9,22 @@ end
 
 def cache_for_pid(pid,content_path,path_factory,override=false)
   Imogen.with_image(content_path) do |img|
-
-    scaled_cache_path = path_factory.for({:id => pid, :size => LARGE_SCALED_SIZE, :format => APP_CONFIG[TYPE_SCALED]['base_format'], :type => TYPE_SCALED})
-    square_cache_path = path_factory.for({:id => pid, :size => LARGE_SQUARE_SIZE, :format => APP_CONFIG[TYPE_SQUARE]['base_format'], :type => TYPE_SQUARE})
-
-    if override or !File.exists?(square_cache_path)
-      logger.debug 'Creating base square image...'
-      start_time = Time.now
-      FileUtils.mkdir_p(File.dirname(square_cache_path))
-      Imogen::AutoCrop.convert(img, square_cache_path, LARGE_SQUARE_SIZE)
-      logger.debug 'Created base square image in ' + (Time.now-start_time).to_s + ' seconds'
-    end
-
-    if override or !File.exists?(scaled_cache_path)
-      logger.debug 'Creating base scaled image...'
-      start_time = Time.now
-      FileUtils.mkdir_p(File.dirname(scaled_cache_path))
-      Imogen::Scaled.convert(img, scaled_cache_path, LARGE_SCALED_SIZE)
-      logger.debug 'Created base scaled image in ' + (Time.now-start_time).to_s + ' seconds'
+    BASE_OPTS.each do |base_opts|
+      img_opts = base_opts.merge(id: pid)
+      img_path = path_factory.for(img_opts)
+      if override or !File.exists?(img_path)
+        logger.debug "Creating #{img_opts[:size]} #{img_opts[:type]} image for #{pid}..."
+        start_time = Time.now
+        FileUtils.mkdir_p(File.dirname(img_path))
+        Imogen::AutoCrop.convert(img, img_path, img_opts[:size])
+        logger.info "Created #{img_opts[:size]} #{img_opts[:type]} image for #{pid} in " + (Time.now-start_time).to_s + ' seconds'
+      end
     end
   end
 end
 
 def cache_generic_resource(generic_resource,path_factory,override=false)
   if generic_resource
-    conditions = {image_id: generic_resource.pid, format: 'png'}
     content_ds = generic_resource.datastreams['content']
     content_path = (content_ds.dsLocation =~ /^file:\//) ? content_ds.dsLocation.sub(/^file:/,'') : content_ds.dsLocation
     cache_for_pid(generic_resource.pid,content_path,path_factory,override)
