@@ -19,7 +19,7 @@ def cache_for_pid(pid,content_path,path_factory,override=false)
         logger.debug "Creating #{img_opts[:size]} #{img_opts[:type]} image for #{pid}..."
         start_time = Time.now
         FileUtils.mkdir_p(File.dirname(img_path))
-        handler = (img_opts[:type] == TYPE_SQUARE) ? Imogen::Scaled : Imogen::AutoCrop
+        handler = (img_opts[:type] == TYPE_SQUARE) ? Imogen::AutoCrop : Imogen::Scaled
         handler.convert(img, img_path, img_opts[:size])
         logger.info "Created #{img_opts[:size]} #{img_opts[:type]} image for #{pid} in " + (Time.now-start_time).to_s + ' seconds'
       else
