@@ -1,8 +1,11 @@
 APP_CONFIG = ActiveSupport::HashWithIndifferentAccess.new(YAML.load_file("#{Rails.root}/config/cache_config.yml")[Rails.env])
+require 'cul_repo_cache'
+
+include Cul::Repo::Cache::DerivativeInfo
+
 SCALED_BASE_OPTS = {size: LARGE_SCALED_SIZE, format: APP_CONFIG[TYPE_SCALED]['base_format'], type: TYPE_SCALED}
 SQUARE_BASE_OPTS = {size: LARGE_SQUARE_SIZE, format: APP_CONFIG[TYPE_SQUARE]['base_format'], type: TYPE_SQUARE}
 BASE_OPTS = [SCALED_BASE_OPTS, SQUARE_BASE_OPTS]
-include Cul::Repo::Cache::DerivativeInfo
 def logger
   Rails.logger
 end
