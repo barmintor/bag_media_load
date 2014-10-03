@@ -21,6 +21,8 @@ def cache_for_pid(pid,content_path,path_factory,override=false)
         FileUtils.mkdir_p(File.dirname(img_path))
         Imogen::AutoCrop.convert(img, img_path, img_opts[:size])
         logger.info "Created #{img_opts[:size]} #{img_opts[:type]} image for #{pid} in " + (Time.now-start_time).to_s + ' seconds'
+      else
+        logger.info "Skipping extant #{img_opts[:size]} #{img_opts[:type]} image for #{pid}"
       end
     end
   end
@@ -56,6 +58,8 @@ namespace :prime do
     map.each do |pid,content_path|
       if File.exists?(content_path)
         cache_for_pid(pid,content_path,cache_paths,override)
+      else
+        logger.warn "Could not read source image at #{content_path}"
       end
     end
   end
