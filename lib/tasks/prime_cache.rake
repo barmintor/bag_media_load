@@ -57,7 +57,12 @@ namespace :prime do
     end
     map.each do |pid,content_path|
       if File.exists?(content_path)
-        cache_for_pid(pid,content_path,cache_paths,override)
+        begin
+          cache_for_pid(pid,content_path,cache_paths,override)
+        rescue Exception => e
+          logger.error(e.message)
+          logger.info(e.backtrace.join("\n"))
+        end
       else
         logger.warn "Could not read source image at #{content_path}"
       end
