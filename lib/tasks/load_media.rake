@@ -121,6 +121,8 @@ namespace :bag do
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
       bag_path = ENV['BAG_PATH']
+      pattern = ENV['PATTERN']
+      pattern = Regexp.compile(pattern) if pattern
       skip = (ENV['SKIP'] || 0).to_i
       override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
       upload_dir = ActiveFedora.config.credentials[:upload_dir]
@@ -170,7 +172,7 @@ namespace :bag do
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       ctr = 0
       #pool = Thread.pool(2)
-      manifest.each_entry do |source|
+      manifest.each_entry(pattern or only_data) do |source|
         begin
           ctr += 1
           next if ctr < skip

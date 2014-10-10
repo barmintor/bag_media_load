@@ -30,17 +30,7 @@ module BagIt
       @name_parser = name_parser
     end
 
-    def each_entry
-      file= open(@manifest)
-      file.each do |line|
-        next if line =~ /\.md5$/ # don't load checksum files
-        rel_path = line.split(' ')[1..-1].join(' ')
-        source = File.join(@bagdir, rel_path)
-        yield source
-      end
-    end
-    
-    def each_resource(create=false, only_data=nil)
+    def each_entry(only_data=nil)
       file= open(@manifest)
       if only_data.is_a? String
         only_data = only_data.dup
@@ -52,8 +42,12 @@ module BagIt
         rel_path = line.split(' ')[1..-1].join(' ')
         next if only_data and !(rel_path =~ only_data)
         source = File.join(@bagdir, rel_path)
-        yield rel_path, find_or_create_resource(source, create)
+        yield source
       end
+    end
+    
+    def each_resource(create=false, only_data=nil)
+      each_entry(only_data) {|source| yield find_or_create_resource(source, create) }
     end
 
     def find_or_create_resource(source, create=false)
@@ -135,10 +129,8 @@ module BagIt
         resource.add_dc_identifier name_parser.default.id(bag_entry)
         resource.set_dc_source sources[0]
         resource.set_dc_extent ds_size
-        resource.migrate!
-      else
-        resource.migrate!
       end
+      resource.migrate!
       resource
     end
     
