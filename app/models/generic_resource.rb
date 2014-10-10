@@ -236,7 +236,7 @@ class GenericResource < ::ActiveFedora::Base
       return if new_ids.sort.eql? ids.sort
       self.set_dc_identifier(self.pid)
       new_ids.each {|idval| self.add_dc_identifier(idval) if idval != self.pid}
-      dc.dirty = true
+      dc.content_will_change!
     end
 
     def tempfile(name_parts, temp_root='/var/tmp/bag_media_load')
