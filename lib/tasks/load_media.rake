@@ -172,7 +172,7 @@ namespace :bag do
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       ctr = 0
       #pool = Thread.pool(2)
-      manifest.each_entry(pattern or only_data) do |source|
+      manifest.each_entry(pattern || only_data || nil) do |source|
         begin
           ctr += 1
           next if ctr < skip
