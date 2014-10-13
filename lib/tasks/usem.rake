@@ -48,40 +48,44 @@ def logger
   Rails.logger
 end
 
+module UsemUtils
+  def load_objects(obj_path)
+    objects = []
+    open(obj_path) do |blob|
+      blob.each do |line|
+        line.strip!
+        objects << line
+      end
+    end
+    objects
+  end
+
+  def load_assets(assets_path)
+    lines = load_objects(assets_path)
+    assets = lines.collect do |line|
+      path = line.split(' ')[1..-1].join(' ')
+      "#{STORAGE_ID}/#{path}"
+    end
+    assets
+  end
+
+  def map_assets(assets)
+    mapped = {}
+    assets.each do |asset|
+      file_id = asset.sub("#{STORAGE_ID}/data/11152013/USEMS_Archive/",'')
+      file_id = file_id.sub("#{STORAGE_ID}/data/04252014/university_seminars/",'')
+      puts "file_id: #{file_id}"
+      obj_id = 'ldpd.usem/' + file_id[0...file_id.rindex('.')]
+      mapped[obj_id] = asset
+    end
+    mapped
+  end
+end
+
 namespace :util do
   namespace :usem do
-    def load_objects(obj_path)
-      objects = []
-      open(obj_path) do |blob|
-        blob.each do |line|
-          line.strip!
-          objects << line
-        end
-      end
-      objects
-    end
-
-    def load_assets(assets_path)
-      lines = load_objects(assets_path)
-      assets = lines.collect do |line|
-        path = line.split(' ')[1..-1].join(' ')
-        "#{STORAGE_ID}/#{path}"
-      end
-      assets
-    end
-
-    def map_assets(assets)
-      mapped = {}
-      assets.each do |asset|
-        file_id = asset.sub("#{STORAGE_ID}/data/11152013/USEMS_Archive/",'')
-        file_id = file_id.sub("#{STORAGE_ID}/data/04252014/university_seminars/",'')
-        puts "file_id: #{file_id}"
-        obj_id = 'ldpd.usem/' + file_id[0...file_id.rindex('.')]
-        mapped[obj_id] = asset
-      end
-      mapped
-    end
   	task :init => :environment do
+      include UsemUtils
       storage = BagAggregator.new(pid: 'ldpd:163964')
       dc = storage.datastreams['DC']
       dc.update_values({[:dc_identifier] => ['rbml.usem', 'apt://columbia.edu/rbml.usem']})

@@ -6,6 +6,7 @@ require "bag_it"
 require 'thread/pool'
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 LDPD_STORAGE_ID = 'apt://columbia.edu'
+PROJECT_URI = 'http://www.columbia.edu/cgi-bin/cul/resolve?clio9427856'
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)
@@ -44,8 +45,8 @@ end
 
 
 namespace :util do
-  namespace :korind do
-	def load_ko_objects(dir)
+  namespace :novelties do
+	def load_objects(dir)
 	  objects = []
 	  open(File.join(dir, 'objects.json')) do |blob|
 	    objects = JSON.load(blob)
@@ -56,25 +57,25 @@ namespace :util do
     task :setup => :environment do
       all_collections = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
       raise "Could not find LDPD collections aggregator at #{LDPD_COLLECTIONS_ID}" unless all_collections
-      korind = BagAggregator.search_repo(identifier: 'http://www.columbia.edu/cgi-bin/cul/resolve?clio7688161').first
-      unless korind
-        ids = ['ldpd.koreanoutbreak','http://www.columbia.edu/cgi-bin/cul/resolve?clio7688161']
-        title = "Content for the Korean Independence Outbreak Movement"
-        korind = BagAggregator.new(pid: next_pid())
-        korind.label = title
-        korind.datastreams["DC"].update_values({[:dc_title] => title})
-        korind.datastreams["DC"].update_values({[:dc_identifier] => ids})
-        korind.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
-        korind.add_relationship(:cul_member_of, all_collections.internal_uri)
-        korind.save
+      bagg = BagAggregator.search_repo(identifier: PROJECT_URI).first
+      unless bagg
+        ids = ['avery.novelties',PROJECT_URI]
+        title = "Content for Avery's Architectural Novelties"
+        bagg = BagAggregator.new(pid: next_pid())
+        bagg.label = title
+        bagg.datastreams["DC"].update_values({[:dc_title] => title})
+        bagg.datastreams["DC"].update_values({[:dc_identifier] => ids})
+        bagg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
+        bagg.add_relationship(:cul_member_of, all_collections.internal_uri)
+        bagg.save
       end
-      @project = korind.internal_uri
+      @project = bagg.internal_uri
     end
     task :load_mods => :setup do
       raise "No project bag aggregator!" unless @project
       dir = ENV['mods_dir']
       raise "MODS data root directory param is required 'mods_dir'" unless dir
-      objects = load_ko_objects(dir)
+      objects = load_objects(dir)
       objects.each do |object|
       	cagg = nil
       	mods_path = File.join(dir,object['mods'])
@@ -125,7 +126,7 @@ namespace :util do
       raise "No project bag aggregator!" unless @project
       dir = ENV['mods_dir']
       raise "MODS data root directory param is required 'mods_dir'" unless dir
-      objects = load_ko_objects(dir)
+      objects = load_objects(dir)
       objects.each do |object|
         cagg = nil
         mods_path = File.join(dir,object['mods'])
@@ -148,7 +149,7 @@ namespace :util do
           end
         end
         ds = cagg.datastreams['structMetadata']
-        ds.content = ds.class.xml_template
+        ds.ng_xml = Cul::Scv::Hydra::Datastreams::StructMetadata.xml_template
         ds.content_will_change!
         ds.label = 'Sequence'
         ds.type = 'logical'
@@ -165,7 +166,7 @@ namespace :util do
       raise "No project bag aggregator!" unless @project
       dir = ENV['mods_dir']
       raise "MODS data root directory param is required 'mods_dir'" unless dir
-      objects = load_ko_objects(dir)
+      objects = load_objects(dir)
       objects.each do |object|
         if object['pid']
           cagg = ContentAggregator.find(object['pid'])
@@ -178,9 +179,14 @@ namespace :util do
           if gr
             dc = gr.datastreams['DC']
             src = dc.term_values(:dc_source).first
-            if src.start_with? "/ifs/cul/ldpd/fstore/archive/preservation/korean_ind/data"
-              _id = src.sub("/ifs/cul/ldpd/fstore/archive/preservation/korean_ind",
-                            "apt://columbia.edu/burke.korean_ind")
+            if src.start_with? "/fstore/archive/ldpd/preservation/customer_orders/data"
+              _id = src.sub("/fstore/archive/ldpd/preservation/customer_orders",
+                            "apt://columbia.edu/prd.custord")
+              gr.add_dc_identifier(_id)
+            end       
+            if src.start_with? "/ifs/cul/ldpd/fstore/archive/preservation/stereographs/data"
+              _id = src.sub("/ifs/cul/ldpd/fstore/archive/preservation/stereographs",
+                            "apt://columbia.edu/avery.stereographs")
               gr.add_dc_identifier(_id)
             end
             if cagg
