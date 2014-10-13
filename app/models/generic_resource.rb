@@ -74,7 +74,7 @@ class GenericResource < ::ActiveFedora::Base
   end
 
   def to_solr(solr_doc = Hash.new, opts={})
-    super
+    solr_doc = super
     unless solr_doc["extent_ssi"] || self.datastreams["content"].nil?
       solr_doc["extent_ssi"] = [self.datastreams["content"].size]
     end
