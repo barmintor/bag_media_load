@@ -8,7 +8,7 @@ require "tempfile"
 require "bag_it"
 class GenericResource < ::ActiveFedora::Base
   extend ActiveModel::Callbacks
-  include ::ActiveFedora::Finders
+  include ::ActiveFedora::FinderMethods::RepositoryMethods
   include ::ActiveFedora::DatastreamCollections
   include ::Hydra::ModelMethods
   include Cul::Scv::Hydra::Models::Common
