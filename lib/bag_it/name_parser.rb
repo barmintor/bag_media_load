@@ -35,6 +35,10 @@ module BagIt
         else
           'R'
         end
+      elsif @blocks[:recto] and (@blocks[:recto].yield input)
+          'R'
+      elsif @blocks[:verso] and (@blocks[:verso].yield input)
+          'V'
       else
         nil
       end

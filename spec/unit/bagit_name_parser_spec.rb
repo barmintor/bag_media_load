@@ -62,7 +62,8 @@ describe BagIt::NameParser do
     it "should parse ids from basename" do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/shurin.yml")))
       test.id("data/foo/fish_18.tif").should == "apt://columbia.edu/prd.shurin/data/foo/fish_18.tif"
-      test.parent("data/foo/18.tif").should == "prd.shurin.001"
+      test.parent("data/foo/18.tif").should be_nil
+      test.parent("data/foo/fish_18.tif").should == "prd.shurin.001"
     end
   end    
   describe "Lehman" do
@@ -84,6 +85,15 @@ describe BagIt::NameParser do
       test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/aviador.yml")))
       test.id("data/NYDA.1960.001.03238R.tif").should == "NYDA.1960.001.03238R"
       test.parent("NYDA.1960.001.03238R.tif").should be_nil
+    end
+  end
+  describe "APIS" do
+    it "should parse ids from basename" do
+      test = BagIt::NameParser.new(YAML.load(fixture("name_parsing_schema/apis.yml")))
+      test.id("data/6/columbia.apis.p206.f.0.600.tif").should == "columbia.apis.p206.f"
+      test.parent("data/6/columbia.apis.p206.f.0.600.tif").should == 'columbia.apis.p206'
+      test.side("data/6/columbia.apis.p206.f.0.600.tif").should == 'R'
+      test.side("data/6/columbia.apis.p206.b.0.600.tif").should == 'V'
     end
   end
   describe BagIt::NameParser::Default do
