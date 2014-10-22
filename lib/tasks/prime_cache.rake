@@ -10,7 +10,8 @@ def logger
   Rails.logger
 end
 
-def cache_for_pid(pid,content_path,path_factory,override=false)
+def cache_for_pid(pid,content_path,path_factory,opts={})
+  override = opts.fetch(:override, false)
   Imogen.with_image(content_path) do |img|
     BASE_OPTS.each do |base_opts|
       img_opts = base_opts.merge(id: pid)
@@ -26,19 +27,25 @@ def cache_for_pid(pid,content_path,path_factory,override=false)
         logger.info "Skipping extant #{img_opts[:size]} #{img_opts[:type]} image for #{pid}"
       end
     end
+    if opts[:zoom]
+      jp2_path = path_factory.for(id: pid, format: 'jp2', type: TYPE_ZOOM)
+      Imogen::Zoomable.convert(img, jp2_path)
+    end
   end
 end
 
-def cache_generic_resource(generic_resource,path_factory,override=false)
+def cache_generic_resource(generic_resource,path_factory,opts={})
   if generic_resource
     content_ds = generic_resource.datastreams['content']
     content_path = (content_ds.dsLocation =~ /^file:\//) ? content_ds.dsLocation.sub(/^file:/,'') : content_ds.dsLocation
-    cache_for_pid(generic_resource.pid,content_path,path_factory,override)
+    cache_for_pid(generic_resource.pid,content_path,path_factory,opts)
   end
 end
 namespace :prime do
   task :list => :environment do
     override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+    zoom = !!ENV['ZOOM'] and !(ENV['ZOOM'] =~ /^false$/i)
+    opts = {override: override, zoom: zoom}
     list = []
     open(ENV['LIST']) do |f|
       f.each {|l| l.strip!; list << l}
@@ -46,11 +53,13 @@ namespace :prime do
     cache_paths = Cul::Repo::Cache::Path.factory(APP_CONFIG)
 
     list.each do |pid|
-      cache_generic_resource(GenericResource.find(pid),cache_paths,override)
+      cache_generic_resource(GenericResource.find(pid),cache_paths,opts)
     end
   end
   task :map => :environment do
     override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+    zoom = !!ENV['ZOOM'] and !(ENV['ZOOM'] =~ /^false$/i)
+    opts = {override: override, zoom: zoom}
     cache_paths = Cul::Repo::Cache::Path.factory(APP_CONFIG)
     map = {}
     open(ENV['MAP']) do |f|
@@ -59,7 +68,7 @@ namespace :prime do
     map.each do |pid,content_path|
       if File.exists?(content_path)
         begin
-          cache_for_pid(pid,content_path,cache_paths,override)
+          cache_for_pid(pid,content_path,cache_paths,opts)
         rescue Exception => e
           logger.error(e.message)
           logger.info(e.backtrace.join("\n"))
@@ -74,6 +83,8 @@ namespace :prime do
     bag_path = ENV['BAG_PATH']
     alg = ENV['CHECKSUM_ALG'] || 'sha1'
     override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+    zoom = !!ENV['ZOOM'] and !(ENV['ZOOM'] =~ /^false$/i)
+    opts = {override: override, zoom: zoom}
     upload_dir = ActiveFedora.config.credentials[:upload_dir]
     # parse bag-info for external-id and title
     bag_info = BagIt::Info.new(bag_path)
@@ -91,7 +102,7 @@ namespace :prime do
     paths.each do |path|
       gr_id = "apt://columbia.edu/#{bag_info.external_id}/#{path}"
       generic_resource = GenericResource.search_repo(identifier: gr_id).first
-      cache_generic_resource(generic_resource,cache_paths,override)
+      cache_generic_resource(generic_resource,cache_paths,opts)
     end
   end
 end
