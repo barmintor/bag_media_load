@@ -122,8 +122,12 @@ namespace :util do
         if assets and assets.first
           assets.each do |asset|
             gr = GenericResource.find(asset[:pid])
-            gr.datastreams["DC"].update_values({[:dc_type] => 'StillImage'})
-            gr.add_relationship(:cul_member_of, cagg.internal_uri)
+            unless gr.datastreams["DC"].term_values(:dc_type) == ['StillImage']
+              gr.datastreams["DC"].update_values({[:dc_type] => 'StillImage'})
+            end
+            unless gr.relationships(:cul_member_of).collect {|m| m.to_s}.include? cagg.internal_uri
+              gr.add_relationship(:cul_member_of, cagg.internal_uri)
+            end
             gr.save
           end
           logger.info "associated #{cagg.pid} with #{assets.size} child resources for #{id} #{ctr} of #{total}"

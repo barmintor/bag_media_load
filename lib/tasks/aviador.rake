@@ -6,6 +6,29 @@ require "bag_it"
 require 'thread/pool'
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 LDPD_STORAGE_ID = 'apt://columbia.edu'
+module Aviador
+  def load_objects(dir)
+    objects = []
+    open(File.join(dir, 'object-manifest.txt')) do |blob|
+      blob.each do |line|
+        line.strip!
+        objects << line
+      end
+    end
+    objects = objects.collect do |obj_path|
+      obj = open(File.join(dir,obj_path)) {|f| JSON.load(f)}
+      obj['descMetadata'] = File.join(dir,obj['descMetadata'])
+      if obj['structMetadata']
+        obj['structMetadata'] = File.join(dir,obj['structMetadata'])
+      end
+      obj['members'].each do |member|
+        member['descMetadata'] = File.join(dir,member['descMetadata'])
+      end
+      obj
+    end
+  end
+end
+
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)
@@ -42,31 +65,11 @@ def ds_at(fedora_uri, d_obj = nil)
   Rubydora::Datastream.new(d_obj, p[2])
 end
 
-def load_objects(dir)
-  objects = []
-  open(File.join(dir, 'object-manifest.txt')) do |blob|
-    blob.each do |line|
-      line.strip!
-      objects << line
-    end
-  end
-  objects = objects.collect do |obj_path|
-    obj = open(File.join(dir,obj_path)) {|f| JSON.load(f)}
-    obj['descMetadata'] = File.join(dir,obj['descMetadata'])
-    if obj['structMetadata']
-      obj['structMetadata'] = File.join(dir,obj['structMetadata'])
-    end
-    obj['members'].each do |member|
-      member['descMetadata'] = File.join(dir,member['descMetadata'])
-    end
-    obj
-  end
-end
-
 namespace :util do
   namespace :aviador do
     desc 'create the project bagg'
     task :setup => :environment do
+      include Aviador
       all_collections = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
       raise "Could not find LDPD collections aggregator at #{LDPD_COLLECTIONS_ID}" unless all_collections
       ferriss = BagAggregator.search_repo(identifier: 'ldpd.ferriss').first

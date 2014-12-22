@@ -6,7 +6,16 @@ require "bag_it"
 require 'thread/pool'
 LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
 LDPD_STORAGE_ID = 'apt://columbia.edu'
-PROJECT_URI = 'http://www.columbia.edu/cgi-bin/cul/resolve?clio9427856'
+module Novelties
+  PROJECT_URI = 'http://www.columbia.edu/cgi-bin/cul/resolve?clio9427856'
+  def load_objects(dir)
+    objects = []
+    open(File.join(dir, 'objects.json')) do |blob|
+      objects = JSON.load(blob)
+    end
+    objects
+  end
+end
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)
@@ -46,20 +55,14 @@ end
 
 namespace :util do
   namespace :novelties do
-	def load_objects(dir)
-	  objects = []
-	  open(File.join(dir, 'objects.json')) do |blob|
-	    objects = JSON.load(blob)
-	  end
-	  objects
-	end
     desc 'create the project bagg'
     task :setup => :environment do
+      include Novelties
       all_collections = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
       raise "Could not find LDPD collections aggregator at #{LDPD_COLLECTIONS_ID}" unless all_collections
-      bagg = BagAggregator.search_repo(identifier: PROJECT_URI).first
+      bagg = BagAggregator.search_repo(identifier: Novelties::PROJECT_URI).first
       unless bagg
-        ids = ['avery.novelties',PROJECT_URI]
+        ids = ['avery.novelties',Novelties::PROJECT_URI]
         title = "Content for Avery's Architectural Novelties"
         bagg = BagAggregator.new(pid: next_pid())
         bagg.label = title
