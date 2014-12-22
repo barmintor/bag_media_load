@@ -121,6 +121,7 @@ namespace :bag do
     desc "load resource objects for all the file resources in a bag"
     task :load => :environment do
       bag_path = ENV['BAG_PATH']
+      alg = ENV['CHECKSUM_ALG'] || 'sha1'
       pattern = ENV['PATTERN']
       pattern = Regexp.compile(pattern) if pattern
       skip = (ENV['SKIP'] || 0).to_i
@@ -169,7 +170,7 @@ namespace :bag do
       end
 
       name_parser = bag_info.id_schema
-      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      manifest = BagIt::Manifest.new(File.join(bag_path,"manifest-#{alg}.txt"), name_parser)
       ctr = 0
       #pool = Thread.pool(2)
       manifest.each_entry(pattern || only_data || nil) do |source|
