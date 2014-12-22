@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='ASCII'?>
+<mets xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+  <fileSec>
+    <fileGrp USE="original">
+      <file ID="file-664c7b82-ea8a-4f9f-9d64-ff15524b59d0">
+        <FLocat xlink:href="objects/IFP Ammended Constitution.doc" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-942501f9-1387-4690-90f1-007526721c80">
+        <FLocat xlink:href="objects/IFP PR- ALMNI VERSION2A[1].doc" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-d4b3eee3-2ddb-4bf9-9b80-137a83561e5f">
+        <FLocat xlink:href="objects/IFP-UAA Bdgt2 2007.xls" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-533b0929-fae7-455f-a4b3-ac6e5a93ea5c">
+        <FLocat xlink:href="objects/IFP-UAA STRATEGIC PLAN.doc" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-0a264b2b-afb6-4c3e-8663-ade633f08478">
+        <FLocat xlink:href="objects/IFP-UAA strategic Plan May 2 2009.doc" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-86c82516-8625-4ccc-acb4-06ace3d38e42">
+        <FLocat xlink:href="objects/SmartCane[1].pdf" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+      <file ID="file-41619d06-13be-4284-8274-51dd97ec8ea2">
+        <FLocat xlink:href="objects/Talking Points.doc" LOCTYPE="OTHER" OTHERLOCTYPE="SYSTEM"/>
+      </file>
+    </fileGrp>
+  </fileSec>
+  <structMap TYPE="physical">
+    <div TYPE="directory" LABEL="uga_ur_00-561272c9-abea-4a7e-8baa-9c6e6d4c0327">
+      <div TYPE="directory" LABEL="objects">
+        <fptr FILEID="file-664c7b82-ea8a-4f9f-9d64-ff15524b59d0"/>
+        <fptr FILEID="file-942501f9-1387-4690-90f1-007526721c80"/>
+        <fptr FILEID="file-d4b3eee3-2ddb-4bf9-9b80-137a83561e5f"/>
+        <fptr FILEID="file-533b0929-fae7-455f-a4b3-ac6e5a93ea5c"/>
+        <fptr FILEID="file-0a264b2b-afb6-4c3e-8663-ade633f08478"/>
+        <fptr FILEID="file-86c82516-8625-4ccc-acb4-06ace3d38e42"/>
+        <fptr FILEID="file-41619d06-13be-4284-8274-51dd97ec8ea2"/>
+      </div>
+    </div>
+  </structMap>
+</mets>

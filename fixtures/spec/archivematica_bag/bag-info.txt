@@ -1,0 +1,10 @@
+Source-Organization: Association of the Advancement of Higher Education and Development
+External-Identifier: uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f
+External-Description: Unrestricted Born-Digital Records of IFP International Partner in Uganda
+Contact-Name: Columbia University Libraries Rare Book and Manuscript Library
+Contact-Email: rbml@library.columbia.edu
+Internal-Sender-Identifier: 9489034_uga_ur_00
+Internal-Sender-Description: Unrestricted Born-Digital Records of IFP International Partner in Uganda
+Payload-Oxum: 6974566.22
+Bagging-Date: 2014-06-23
+Bag-Size: 6.7 MB

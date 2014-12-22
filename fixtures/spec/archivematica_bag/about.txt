@@ -1,0 +1,11 @@
+Achivematica BagIt output:
+
+<root>
+- <data>
+-- METS.{submission uuid}.xml
+-- <logs>
+-- <objects>
+--- <submissionDocumentation>
+---- <{id}-{submission uuid}>
+----- METS.xml
+-- <thumbnails>
