@@ -1,0 +1,16 @@
+id_from_basename:
+  pattern: '([a-z]+\.apis\.[a-z0-9]+\.[fb])\.\d\.\d{2,4}\.tif'
+  subs: '${1}'
+  output: '%s'
+parent_from_basename: 
+  pattern: '([a-z]+\.apis\.[a-z0-9]+)\.[fb]\.\d\.\d{2,4}\.tif'
+  subs: '${1}'
+  output: '%s'
+recto_from_basename:
+  pattern: '[a-z]+\.apis\.[a-z0-9]+\.[f]\.\d\.\d{2,4}\.tif'
+  subs: '${0}'
+  output: '%s'
+verso_from_basename:
+  pattern: '[a-z]+\.apis\.[a-z0-9]+\.[b]\.\d\.\d{2,4}\.tif'
+  subs: '${0}'
+  output: '%s'
