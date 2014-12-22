@@ -123,7 +123,12 @@ class GenericResource < ::ActiveFedora::Base
       ds = datastreams["content"]
       opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
-        dsLocation = (ds.dsLocation =~ /^file:\//) ? ds.dsLocation.sub(/^file:/,'') : ds.dsLocation
+        dsLocation = ds.dsLocation
+        if dsLocation =~ /^file:\//
+          dsLocation = dsLocation.sub(/^file:\/+/,'/')
+          dsLocation.gsub!(/%20/,' ')
+          dsLocation.gsub!(/%23/,'#')
+        end
         begin
           content_ds_props = nil
           # generate content DS rels

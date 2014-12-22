@@ -84,6 +84,7 @@ module BagIt
         ds = resource.datastreams['content']
         dsLocation = sources[1].clone
         dsLocation.gsub!(' ','%20')
+        dsLocation.gsub!('#','%23')
         if ds and !ds.new?
           ds.dsLocation = dsLocation
           ds.dsLabel = sources[0]
