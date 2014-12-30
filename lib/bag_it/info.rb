@@ -10,37 +10,56 @@ module BagIt
       end
       bag_path
     end
-    attr_accessor :external_id, :external_desc, :group_id, :id_schema, :count, :bag_path
+    attr_accessor :count, :bag_path, :agent_uri
     def initialize(src_file)
       @bag_path = Info.path_for(src_file)
       src_file = open(File.join(@bag_path,'bag-info.txt'))
+      @options = {}
       src_file.each do |line|
         parts = line.strip.split(':',2)
-        if parts[0] == "External-Identifier"
-          @external_id = parts[1].strip
-        end
-        @id_schema = BagIt::NameParser::Default.new(@external_id)
-        if parts[0] == "External-Description"
-          @external_desc = parts[1].strip
-        end
-        if parts[0] == "Bag-Group-Identifier"
-          @group_id = parts[1].strip
-        end
+        @options[parts[0]] = parts[1].strip
         if parts[0] == "Payload-Oxum"
           @count = parts[1].strip.split('.')[1].to_i
         end
-        if parts[0] == "Local-Identifier-Schema"
-          path = parts[1].strip
-          path = Pathname.new(path)
-          if (path.relative?)
-            path = Pathname.new(src_file.path).dirname + path
-          end
-          path = path.cleanpath
-          def_schema = @id_schema
-          @id_schema = BagIt::NameParser.new(YAML.load(File.open(path)))
-          @id_schema.default = def_schema
+        if parts[0] == "Bag-Software-Agent"
+          @agent_uri = parts[1].match(/<([^>]+)>/)[1]
         end
       end
+    end
+    def [](key)
+      @options[key]
+    end
+    def external_id
+      self["External-Identifier"]
+    end
+    def external_desc
+      self["External-Description"]
+    end
+    def group_id
+      self["Bag-Group-Identifier"]
+    end
+    def id_schema
+      self["Local-Identifier-Schema"]
+    end
+    def archivematica?
+      agent_uri == "https://www.archivematica.org/"
+    end
+    def id_for(input)
+      @id_schema ||= begin
+        ids = BagIt::NameParser::Default.new(external_id())
+        if (schema_path = id_schema())
+          schema_path = Pathname.new(schema_path)
+          if (schema_path.relative?)
+            schema_path = Pathname.new(bag_path()) + schema_path
+          end
+          schema_path = schema_path.cleanpath
+          def_schema = ids
+          ids = BagIt::NameParser.new(YAML.load(File.open(schema_path)))
+          ids.default = def_schema
+        end
+        ids
+      end
+      @id_schema.id(input)
     end
   end
 end
