@@ -20,13 +20,14 @@ dc
   end
   it "should add identifiers with #add_dc_identifier}" do
     test = TestModel.new
+    dc = test.datastreams['DC']
     test.add_dc_identifier 'lol:wut'
-    test.datastreams['DC'].content.should =~ /lol\:wut/
+    expect(dc.content).to match /lol\:wut/
     test.add_dc_identifier 'foo:bar'
-    test.datastreams['DC'].content.should =~ /lol\:wut/
-    test.datastreams['DC'].content.should =~ /foo\:bar/
+    expect(dc.content).to match /lol\:wut/
+    expect(dc.content).to match /foo\:bar/
     test.set_dc_identifier 'bar:baz'
-    test.datastreams['DC'].content.should =~ /bar\:baz/
-    test.datastreams['DC'].content.should_not =~ /lol\:wut/
+    expect(dc.content).to match /bar\:baz/
+    expect(dc.content).not_to match /foo\:bar/
   end
 end
