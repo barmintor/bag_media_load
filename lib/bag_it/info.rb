@@ -1,6 +1,9 @@
 require 'pathname'
 module BagIt
   class Info
+    ARCHIVEMATICA_PROFILES = [
+      "https://cdn.cul.columbia.edu/bagit-profiles/archivematica.json"
+    ]
     def self.path_for(bag_path)
       if bag_path.respond_to? :path
         bag_path = bag_path.path
@@ -10,7 +13,7 @@ module BagIt
       end
       bag_path
     end
-    attr_accessor :count, :bag_path, :agent_uri
+    attr_accessor :count, :bag_path
     def initialize(src_file)
       @bag_path = Info.path_for(src_file)
       src_file = open(File.join(@bag_path,'bag-info.txt'))
@@ -20,9 +23,6 @@ module BagIt
         @options[parts[0]] = parts[1].strip
         if parts[0] == "Payload-Oxum"
           @count = parts[1].strip.split('.')[1].to_i
-        end
-        if parts[0] == "Bag-Software-Agent"
-          @agent_uri = parts[1].match(/<([^>]+)>/)[1]
         end
       end
     end
@@ -38,11 +38,14 @@ module BagIt
     def group_id
       self["Bag-Group-Identifier"]
     end
+    def profile_id
+      self["BagIt-Profile-Identifier"]
+    end
     def id_schema
       self["Local-Identifier-Schema"]
     end
     def archivematica?
-      agent_uri == "https://www.archivematica.org/"
+      ARCHIVEMATICA_PROFILES.include? profile_id
     end
     def id_for(input)
       @id_schema ||= begin
