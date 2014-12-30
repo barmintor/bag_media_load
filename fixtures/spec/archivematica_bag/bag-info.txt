@@ -8,3 +8,4 @@ Internal-Sender-Description: Unrestricted Born-Digital Records of IFP Internatio
 Payload-Oxum: 6974566.22
 Bagging-Date: 2014-06-23
 Bag-Size: 6.7 MB
+Bag-Software-Agent: Archivematica 1.2.0 <https://www.archivematica.org/>
