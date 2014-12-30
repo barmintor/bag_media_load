@@ -17,19 +17,19 @@ describe BagIt::Manifest do
   it 'should load all the entries' do
     expected = @all_entries.sort
     actual = []
-    @test.each_entry {|entry| actual << entry}
+    @test.each_entry {|entry| actual << entry.path}
     expect(actual.sort).to eql(expected)
   end
   it 'should load a specific entry' do
     actual = []
     expected = absolute_paths('data/top/lol.wut')
-    @test.each_entry('data/top/lol.wut') {|entry| actual << entry}
+    @test.each_entry('data/top/lol.wut') {|entry| actual << entry.path}
     expect(actual.sort).to eql(expected)
   end
   it 'should load entries matching a pattern' do
     actual = []
     expected = absolute_paths('data/lol.wut','data/top/lol.wut').sort
-    @test.each_entry(/.*lol\.wut/) {|entry| actual << entry}
+    @test.each_entry(/.*lol\.wut/) {|entry| actual << entry.path}
     expect(actual.sort).to eql(expected)
   end
 end

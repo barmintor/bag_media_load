@@ -119,7 +119,7 @@ class GenericResource < ::ActiveFedora::Base
       img
     end      
     
-    def derivatives!(opts={:override=>false})
+    def derivatives!(opts={:override=>false},derivative_entries=[])
       ds = datastreams["content"]
       opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
@@ -146,6 +146,23 @@ class GenericResource < ::ActiveFedora::Base
           Rails.logger.error "Cannot generate derivatives for #{self.pid} : #{e.message}\n    " + e.backtrace.join("\n    ")
         end
       end
+      derivative_entries.each do |entry|
+        dsid = entry.local_id
+        mimeType = entry.mime
+        label = File.basename(entry.path)
+        ds = datastreams[dsid]
+        if ds
+          ds.mimeType = mime unless ds.mimeType == mime
+          ds.label = label unless ds.label == label
+          if rels_int.relationships(ds, :format_of).empty?
+            rels_int.add_relationship(ds, :format_of, datastreams["content"])
+            rels_int.serialize!
+          end
+        else
+          #TODO create the ds if missing
+        end
+      end
+      self.save
     end
 
     def derivative_url(opts={})

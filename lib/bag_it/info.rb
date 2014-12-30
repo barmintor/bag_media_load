@@ -47,7 +47,7 @@ module BagIt
     def archivematica?
       ARCHIVEMATICA_PROFILES.include? profile_id
     end
-    def id_for(input)
+    def id_factory
       @id_schema ||= begin
         ids = BagIt::NameParser::Default.new(external_id())
         if (schema_path = id_schema())
@@ -62,7 +62,19 @@ module BagIt
         end
         ids
       end
-      @id_schema.id(input)
+    end
+    def id_for(input)
+      id_factory.id(input)
+    end
+    def manifest(checksum_alg='md5')
+      if archivematica?
+        Arxv::Archive.new(self)
+      else
+        Manifest.new(manifest_path(checksum_alg),id_factory)
+      end
+    end
+    def manifest_path(checksum_alg='md5')
+      File.join(bag_path,"manifest-#{checksum_alg}.txt")
     end
   end
 end

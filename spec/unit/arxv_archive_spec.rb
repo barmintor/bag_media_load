@@ -24,6 +24,7 @@ describe Arxv::Archive do
     it "should collect entry information from amdSec" do
       entry = entries["objects/SmartCane_1_.pdf"]
       expect(entry.mime).to eql("application/pdf")
+      expect(entry.local_id).to eql('content')
     end
     it "should group derivatives under the original file" do
       entry = entries["objects/SmartCane_1_.pdf"]
@@ -31,6 +32,7 @@ describe Arxv::Archive do
       derivative = entry.derivatives.first
       expect(derivative.path).to eql "objects/SmartCane_1_-81c418bc-7d2e-4dee-8a1e-9d1e75358ead.pdf"
       expect(derivative.mime).to be_nil
+      expect(derivative.local_id).to eql '81c418bc-7d2e-4dee-8a1e-9d1e75358ead'
     end
   end
   describe "#resources" do

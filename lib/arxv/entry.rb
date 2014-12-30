@@ -1,10 +1,9 @@
+require 'bag_it'
 module Arxv
-  class FileEntry
-    attr_accessor :path, :derivatives, :mime, :format
+  class Entry < BagIt::Manifest::Entry
+    attr_accessor :path, :derivatives, :mime
     def initialize(opts,derivatives=nil)
-      @path = opts[:path]
-      @mime = opts[:mime]
-      @format = opts[:format]
+      super(opts)
       @original = !!opts[:original]
       @derivatives = derivatives || []
     end

@@ -169,19 +169,20 @@ namespace :bag do
         all_media.save
       end
 
-      name_parser = bag_info.id_schema
-      manifest = BagIt::Manifest.new(File.join(bag_path,"manifest-#{alg}.txt"), name_parser)
+      name_parser = bag_info.id_factory
+      manifest = bag_info.manifest(alg)
       ctr = 0
       #pool = Thread.pool(2)
-      manifest.each_entry(pattern || only_data || nil) do |source|
+      manifest.each_entry(pattern || only_data || nil) do |entry|
         begin
           ctr += 1
           next if ctr < skip
+          source = entry.path
           rel_path = "data/" + source.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           #pool.process(source, all_media) do |source, all_media|
             resource = manifest.find_or_create_resource(source, true)
-            resource.derivatives!(derivative_options)
+            resource.derivatives!(derivative_options,entry.derivatives)
             container_pids = container_pids_for(resource)
             unless container_pids.include? all_media.pid
               resource.add_relationship(:cul_member_of, all_media)
@@ -270,8 +271,8 @@ namespace :bag do
         all_media.save
       end
 
-      name_parser = bag_info.id_schema
-      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      name_parser = bag_info.id_factory
+      manifest = bag_info.manifest('sha1')
       ctr = 0
       manifest.each_resource(true, only_data) do |rel_path, resource|
         begin
@@ -367,8 +368,8 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      name_parser = bag_info.id_schema
-      manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
+      name_parser = bag_info.id_factory
+      manifest = bag_info.manifest('sha1')
       ctr = 0
       manifest.each_resource(true, only_data) do |rel_path, resource|
         begin
@@ -405,7 +406,7 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(File.join(bag_path,'bag-info.txt'))
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      name_parser = bag_info.id_schema
+      name_parser = bag_info.id_factory
       manifest = BagIt::Manifest.new(File.join(bag_path,'manifest-sha1.txt'), name_parser)
       ctr = 0
       manifest.each_resource(true, only_data) do |rel_path, resource|

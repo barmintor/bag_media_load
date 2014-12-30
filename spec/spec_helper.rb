@@ -5,7 +5,8 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'pathname'
 require 'bag_it'
-require 'tempfile' 
+require 'arxv'
+require 'tempfile'
 require 'cul_image_props'
 
 RSpec.configure do |config|

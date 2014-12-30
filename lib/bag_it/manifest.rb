@@ -30,22 +30,33 @@ module BagIt
       @name_parser = name_parser
     end
 
-    def each_entry(only_data=nil)
-      file= open(@manifest)
+    def path_matcher(only_data=nil)
       if only_data.is_a? String
         only_data = only_data.dup
         only_data.sub!(/^\/data/,'data')
         only_data = Regexp.compile(Regexp.escape(only_data))
       end
+      only_data
+    end
+
+    def each_entry(only_data=nil)
+      file= open(@manifest)
+      only_data = path_matcher(only_data)
       file.each do |line|
         next if line =~ /\.md5$/ # don't load checksum files
         rel_path = line.split(' ')[1..-1].join(' ')
         next if only_data and !(rel_path =~ only_data)
         source = File.join(@bagdir, rel_path)
-        yield source
+        yield Entry.new(path:source, mime: (Manifest.mime_for_name(source) || OCTETSTREAM))
       end
     end
-    
+
+    def entries(only_data=nil)
+      entries = []
+      each_entry(only_data) {|e| entries << e }
+      entries
+    end    
+
     def each_resource(create=false, only_data=nil)
       each_entry(only_data) {|source| yield find_or_create_resource(source, create) }
     end
@@ -177,5 +188,21 @@ module BagIt
         return nil
       end
     end
+    class Entry
+      attr_accessor :path, :mime, :derivatives
+      def initialize(opts)
+        @path = opts[:path]
+        @mime = opts[:mime]
+        @local_id = opts[:local_id]
+        @original = true
+        @derivatives = []
+      end
+      def original?
+        @original
+      end
+      def local_id
+        original? ? 'content' : @local_id
+      end
+    end    
   end
 end

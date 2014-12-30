@@ -1,6 +1,7 @@
 require 'nokogiri'
+require 'bag_it'
 module Arxv
-  class Archive
+  class Archive < BagIt::Manifest
     METS_NS = {
       mets: "http://www.loc.gov/METS/",
       premis: "info:lc/xmlns/premis-v2",
@@ -16,15 +17,16 @@ module Arxv
       @mets = Nokogiri::XML(open(mets_path))
     end
     # return the Arxv::FileEntry objects associated with the original files of this archive
-    def entries
-      @entries ||= begin
-        original_fg = file_group(@mets,"original").first
-        file_entries = original_fg.xpath("mets:file", METS_NS).collect do |file|
-          gid = file["GROUPID"]
-          derivatives = file_group(@mets,"preservation").first.xpath("mets:file[@GROUPID='#{gid}']", METS_NS)
-          entry = file_entry(file)
-          entry.derivatives = derivatives.collect {|node| file_entry(node,false)}
-          entry
+    def each_entry(only_data=nil)
+      only_data = path_matcher(only_data)
+      original_fg = file_group(@mets,"original").first
+      file_entries = original_fg.xpath("mets:file", METS_NS).collect do |file|
+        gid = file["GROUPID"]
+        derivatives = file_group(@mets,"preservation").first.xpath("mets:file[@GROUPID='#{gid}']", METS_NS)
+        entry = file_entry(file)
+        entry.derivatives = derivatives.collect {|node| file_entry(node,false)}
+        if !only_data || entry.path =~ only_data
+          yield entry
         end
       end
     end
@@ -35,7 +37,8 @@ module Arxv
       file_node.css('FLocat').first["xlink:href"]
     end
     def file_entry(file_node,original=true)
-      opts = {path: file_path(file_node), original:original}
+      local_id = file_node['ID'].sub(/^file-/,'')
+      opts = {path: file_path(file_node), local_id:local_id,original:original}
       document = file_node.document
       adm_id = file_node['ADMID']
       if adm_id
@@ -44,7 +47,7 @@ module Arxv
         mime = mime ? mime["mimetype"] : nil
         opts[:mime] = mime
       end
-      Arxv::FileEntry.new(opts)
+      Arxv::Entry.new(opts)
     end
     # return the GenericResource objects associated with the archive's entries
     def resources
