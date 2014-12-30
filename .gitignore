@@ -20,3 +20,4 @@ database.yml
 solr.yml
 images.yml
 cache_config.yml
+.DS_Store
