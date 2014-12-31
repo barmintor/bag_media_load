@@ -17,6 +17,7 @@ class GenericResource < ::ActiveFedora::Base
   include BagIt::DcHelpers
   include BagIt::Resource
   include ::ActiveFedora::RelsInt
+  include BagMediaLoad::DsPathHelpers
 
   has_and_belongs_to_many :containers, :property=>:cul_member_of, :class_name=>'ActiveFedora::Base'  
 
@@ -123,12 +124,7 @@ class GenericResource < ::ActiveFedora::Base
       ds = datastreams["content"]
       opts = {:upload_dir => '/var/tmp/bag_media_load'}.merge(opts)
       if ds and IMAGE_EXT.include? ds.mimeType
-        dsLocation = ds.dsLocation
-        if dsLocation =~ /^file:\//
-          dsLocation = dsLocation.sub(/^file:\/+/,'/')
-          dsLocation.gsub!(/%20/,' ')
-          dsLocation.gsub!(/%23/,'#')
-        end
+        dsLocation = ds_uri_to_path(ds.dsLocation)
         begin
           content_ds_props = nil
           # generate content DS rels
@@ -148,18 +144,30 @@ class GenericResource < ::ActiveFedora::Base
       end
       derivative_entries.each do |entry|
         dsid = entry.local_id
-        mimeType = entry.mime
         label = File.basename(entry.path)
+        mimeType = entry.mime
+        mimeType ||= begin
+          ext = File.extname(label).downcase
+          MIME::Types.type_for(ext)
+        end
         ds = datastreams[dsid]
         if ds
-          ds.mimeType = mime unless ds.mimeType == mime
-          ds.label = label unless ds.label == label
-          if rels_int.relationships(ds, :format_of).empty?
-            rels_int.add_relationship(ds, :format_of, datastreams["content"])
-            rels_int.serialize!
-          end
+          ds.mimeType = mimeType unless ds.mimeType == mimeType
+          ds.dsLabel = label unless ds.dsLabel == label
         else
-          #TODO create the ds if missing
+          ds_parms = {
+            controlGroup: 'E',
+            dsLabel: label,
+            dsLocation: path_to_ds_uri(entry.path),
+            mimeType: mimeType,
+            versionable: false
+          }
+          ds = create_datastream(ActiveFedora::Datastream,dsid,ds_parms)
+          add_datastream(ds)
+        end
+        if rels_int.relationships(ds, :format_of).empty?
+          rels_int.add_relationship(ds, :format_of, datastreams["content"])
+          rels_int.serialize!
         end
       end
       self.save
