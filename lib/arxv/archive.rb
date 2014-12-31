@@ -12,6 +12,7 @@ module Arxv
     def initialize(bag_info)
       bag_info = BagIt::Info.new(bag_info) if bag_info.is_a? String
       raise "The bag at #{bag_info.bag_path} is not an Archivematica bag" unless bag_info.archivematica?
+      @bag_info = bag_info
       mets_path = Dir.entries(File.join(bag_info.bag_path,'data')).select {|x| x =~ /^METS\..+\.xml$/}
       mets_path = File.join(bag_info.bag_path,'data',mets_path.first)
       @mets = Nokogiri::XML(open(mets_path))
@@ -34,7 +35,7 @@ module Arxv
       doc.xpath("/mets:mets/mets:fileSec/mets:fileGrp[@USE='#{use}']", METS_NS)
     end
     def file_path(file_node)
-      file_node.css('FLocat').first["xlink:href"]
+      File.absolute_path(File.join(@bag_info.bag_path,'data',file_node.css('FLocat').first["xlink:href"]))
     end
     def file_entry(file_node,original=true)
       local_id = file_node['ID'].sub(/^file-/,'')

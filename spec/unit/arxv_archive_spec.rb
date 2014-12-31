@@ -3,8 +3,11 @@ describe Arxv::Archive do
   let(:bag_path) {
     fixture('archivematica_bag/bag-info.txt')
   }
+  let(:bag_info) {
+    BagIt::Info.new(bag_path)
+  }
   subject {
-    Arxv::Archive.new(BagIt::Info.new(bag_path))
+    Arxv::Archive.new(bag_info)
   }
   describe "#initialize" do
     it "should initialize with no arguments" do
@@ -22,15 +25,18 @@ describe Arxv::Archive do
       expect(entries.size).to eql(7)
     end
     it "should collect entry information from amdSec" do
-      entry = entries["objects/SmartCane_1_.pdf"]
+      key = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_.pdf"))
+      entry = entries[key]
       expect(entry.mime).to eql("application/pdf")
       expect(entry.local_id).to eql('content')
     end
     it "should group derivatives under the original file" do
-      entry = entries["objects/SmartCane_1_.pdf"]
+      key = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_.pdf"))
+      entry = entries[key]
       expect(entry.derivatives.size).to eql(1)
       derivative = entry.derivatives.first
-      expect(derivative.path).to eql "objects/SmartCane_1_-81c418bc-7d2e-4dee-8a1e-9d1e75358ead.pdf"
+      deriv_path = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_-81c418bc-7d2e-4dee-8a1e-9d1e75358ead.pdf"))
+      expect(derivative.path).to eql deriv_path
       expect(derivative.mime).to be_nil
       expect(derivative.local_id).to eql '81c418bc-7d2e-4dee-8a1e-9d1e75358ead'
     end
