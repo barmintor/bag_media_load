@@ -130,13 +130,12 @@ namespace :structure do
     cagg_id = "#{id_prefix}/data"
     cagg = ContentAggregator.search_repo(identifier: cagg_id).first
     unless cagg.nil?
-      manifest = File.join(bag_path, "manifest-#{alg}.txt")
+      manifest = bag_info.manifest(alg)
       paths = []
-      open(manifest) do |blob|
-        blob.each do |line|
-          line.strip!
-          paths << File.join(line.split(' ')[1..-1])
-        end
+      object_path_prefix = bag_info.bag_path + '/'
+      manifest.each_entry do |entry|
+        rel_path = entry.path.sub(object_path_prefix,'')
+        paths << rel_path
       end
       paths.sort!
 
