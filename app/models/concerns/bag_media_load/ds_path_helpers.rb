@@ -14,4 +14,16 @@ module BagMediaLoad::DsPathHelpers
     end
     dsLocation
   end
+  def mime_for_name(filename)
+    ext = File.extname(File.basename(filename)).downcase
+    mt = MIME::Types.type_for(ext)
+    if mt.is_a? Array
+      mt = mt.first
+    end
+    unless mt.nil?
+      return mt.content_type
+    else
+      return nil
+    end
+  end
 end

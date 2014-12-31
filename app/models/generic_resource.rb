@@ -146,13 +146,10 @@ class GenericResource < ::ActiveFedora::Base
         dsid = entry.local_id
         label = File.basename(entry.path)
         mimeType = entry.mime
-        mimeType ||= begin
-          ext = File.extname(label).downcase
-          MIME::Types.type_for(ext)
-        end
+        mimeType ||= mime_for_name(entry.path)
         ds = datastreams[dsid]
         if ds
-          ds.mimeType = mimeType unless ds.mimeType == mimeType
+          ds.mimeType = mimeType unless ds.mimeType == mimeType || mimeType.nil?
           ds.dsLabel = label unless ds.dsLabel == label
         else
           ds_parms = {
