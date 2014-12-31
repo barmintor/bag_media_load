@@ -38,7 +38,7 @@ describe Arxv::Archive do
       deriv_path = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_-81c418bc-7d2e-4dee-8a1e-9d1e75358ead.pdf"))
       expect(derivative.path).to eql deriv_path
       expect(derivative.mime).to be_nil
-      expect(derivative.local_id).to eql '81c418bc-7d2e-4dee-8a1e-9d1e75358ead'
+      expect(derivative.local_id).to eql 'file-81c418bc-7d2e-4dee-8a1e-9d1e75358ead'
     end
   end
   describe "#resources" do

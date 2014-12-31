@@ -38,7 +38,7 @@ module Arxv
       File.absolute_path(File.join(@bag_info.bag_path,'data',file_node.css('FLocat').first["xlink:href"]))
     end
     def file_entry(file_node,original=true)
-      local_id = file_node['ID'].sub(/^file-/,'')
+      local_id = file_node['ID']
       opts = {path: file_path(file_node), local_id:local_id,original:original}
       document = file_node.document
       adm_id = file_node['ADMID']
