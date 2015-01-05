@@ -163,6 +163,7 @@ namespace :structure do
       content = structMetadata.content
       if content != temp_content
         structMetadata.content = temp_content
+        structMetadata.type = 'http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem'
         structMetadata.mimeType = 'text/xml'
         structMetadata.dsLabel = 'structMetadata.xml'
         cagg.save
