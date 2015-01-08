@@ -54,5 +54,8 @@ module Arxv
     def resources
       []
     end
+    def name_parser
+      @bag_info.id_factory
+    end
   end
 end

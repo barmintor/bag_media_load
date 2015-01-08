@@ -30,6 +30,10 @@ module BagIt
       @name_parser = name_parser
     end
 
+    def name_parser
+      @name_parser
+    end
+
     def path_matcher(only_data=nil)
       if only_data.is_a? String
         only_data = only_data.dup
@@ -62,7 +66,7 @@ module BagIt
     end
 
     def find_or_create_resource(source, create=false)
-      Manifest.find_or_create_resource(source, @name_parser, create)
+      Manifest.find_or_create_resource(source, name_parser(), create)
     end
 
     def self.find_resource(dc_source)
