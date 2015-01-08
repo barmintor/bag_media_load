@@ -102,10 +102,10 @@ module BagIt
         dsLocation.gsub!('#','%23')
         if ds and !ds.new?
           ds.dsLocation = dsLocation
-          ds.dsLabel = sources[0]
+          ds.dsLabel = sources[0].split('/').last
           ds.save
         else
-          ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>dsLocation, :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0])
+          ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>dsLocation, :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0].split('/').last)
           resource.add_datastream(ds)
           ds.save
         end
