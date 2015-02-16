@@ -29,6 +29,7 @@ describe Arxv::Archive do
       entry = entries[key]
       expect(entry.mime).to eql("application/pdf")
       expect(entry.local_id).to eql('content')
+      expect(entry.original_path).to eql('SmartCane[1].pdf')
     end
     it "should group derivatives under the original file" do
       key = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_.pdf"))
@@ -37,7 +38,8 @@ describe Arxv::Archive do
       derivative = entry.derivatives.first
       deriv_path = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_-81c418bc-7d2e-4dee-8a1e-9d1e75358ead.pdf"))
       expect(derivative.path).to eql deriv_path
-      expect(derivative.mime).to be_nil
+      expect(derivative.original_path).to eql deriv_path
+      expect(derivative.mime).to eql("application/pdf")
       expect(derivative.local_id).to eql 'file-81c418bc-7d2e-4dee-8a1e-9d1e75358ead'
     end
   end

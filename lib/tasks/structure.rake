@@ -131,21 +131,21 @@ namespace :structure do
     cagg = ContentAggregator.search_repo(identifier: cagg_id).first
     unless cagg.nil?
       manifest = bag_info.manifest(alg)
-      paths = []
+      paths = {}
       object_path_prefix = bag_info.bag_path + '/'
       manifest.each_entry do |entry|
         rel_path = entry.path.sub(object_path_prefix,'')
-        paths << rel_path
+        paths[entry.original_path] = rel_path
       end
-      paths.sort!
 
       struct = {}
-      paths.each do |path|
+      paths.keys.sort.each do |path|
+        id_suffix = paths[path]
         path_parts = path.split('/')[1..-1]
         context = struct
         path_parts.each do |part|
           if part == path_parts.last
-            context[part] ||= id_prefix + '/' + path
+            context[part] ||= id_prefix + '/' + id_suffix
           else
             context[part] ||= {}
             context = context[part]

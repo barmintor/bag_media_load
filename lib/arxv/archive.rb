@@ -47,6 +47,10 @@ module Arxv
         mime = adm.xpath(".//premis:objectCharacteristicsExtension/fits:fits/fits:identification/fits:identity", METS_NS).first if adm
         mime = mime ? mime["mimetype"] : nil
         opts[:mime] = mime
+        if original
+          original_path = adm.xpath(".//premis:originalName", METS_NS).text
+          opts[:original_path] = original_path
+        end
       end
       Arxv::Entry.new(opts)
     end

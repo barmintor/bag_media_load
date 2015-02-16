@@ -20,6 +20,8 @@ module BagIt
 
     OCTETSTREAM = "application/octet-stream"
 
+    autoload :Entry, 'bag_it/manifest/entry'
+
     def initialize(manifest, name_parser)
       if manifest.is_a? File
         @manifest = manifest.path # we need to be able to re-open this file
@@ -70,8 +72,11 @@ module BagIt
     end
 
     def self.find_resource(dc_source)
+      find_for_sources(sources(dc_source))
+    end
+    def self.find_for_sources(sources)
       resource = nil
-      sources(dc_source).each do |source|
+      sources.each do |source|
         source = source.gsub(/~/,'?') || source  # tilde is an operator in search
         source = source.gsub(/'/,'?') || source # illegal character
         source = source.gsub(/&/,'?') || source # illegal character
@@ -83,10 +88,13 @@ module BagIt
       end
       return resource
     end
-    
-    def self.find_or_create_resource(dc_source, name_parser, create=false)
+    def self.find_or_create_resource(dc_source_or_entry, name_parser, create=false)
+      unless dc_source_or_entry.is_a? Entry
+        dc_source_or_entry = entry_for(dc_source_or_entry)
+      end
+      dc_source = dc_source_or_entry.path
       sources = Manifest.sources(dc_source)
-      resource = find_resource(dc_source)
+      resource = find_for_sources(sources)
       if resource.blank?
         return nil unless create
         resource = GenericResource.new(:pid => BagIt.next_pid)
@@ -110,29 +118,15 @@ module BagIt
           ds.save
         end
         begin
-          if IMAGE_TYPES.include? mimetype or mimetype.start_with? 'image'
+          if dc_source_or_entry.image?
               setImageProperties(resource)
-              resource.set_dc_format mimetype
-              resource.set_dc_type 'StillImage'
-              resource.set_dc_title 'Preservation Image' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif TEXT_TYPES.include? mimetype or mimetype.start_with? 'text'
-            resource.set_dc_format mimetype
-            resource.set_dc_type 'Text'
-            resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif VIDEO_TYPES.include? mimetype or mimetype.start_with? 'video'
-            resource.set_dc_format mimetype
-            resource.set_dc_type 'MovingImage'
-            resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          elsif AUDIO_TYPES.include? mimetype or mimetype.start_with? 'audio'
-            resource.set_dc_format mimetype
-            resource.set_dc_type 'Sound'
-            resource.set_dc_title 'Preservation Recording' if resource.datastreams['DC'].term_values(:dc_title).blank?
-          else
+          elsif dc_source_or_entry.dc_type.eql? 'Software'
             Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
-            resource.set_dc_format mimetype
-            resource.set_dc_type 'Software'
-            resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
           end
+          resource.set_dc_format dc_source_or_entry.mime
+          resource.set_dc_type dc_source_or_entry.dc_type
+          resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
+
         rescue Exception => e
           Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
           Rails.logger.warn "WARN ingesting as unidentified bytestream"
@@ -181,32 +175,11 @@ module BagIt
     end
     
     def self.mime_for_name(filename)
-      ext = File.extname(filename).downcase
-      mt = MIME::Types.type_for(ext)
-      if mt.is_a? Array
-        mt = mt.first
-      end
-      unless mt.nil?
-        return mt.content_type
-      else
-        return nil
-      end
+      Entry.mime_for_name(filename)
     end
-    class Entry
-      attr_accessor :path, :mime, :derivatives
-      def initialize(opts)
-        @path = opts[:path]
-        @mime = opts[:mime]
-        @local_id = opts[:local_id]
-        @original = true
-        @derivatives = []
-      end
-      def original?
-        @original
-      end
-      def local_id
-        original? ? 'content' : @local_id
-      end
-    end    
+    def self.entry_for(dc_source)
+      opts = {path: dc_source, mime: mime_for_name(dc_source), local_id: 'content'}
+      Entry.new(opts)
+    end
   end
 end
