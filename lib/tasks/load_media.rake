@@ -195,7 +195,7 @@ namespace :bag do
             end
             dc = resource.datastreams['DC']
             title = dc.find_by_terms(:dc_title).first
-            if title.nil? || title =~ /^Preservation[:]? (File|Image|Recording)/
+            if title.nil? || title.text =~ /^Preservation[:]? (File|Image|Recording)/
               dc.update_values([:dc_title]=>original_name.split('/')[-1])
               resource.save
             end
