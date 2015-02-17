@@ -3,8 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)

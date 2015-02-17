@@ -16,7 +16,13 @@ module BagIt
         original? ? 'content' : @local_id
       end
       def original_path
-        path
+        ix = path.index(/\/data\//)
+        ix += 6 if ix
+        if !ix && path =~ /^data/
+          ix = 5
+        end
+        ix ||= 0 
+        path[ix..-1]
       end
       def title
         @title ||= default_title

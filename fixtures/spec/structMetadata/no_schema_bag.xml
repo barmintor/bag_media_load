@@ -1,0 +1,9 @@
+<mets:structMap TYPE="physical" LABEL="Device" xmlns:mets="http://www.loc.gov/METS/">
+  <mets:div LABEL="lol.bar" CONTENTIDS="apt://columbia.edu/foo/data/lol.bar" />
+  <mets:div LABEL="lol.wut" CONTENTIDS="apt://columbia.edu/foo/data/lol.wut" />
+  <mets:div LABEL="top">
+    <mets:div LABEL="foo.wut" CONTENTIDS="apt://columbia.edu/foo/data/top/foo.wut" />
+    <mets:div LABEL="lol.bar" CONTENTIDS="apt://columbia.edu/foo/data/top/lol.bar" />
+    <mets:div LABEL="lol.wut" CONTENTIDS="apt://columbia.edu/foo/data/top/lol.wut" />
+  </mets:div>
+</mets:structMap>

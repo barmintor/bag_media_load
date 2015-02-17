@@ -11,7 +11,7 @@ module BagIt
       if File.basename(bag_path) == 'bag-info.txt'
         bag_path = File.dirname(bag_path)
       end
-      bag_path
+      File.expand_path(bag_path)
     end
     attr_accessor :count, :bag_path
     def initialize(src_file)
@@ -75,6 +75,33 @@ module BagIt
     end
     def manifest_path(checksum_alg='md5')
       File.join(bag_path,"manifest-#{checksum_alg}.txt")
+    end
+    def structure(checksum_alg='md5', id_prefix=nil, io)
+      id_prefix ||= "apt://columbia.edu/#{self.external_id}"
+      manifest = manifest(checksum_alg)
+
+      paths = {}
+      object_path_prefix = self.bag_path + '/'
+      manifest.each_entry do |entry|
+        rel_path = entry.path.sub(object_path_prefix,'')
+        paths[entry.original_path] = rel_path
+      end
+
+      struct = {}
+      paths.keys.sort.each do |path|
+        id_suffix = paths[path]
+        path_parts = path.split('/')
+        context = struct
+        path_parts.each do |part|
+          if part == path_parts.last
+            context[part] ||= id_prefix + '/' + id_suffix
+          else
+            context[part] ||= {}
+            context = context[part]
+          end
+        end
+      end
+      Cul::Repo::Serializers::StructMetadata.serialize(nil, struct, io)
     end
   end
 end

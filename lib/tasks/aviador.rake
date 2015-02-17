@@ -4,8 +4,7 @@ require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
 require 'thread/pool'
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 module Aviador
   def load_objects(dir)
     objects = []
@@ -70,8 +69,8 @@ namespace :util do
     desc 'create the project bagg'
     task :setup => :environment do
       include Aviador
-      all_collections = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
-      raise "Could not find LDPD collections aggregator at #{LDPD_COLLECTIONS_ID}" unless all_collections
+      all_collections = BagAggregator.search_repo(identifier: LDPD_PROJECTS_ID).first
+      raise "Could not find LDPD collections aggregator at #{LDPD_PROJECTS_ID}" unless all_collections
       ferriss = BagAggregator.search_repo(identifier: 'ldpd.ferriss').first
       unless ferriss
         ids = ['ldpd.ferriss','http://library.columbia.edu/indiv/avery/da/collections/ferriss.html']

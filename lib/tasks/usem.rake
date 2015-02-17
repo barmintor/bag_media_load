@@ -3,10 +3,9 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
-ALL_PROJECTS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-ALL_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 PROJECT_ID = "http://universityseminars.columbia.edu"
-STORAGE_ID = ALL_STORAGE_ID + '/rbml.usem'
+STORAGE_ID = LDPD_STORAGE_ID + '/rbml.usem'
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)
@@ -110,7 +109,7 @@ namespace :util do
       project =  BagAggregator.search_repo(identifier: PROJECT_ID).first
       storage = BagAggregator.search_repo(identifier: STORAGE_ID).first
       if storage.nil?
-        all_content = BagAggregator.search_repo(identifier: ALL_STORAGE_ID).first
+        all_content = BagAggregator.search_repo(identifier: LDPD_STORAGE_ID).first
         raise 'could not find top-level storage aggregator' if all_content.nil?
         storage = BagAggregator.new(pid: next_pid())
         storage.datastreams["DC"].update_values({[:dc_identifier] => ['rbml.usem', STORAGE_ID]})
@@ -119,7 +118,7 @@ namespace :util do
         storage.save
       end
       if project.nil?
-        all_content = BagAggregator.search_repo(identifier: ALL_PROJECTS_ID).first
+        all_content = BagAggregator.search_repo(identifier: LDPD_PROJECTS_ID).first
         raise 'could not find top-level projects aggregator' if all_content.nil?
         project = BagAggregator.new(pid: next_pid())
         project.datastreams["DC"].update_values({[:dc_identifier] => [PROJECT_ID, 'ldpd.usem']})

@@ -4,8 +4,7 @@ require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
 require 'thread/pool'
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 module Novelties
   PROJECT_URI = 'http://www.columbia.edu/cgi-bin/cul/resolve?clio9427856'
   def load_objects(dir)
@@ -58,8 +57,8 @@ namespace :util do
     desc 'create the project bagg'
     task :setup => :environment do
       include Novelties
-      all_collections = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
-      raise "Could not find LDPD collections aggregator at #{LDPD_COLLECTIONS_ID}" unless all_collections
+      all_collections = BagAggregator.search_repo(identifier: LDPD_PROJECTS_ID).first
+      raise "Could not find LDPD collections aggregator at #{LDPD_PROJECTS_ID}" unless all_collections
       bagg = BagAggregator.search_repo(identifier: Novelties::PROJECT_URI).first
       unless bagg
         ids = ['avery.novelties',Novelties::PROJECT_URI]

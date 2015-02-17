@@ -4,8 +4,7 @@ require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
 require "thread/pool"
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
   mods_collection = Nokogiri::XML.parse(file)
@@ -14,7 +13,7 @@ def get_mods_nodes()
 end
 
 def get_ldpd_content_pid
-  BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
+  BagAggregator.find_by_identifier(LDPD_PROJECTS_ID)
 end
 
 def get_bag_pid(bag_id)
@@ -89,7 +88,7 @@ namespace :bag do
 
       css = BagAggregator.find_by_identifier(group_id)
       if css.blank?
-        all_ldpd_content = BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
+        all_ldpd_content = BagAggregator.find_by_identifier(LDPD_PROJECTS_ID)
         css_pid = next_pid
         css = BagAggregator.new(:pid=>css_pid)
         css.datastreams["DC"].identifier = group_id

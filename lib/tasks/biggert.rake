@@ -3,8 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 class Fake
   attr_accessor :pid
   def initialize(pid, isNew=false)
@@ -51,7 +50,7 @@ namespace :util do
     task :setup => :environment do
       biggert = BagAggregator.search_repo(identifier: 'http://www.columbia.edu/cgi-bin/cul/resolve?clio7887951').first
       if biggert.nil?
-        all_content = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
+        all_content = BagAggregator.search_repo(identifier: LDPD_PROJECTS_ID).first
         raise 'could not find top-level collections aggregator' if all_content.nil?
         biggert = BagAggregator.new(pid: next_pid())
         biggert.label = 'The Biggert Collection of Architectural Vignettes on Commercial Stationery'

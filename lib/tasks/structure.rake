@@ -1,23 +1,4 @@
 require 'tempfile'
-module Structure
-  module Mets
-    def self.serialize(k, v, out, indent=0)
-      i = ''
-      indent.times { i << ' '}
-      if v.is_a? Hash
-        if k.nil?
-          out.print i + "<mets:structMap TYPE=\"physical\" LABEL=\"Device\" xmlns:mets=\"http://www.loc.gov/METS/\">\n"
-        else
-          out.print i + "<mets:div LABEL=\"#{k}\">\n"
-        end
-        v.each {|key,value| Mets.serialize(key, value,out,indent+2)}
-        out.print i + (k.nil? ? "</mets:structMap>\n"  : "</mets:div>\n")
-      else
-        out.print i + "<mets:div LABEL=\"#{k.to_s}\" CONTENTIDS=\"#{v}\" />\n"
-      end
-    end
-  end
-end
 namespace :structure do
   task :fix => :environment do
     broken = [
@@ -130,31 +111,9 @@ namespace :structure do
     cagg_id = "#{id_prefix}/data"
     cagg = ContentAggregator.search_repo(identifier: cagg_id).first
     unless cagg.nil?
-      manifest = bag_info.manifest(alg)
-      paths = {}
-      object_path_prefix = bag_info.bag_path + '/'
-      manifest.each_entry do |entry|
-        rel_path = entry.path.sub(object_path_prefix,'')
-        paths[entry.original_path] = rel_path
-      end
-
-      struct = {}
-      paths.keys.sort.each do |path|
-        id_suffix = paths[path]
-        path_parts = path.split('/')[1..-1]
-        context = struct
-        path_parts.each do |part|
-          if part == path_parts.last
-            context[part] ||= id_prefix + '/' + id_suffix
-          else
-            context[part] ||= {}
-            context = context[part]
-          end
-        end
-      end
       temp_file = Tempfile.new('structMetadata')
       open(temp_file.path, 'w') do |out|
-        Structure::Mets.serialize(nil, struct, out)
+        bag_info.structure(alg,id_prefix,out)
       end
       # and then add it to the CAGG
       temp_content = temp_file.read

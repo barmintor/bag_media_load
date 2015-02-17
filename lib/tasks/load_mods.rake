@@ -4,7 +4,7 @@ require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
 require "open-uri"
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
+include Cul::Repo::Constants
 def get_mods_nodes()
   file = File.new('fixtures/lindquist-mods.xml')
   mods_collection = Nokogiri::XML.parse(file)
@@ -13,7 +13,7 @@ def get_mods_nodes()
 end
 
 def get_ldpd_content_pid
-  BagAggregator.find_by_identifier(LDPD_COLLECTIONS_ID)
+  BagAggregator.find_by_identifier(LDPD_PROJECTS_ID)
 end
 
 def get_bag_pid(bag_id)

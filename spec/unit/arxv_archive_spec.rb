@@ -7,7 +7,7 @@ describe Arxv::Archive do
     BagIt::Info.new(bag_path)
   }
   subject {
-    Arxv::Archive.new(bag_info)
+    bag_info.manifest('sha512')
   }
   describe "#initialize" do
     it "should initialize with no arguments" do

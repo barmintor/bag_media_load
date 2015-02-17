@@ -3,8 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
-LDPD_COLLECTIONS_ID = 'http://libraries.columbia.edu/projects/aggregation'
-LDPD_STORAGE_ID = 'apt://columbia.edu'
+include Cul::Repo::Constants
 URBAN_PROJECT_ID = "http://www.columbia.edu/cu/lweb/eresources/archives/rbml/urban/"
 URBAN_STORAGE_ID = LDPD_STORAGE_ID + '/rbml.urban'
 class Fake
@@ -63,7 +62,7 @@ namespace :util do
         urban_bag.save
       end
       if urban_project.nil?
-        all_content = BagAggregator.search_repo(identifier: LDPD_COLLECTIONS_ID).first
+        all_content = BagAggregator.search_repo(identifier: LDPD_PROJECTS_ID).first
         raise 'could not find top-level projects aggregator' if all_content.nil?
         urban_project = BagAggregator.new(pid: next_pid())
         urban_project.datastreams["DC"].update_values({[:dc_identifier] => [URBAN_PROJECT_ID, 'ldpd.urban']})

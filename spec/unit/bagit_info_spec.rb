@@ -65,4 +65,22 @@ describe BagIt::Info do
       expect(schema_bag.id_for('test')).to eql 'test_id'
     end
   end
+  describe '#structure' do
+    it "should generate the right structMetadata for standard bags" do
+      io = StringIO.new
+      archivematica_bag.structure('sha512',nil,io)
+      io.rewind
+      expected = open(fixture('structMetadata/archivematica_bag.xml')) {|f| f.read}
+      actual = io.read
+      expect(expected).to eql(actual)
+    end
+    it "should generate the right structMetadata for archivematica bags" do
+      io = StringIO.new
+      no_schema_bag.structure('sha1',nil,io)
+      io.rewind
+      expected = open(fixture('structMetadata/no_schema_bag.xml')) {|f| f.read}
+      actual = io.read
+      expect(expected).to eql(actual)
+    end
+  end
 end

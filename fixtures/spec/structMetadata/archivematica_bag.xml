@@ -1,0 +1,9 @@
+<mets:structMap TYPE="physical" LABEL="Device" xmlns:mets="http://www.loc.gov/METS/">
+  <mets:div LABEL="IFP Ammended Constitution.doc" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/IFP_Ammended_Constitution.doc" />
+  <mets:div LABEL="IFP PR- ALMNI VERSION2A[1].doc" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/IFP_PR-_ALMNI_VERSION2A_1_.doc" />
+  <mets:div LABEL="IFP-UAA Bdgt2 2007.xls" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/IFP-UAA_Bdgt2_2007.xls" />
+  <mets:div LABEL="IFP-UAA STRATEGIC PLAN.doc" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/IFP-UAA_STRATEGIC_PLAN.doc" />
+  <mets:div LABEL="IFP-UAA strategic Plan May 2 2009.doc" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/IFP-UAA_strategic_Plan_May_2_2009.doc" />
+  <mets:div LABEL="SmartCane[1].pdf" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/SmartCane_1_.pdf" />
+  <mets:div LABEL="Talking Points.doc" CONTENTIDS="apt://columbia.edu/uga_ur_00-6ec9ce8b-b967-4b1a-82bc-2e9eacd3843f/data/objects/Talking_Points.doc" />
+</mets:structMap>
