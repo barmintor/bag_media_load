@@ -3,6 +3,7 @@ require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
 require "bag_it"
+require 'cul_repo_cache'
 require 'thread/pool'
 include Cul::Repo::Constants
 module Aviador

@@ -2,6 +2,7 @@ require "rake"
 require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
+require 'cul_repo_cache'
 require "bag_it"
 include Cul::Repo::Constants
 URBAN_PROJECT_ID = "http://www.columbia.edu/cu/lweb/eresources/archives/rbml/urban/"

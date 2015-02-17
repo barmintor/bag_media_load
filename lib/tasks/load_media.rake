@@ -2,6 +2,7 @@ require "rake"
 require "active-fedora"
 require "cul_scv_hydra"
 require "nokogiri"
+require 'cul_repo_cache'
 require "bag_it"
 require "thread/pool"
 include Cul::Repo::Constants
@@ -60,10 +61,13 @@ def apt_project_id(project_id)
 end
 
 namespace :bag do
-  task :pid do
+  task :info => :environment do
+    puts "Task Suite to load media into Fedora at #{ActiveFedora.config.credentials[:url]}"
+  end
+  task :pid => :environment do
     Rails.logger.info BagIt.next_pid
   end
-  task :load_fixtures do
+  task :load_fixtures  => :environment do
     ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
     rubydora = ActiveFedora::Base.fedora_connection[0].connection
     Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| Rails.logger.info rubydora.ingest :file=>open(f)}

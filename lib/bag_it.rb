@@ -1,4 +1,5 @@
 require 'active_support'
+require 'cul_repo_cache'
 module BagIt
   extend ActiveSupport::Autoload
   eager_autoload do

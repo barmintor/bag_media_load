@@ -1,4 +1,5 @@
 require 'tempfile'
+require 'cul_repo_cache'
 namespace :structure do
   task :fix => :environment do
     broken = [
