@@ -51,7 +51,7 @@ module BagIt
         else
           dt = 'File Artifact'
         end
-        return original? ? "Preservation: #{dt}" : dt
+        return original? ? "Preservation #{dt}" : dt
       end
       def dc_type
         if image?

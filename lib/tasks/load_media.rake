@@ -184,7 +184,21 @@ namespace :bag do
           rel_path = "data/" + source.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           #pool.process(source, all_media) do |source, all_media|
-            resource = manifest.find_or_create_resource(source, true)
+            resource = manifest.find_or_create_resource(entry, true)
+            original_name = resource.relationships(:original_name).first
+            if original_name
+              original_name = original_name.object.to_s
+            else
+              resource.add_relationship(:original_name,entry.original_path,true)
+              resource.save
+              original_name = entry.original_path
+            end
+            dc = resource.datastreams['DC']
+            title = dc.find_by_terms(:dc_title).first
+            if title.nil? || title =~ /^Preservation[:]? (File|Image|Recording)/
+              dc.update_values([:dc_title]=>original_name.split('/')[-1])
+              resource.save
+            end
             resource.derivatives!(derivative_options,entry.derivatives)
             container_pids = container_pids_for(resource)
             unless container_pids.include? all_media.pid

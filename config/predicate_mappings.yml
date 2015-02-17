@@ -73,3 +73,5 @@
     :rdf_type: type
   http://www.jpeg.org/jpx/1.0/xml/:
     :dwt_levels: dwtLevels
+  http://www.loc.gov/premis/rdf/v1#:
+    :original_name: hasOriginalName
