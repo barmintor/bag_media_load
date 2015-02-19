@@ -54,6 +54,10 @@ module Arxv
       end
       Arxv::Entry.new(opts)
     end
+    def entry_for(dc_source)
+      opts = {path: dc_source, mime: mime_for_name(dc_source), local_id: 'content'}
+      Arxv::Entry.new(opts)
+    end
     # return the GenericResource objects associated with the archive's entries
     def resources
       []

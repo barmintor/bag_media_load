@@ -184,7 +184,7 @@ namespace :bag do
           rel_path = "data/" + source.split(/\/data\//)[1..-1].join('/data/')
           Rails.logger.info("#{ctr} of #{bag_info.count}: Processing #{rel_path}")
           #pool.process(source, all_media) do |source, all_media|
-            resource = manifest.find_or_create_resource(entry, true)
+            resource = manifest.find_or_create_resource(entry, nil, true)
             original_name = resource.relationships(:original_name).first
             if original_name
               original_name = original_name.object.to_s

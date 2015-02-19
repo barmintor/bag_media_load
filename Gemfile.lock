@@ -353,7 +353,6 @@ DEPENDENCIES
   active_fedora_finders
   active_fedora_relsint!
   coffee-rails (~> 4.0.0)
-  cul_image_props (>= 0.3.5)
   cul_scv_hydra!
   free-image!
   imogen (>= 0.1.2)

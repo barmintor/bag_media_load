@@ -3,7 +3,7 @@ require 'mime/types'
 module BagIt
   class Manifest
     include BagIt::DcHelpers
-    extend BagIt::ImageHelpers
+    include BagIt::ImageHelpers
 
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
 
@@ -64,44 +64,24 @@ module BagIt
     end    
 
     def each_resource(create=false, only_data=nil)
-      each_entry(only_data) {|source| yield find_or_create_resource(source, create) }
+      each_entry(only_data) {|source| yield find_or_create_resource(source, nil, create) }
     end
 
-    def find_or_create_resource(source, create=false)
-      Manifest.find_or_create_resource(source, name_parser(), create)
-    end
-
-    def self.find_resource(dc_source)
-      find_for_sources(sources(dc_source))
-    end
-    def self.find_for_sources(sources)
-      resource = nil
-      sources.each do |source|
-        source = source.gsub(/~/,'?') || source  # tilde is an operator in search
-        source = source.gsub(/'/,'?') || source # illegal character
-        source = source.gsub(/&/,'?') || source # illegal character
-        source = source.gsub(' ','?') || source # illegal character
-        resource ||= GenericResource.search_repo(source: source).first
-        if resource
-          break
-        end
-      end
-      return resource
-    end
-    def self.find_or_create_resource(dc_source_or_entry, name_parser, create=false)
+    def find_or_create_resource(source, name_parser=nil, create=false)
+      name_parser ||= name_parser()
       unless dc_source_or_entry.is_a? Entry
         dc_source_or_entry = entry_for(dc_source_or_entry)
       end
       dc_source = dc_source_or_entry.path
       sources = Manifest.sources(dc_source)
-      resource = find_for_sources(sources)
+      resource = Manifest.find_for_sources(sources)
       if resource.blank?
         return nil unless create
         resource = GenericResource.new(:pid => BagIt.next_pid)
         resource.save
       end
       unless resource.datastreams['content'] and !resource.datastreams['content'].new?
-        mimetype = mime_for_name(sources[0])
+        mimetype = Manifest.mime_for_name(sources[0])
         mimetype ||= OCTETSTREAM
         ds_size = File.stat(dc_source).size.to_s
         ds = resource.datastreams['content']
@@ -130,9 +110,9 @@ module BagIt
         rescue Exception => e
           Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
           Rails.logger.warn "WARN ingesting as unidentified bytestream"
-          resource.set_dc_format OCTETSTREAM
-          resource.set_dc_type 'Software'
-          resource.set_dc_title 'Preservation File Artifact' if resource.datastreams['DC'].term_values(:dc_title).blank?
+          resource.set_dc_format dc_source_or_entry.mime
+          resource.set_dc_type dc_source_or_entry.dc_type
+          resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
         end
         bag_entry = sources[0].slice((sources[0].index('/data/') + 1)..-1)
         resource.add_dc_identifier name_parser.id(bag_entry) if name_parser.id(bag_entry)
@@ -142,6 +122,28 @@ module BagIt
       end
       resource.migrate!
       resource
+    end
+
+    def entry_for(dc_source)
+      Manifest.entry_for(dc_source)
+    end
+
+    def self.find_resource(dc_source)
+      find_for_sources(sources(dc_source))
+    end
+    def self.find_for_sources(sources)
+      resource = nil
+      sources.each do |source|
+        source = source.gsub(/~/,'?') || source  # tilde is an operator in search
+        source = source.gsub(/'/,'?') || source # illegal character
+        source = source.gsub(/&/,'?') || source # illegal character
+        source = source.gsub(' ','?') || source # illegal character
+        resource ||= GenericResource.search_repo(source: source).first
+        if resource
+          break
+        end
+      end
+      return resource
     end
     
     def self.sources(dc_source)

@@ -31,13 +31,13 @@ module BagIt
         IMAGE_TYPES.include? mime or mime.start_with? 'image'
       end
       def text?
-        TEXT_TYPES.include? mimetype or mimetype.start_with? 'text'
+        TEXT_TYPES.include? mime or mimetype.start_with? 'text'
       end
       def video?
-        VIDEO_TYPES.include? mimetype or mimetype.start_with? 'video'
+        VIDEO_TYPES.include? mime or mimetype.start_with? 'video'
       end
       def audio?
-        AUDIO_TYPES.include? mimetype or mimetype.start_with? 'audio'
+        AUDIO_TYPES.include? mime or mimetype.start_with? 'audio'
       end
       def default_title
         if image?
@@ -71,8 +71,12 @@ module BagIt
         @mime ||= Entry.mime_for_name(path)
       end
       def self.mime_for_name(filename)
-        ext = File.extname(filename).downcase
-        mt = MIME::Types.type_for(ext)
+        if filename.nil?
+          mt = nil
+        else
+          ext = File.extname(filename).downcase
+          mt = MIME::Types.type_for(ext)
+        end
         if mt.is_a? Array
           mt = mt.first
         end

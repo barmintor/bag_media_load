@@ -2,6 +2,7 @@ module BagIt
   module Bags
     class CssBag < BagIt::Bags::DefaultBag
       def load
+        manifest = @bag_info.manifest('md5')
         puts "Searching for \"#{@bag_info.external_id}\""
         bag_id = @bag_info.external_id
         bag_agg = ContentAggregator.find_by_identifier(bag_id)
@@ -23,7 +24,7 @@ module BagIt
         recto_path = File.join(@bag_path,'data', bag_id, "#{bag_id}.tif") unless File.file? recto_path
         verso_path = File.join(@bag_path,'data', bag_id, "#{bag_id}v.tif")
         if File.file? recto_path
-          recto = BagIt::Manifest.find_or_create_resource(recto_path)
+          recto = manifest.find_or_create_resource(recto_path)
           recto.set_title_and_label("#{bag_id} (recto)")
           recto.add_dc_identifier("#{bag_id}r")
           recto.derivatives!
@@ -39,7 +40,7 @@ module BagIt
         end
 
         if File.file? verso_path
-          verso = BagIt::Manifest.find_or_create_resource(verso_path)
+          verso = manifest.find_or_create_resource(verso_path)
           verso.set_title_and_label("#{bag_id} (verso)")
           verso.add_dc_identifier("#{bag_id}v")
           verso.derivatives!

@@ -21,6 +21,7 @@ class GenericResource < ::ActiveFedora::Base
 
   has_and_belongs_to_many :containers, :property=>:cul_member_of, :class_name=>'ActiveFedora::Base'  
 
+  OCTETSTREAM = "application/octet-stream"
   IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "image/jpeg" => 'jpg',
    "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp',
    "image/jp2" => 'jp2'}
@@ -129,10 +130,8 @@ class GenericResource < ::ActiveFedora::Base
           content_ds_props = nil
           # generate content DS rels
           if rels_int.dsCreateDate.nil? or rels_int.dsCreateDate < ds.dsCreateDate or opts[:override] or long() == 0
-            File.open(dsLocation,:encoding=>'BINARY') do |blob|
-              content_ds_props = ds_rels(blob,ds)
-              @width = @length = nil
-            end
+            content_ds_props = image_rels(dsLocation,ds)
+            @width = @length = nil
           end
           rels_int.serialize!
           self.save
@@ -175,22 +174,41 @@ class GenericResource < ::ActiveFedora::Base
       "#{IMG_CONFIG['base']}/#{opts[:id]}/#{opts[:type]}/#{opts[:size]}.#{opts[:format]}"
     end
 
-    def ds_rels(blob, ds)
-      image_properties = Cul::Image::Properties.identify(blob)
-      if image_properties
-        image_prop_nodes = image_properties.nodeset
-        image_prop_nodes.each do |node|
-          value = node["resource"] || node.text
-          predicate = RDF::URI.new("#{node.namespace.href}#{node.name}")
-          rels_int.clear_relationship(ds, predicate)
-          rels_int.add_relationship(ds, predicate, value, node["resource"].blank?)
+    def with_original_image(flags=0, &block)
+      path = datastreams['content'].dsLocation
+      Imogen.with_image(@path, flags, &block)
+    end
+
+    def image_rels(path, ds)
+      image_properties = GenericResource.image_properties(path)
+      image_properties.keys.each {|k| rels_int.clear_relationship(ds, k) }
+      image_properties.each_pair do |k, v|
+        rels_int.add_relationship(ds, k, v)
+      end
+
+      image_properties
+    end
+    def self.image_properties(path)
+      image_properties = {}
+      Imogen.with_image(path) do |img|
+        image_properties[:image_width] = img.width
+        image_properties[:image_length] = img.height
+        image_properties[:extent] = File.size(path)
+        format = Imogen.format_from(path)
+        unless format == :unknown
+          format = MIME::Types.type_for(format.to_s)
+          if format && format.first
+            format = format.first.content_type
+          else
+            format = :unknown
+          end
         end
+        format = OCTETSTREAM unless (format && format != :unknown)
+
+        image_properties[:format] = format
       end
       image_properties
-    ensure
-      blob.close
     end
-        
     def migrate!
       if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
         Rails.logger.info "#{self.pid} appears to be an old-style ldpd:Resource"
@@ -241,7 +259,7 @@ class GenericResource < ::ActiveFedora::Base
         nouv = create_datastream(ActiveFedora::Datastream, 'content', :controlGroup=>old.controlGroup, :dsLocation=>dsLocation, :mimeType=>old.mimeType, :dsLabel=>dsLabel)
         add_datastream(nouv)
         dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
-        ds_rels(File.open(dsLocation),nouv)
+        image_rels(dsLocation,nouv)
       end
       clear_relationship(:cul_image_length)
       clear_relationship(:cul_image_width)
