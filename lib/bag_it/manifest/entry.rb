@@ -31,13 +31,13 @@ module BagIt
         IMAGE_TYPES.include? mime or mime.start_with? 'image'
       end
       def text?
-        TEXT_TYPES.include? mime or mimetype.start_with? 'text'
+        TEXT_TYPES.include? mime or mime.start_with? 'text'
       end
       def video?
-        VIDEO_TYPES.include? mime or mimetype.start_with? 'video'
+        VIDEO_TYPES.include? mime or mime.start_with? 'video'
       end
       def audio?
-        AUDIO_TYPES.include? mime or mimetype.start_with? 'audio'
+        AUDIO_TYPES.include? mime or mime.start_with? 'audio'
       end
       def default_title
         if image?
