@@ -67,7 +67,7 @@ module BagIt
       each_entry(only_data) {|source| yield find_or_create_resource(source, nil, create) }
     end
 
-    def find_or_create_resource(source, name_parser=nil, create=false)
+    def find_or_create_resource(dc_source_or_entry, name_parser=nil, create=false)
       name_parser ||= name_parser()
       unless dc_source_or_entry.is_a? Entry
         dc_source_or_entry = entry_for(dc_source_or_entry)
