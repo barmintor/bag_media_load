@@ -180,34 +180,37 @@ class GenericResource < ::ActiveFedora::Base
     end
 
     def image_rels(path, ds)
-      image_properties = GenericResource.image_properties(path)
-      image_properties.keys.each {|k| rels_int.clear_relationship(ds, k) }
-      image_properties.each_pair do |k, v|
-        rels_int.add_relationship(ds, k, v)
+      GenericResource.image_properties(path) do |k,v,literal|
+        rels_int.clear_relationship(ds, k)
+        rels_int.add_relationship(ds, k, v, literal)
       end
-
-      image_properties
     end
     def self.image_properties(path)
-      image_properties = {}
-      Imogen.with_image(path) do |img|
-        image_properties[:image_width] = img.width
-        image_properties[:image_length] = img.height
-        image_properties[:extent] = File.size(path)
-        format = Imogen.format_from(path)
-        unless format == :unknown
-          format = MIME::Types.type_for(format.to_s)
-          if format && format.first
-            format = format.first.content_type
-          else
-            format = :unknown
+      if block_given?
+        Imogen.with_image(path) do |img|
+          yield :image_width, img.width, true
+          yield :image_length, img.height, true
+          yield :extent, File.size(path), true
+          format = Imogen.format_from(path)
+          unless format == :unknown
+            format = MIME::Types.type_for(format.to_s)
+            if format && format.first
+              format = format.first.content_type
+            else
+              format = :unknown
+            end
           end
-        end
-        format = OCTETSTREAM unless (format && format != :unknown)
+          format = OCTETSTREAM unless (format && format != :unknown)
 
-        image_properties[:format] = format
+          yield :format, format, true
+        end
+      else
+        properties = {}
+        image_properties(path) do |pred_key, value, literal|
+          properties[pred_key] = value
+        end
+        properties
       end
-      image_properties
     end
     def migrate!
       if datastreams["CONTENT"] and not relationships(:has_model).include? self.class.to_class_uri
