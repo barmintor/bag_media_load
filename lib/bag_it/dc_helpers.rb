@@ -33,5 +33,14 @@ module BagIt
       self.datastreams['DC'].update_indexed_attributes([:dc_type=>0]=>val)
       self.dc_dirty!
     end
+    def collapse_ids
+      dc = datastreams["DC"]
+      ids = dc.term_values(:dc_identifier)
+      new_ids = ids.uniq
+      return if new_ids.sort.eql? ids.sort
+      self.set_dc_identifier(self.pid)
+      new_ids.each {|idval| self.add_dc_identifier(idval) if idval != self.pid}
+      dc.content_will_change!
+    end
   end
 end
