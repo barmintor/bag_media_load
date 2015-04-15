@@ -73,8 +73,14 @@ namespace :bag do
     Dir[Rails.root.join("fixtures/cmodels/*.xml")].each {|f| Rails.logger.info rubydora.ingest :file=>open(f)}
   end
   namespace :media do
+    desc "seed PRONOM data"
+    task seed: :environment do
+      unless PronomFormat.exists?('fmt/18')
+        load "#{Rails.root}/db/seeds.rb"
+      end
+    end
     desc "debug derivative creation"
-    task :debug => :environment do
+    task :debug => :seed do
       rpath = '/fstore/archive/ldpd/preservation/lindquist/data/Lindquist_box_OS/burke_lindq_OS_1907v.tif'
       resource = GenericResource.find_by_source(rpath)
       Rails.logger.info "Found image at #{resource.pid}"
@@ -86,7 +92,7 @@ namespace :bag do
       end
     end
     desc "load CSS media"
-    task :load_css => [:environment] do
+    task :load_css => [:seed] do
 
       group_id = "rbml_css"
 
@@ -122,7 +128,7 @@ namespace :bag do
 
     end
     desc "load resource objects for all the file resources in a bag"
-    task :load => :environment do
+    task :load => :seed do
       bag_path = ENV['BAG_PATH']
       alg = ENV['CHECKSUM_ALG'] || 'sha1'
       pattern = ENV['PATTERN']
@@ -247,7 +253,7 @@ namespace :bag do
     end
 
     desc "load/migrate resource objects for all the file resources in a bag"
-    task :migrate => :environment do
+    task :migrate => :seed do
       bag_path = ENV['BAG_PATH']
       override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
       upload_dir = ActiveFedora.config.credentials[:upload_dir]
