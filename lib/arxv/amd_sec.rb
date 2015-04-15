@@ -20,19 +20,22 @@ module Arxv
         if puid
           puid = puid.text
           if puid == 'fmt/111'
-            magic = @node.xpath(".//HEADER/MAGICNUMBER", METS_NS).first.text
-            magic_h = magic.to_i(16)
-            if magic_h == 0xA5DC
-              puid = 'fmt/39'
-            elsif magic_h == 0xA5EC
-              puid = 'fmt/40'
-            elsif magic_h == 0x809
-              product = @node.xpath(".//HEADER/PRODUCTVERSION", METS_NS).first.text
-              product_h = product.to_i(16)
-              if product_h == 0x500
-                puid = 'fmt/59'
-              elsif product_h == 0x600
-                puid = 'fmt/61'
+            magic = @node.xpath(".//HEADER/MAGICNUMBER", METS_NS).first
+            if magic
+              magic = magic.text
+              magic_h = magic.to_i(16)
+              if magic_h == 0xA5DC
+                puid = 'fmt/39'
+              elsif magic_h == 0xA5EC
+                puid = 'fmt/40'
+              elsif magic_h == 0x809
+                product = @node.xpath(".//HEADER/PRODUCTVERSION", METS_NS).first.text
+                product_h = product.to_i(16)
+                if product_h == 0x500
+                  puid = 'fmt/59'
+                elsif product_h == 0x600
+                  puid = 'fmt/61'
+                end
               end
             end
           elsif puid == 'fmt/189'
