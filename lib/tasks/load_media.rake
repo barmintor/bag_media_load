@@ -199,6 +199,11 @@ namespace :bag do
               dc.update_values([:dc_title]=>original_name.split('/')[-1])
               resource.save
             end
+            dc_type = dc.find_by_terms(:dc_type).first
+            unless dc_type.eql? entry.dc_type
+              dc.update_values([:dc_type]=>entry.dc_type)
+              resource.save
+            end
             resource.derivatives!(derivative_options,entry.derivatives)
             container_pids = container_pids_for(resource)
             unless container_pids.include? all_media.pid

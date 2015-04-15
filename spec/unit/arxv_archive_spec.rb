@@ -28,6 +28,8 @@ describe Arxv::Archive do
       key = File.absolute_path(File.join(bag_info.bag_path,'data',"objects/SmartCane_1_.pdf"))
       entry = entries[key]
       expect(entry.mime).to eql("application/pdf")
+      expect(entry.pronom_format).to eql("fmt/18")
+      expect(entry.dc_type).to eql("PageDescription")
       expect(entry.local_id).to eql('content')
       expect(entry.original_path).to eql('SmartCane[1].pdf')
     end

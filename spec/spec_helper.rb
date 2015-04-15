@@ -12,6 +12,9 @@ require 'cul_image_props'
 RSpec.configure do |config|
   config.mock_with :mocha
 end
+unless PronomFormat.exists?('fmt/18')
+	load "#{Rails.root}/db/seeds.rb"
+end
 
 def path_to_fixture(file)
   path = File.join(File.dirname(__FILE__), '..','fixtures','spec', file)

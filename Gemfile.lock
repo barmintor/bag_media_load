@@ -124,6 +124,8 @@ GEM
     execjs (2.2.1)
     fastercsv (1.5.5)
     ffi (1.9.5)
+    foreigner (1.7.4)
+      activerecord (>= 3.0.0)
     haml (4.0.5)
       tilt
     hike (1.2.3)
@@ -361,6 +363,7 @@ DEPENDENCIES
   active_fedora_relsint!
   coffee-rails (~> 4.0.0)
   cul_scv_hydra!
+  foreigner
   free-image!
   imogen (>= 0.1.2)
   jquery-rails

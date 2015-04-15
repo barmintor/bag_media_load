@@ -7,6 +7,7 @@ module Arxv
       @original = !!opts[:original]
       @derivatives = derivatives || []
       @original_path = opts[:original_path].gsub('%transferDirectory%objects/','') if opts[:original_path]
+      @pronom_format = opts[:puid] if opts[:puid]
     end
     def original?
       @original

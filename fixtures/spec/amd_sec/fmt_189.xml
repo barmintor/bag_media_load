@@ -1,0 +1,554 @@
+<?xml version='1.0' encoding='ASCII'?>
+<mets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.loc.gov/METS/" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd">
+  <amdSec ID="amdSec_15">
+    <techMD ID="techMD_15">
+      <mdWrap MDTYPE="PREMIS:OBJECT">
+        <xmlData>
+          <object xmlns="info:lc/xmlns/premis-v2" xsi:type="file" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <objectIdentifier>
+              <objectIdentifierType>UUID</objectIdentifierType>
+              <objectIdentifierValue>7975470c-00b4-46d8-a73d-7daf6a9e2ee2</objectIdentifierValue>
+            </objectIdentifier>
+            <objectCharacteristics>
+              <compositionLevel>0</compositionLevel>
+              <fixity>
+                <messageDigestAlgorithm>sha256</messageDigestAlgorithm>
+                <messageDigest>c8d611ae2921830435986b5ce5b6a7630c99ee546f624fa5f1e3bd5542d86f1c</messageDigest>
+              </fixity>
+              <size>108488</size>
+              <format>
+                <formatDesignation>
+                  <formatName>Microsoft Office Open XML</formatName>
+                  <formatVersion>2007</formatVersion>
+                </formatDesignation>
+                <formatRegistry>
+                  <formatRegistryName>PRONOM</formatRegistryName>
+                  <formatRegistryKey>fmt/189</formatRegistryKey>
+                </formatRegistry>
+              </format>
+              <objectCharacteristicsExtension>
+                <fits xmlns="http://hul.harvard.edu/ois/xml/ns/fits/fits_output" xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd" version="0.6.1" timestamp="9/3/14 2:28 PM">
+                  <identification status="CONFLICT">
+                    <identity format="Microsoft Word" mimetype="application/msword" toolname="FITS" toolversion="0.6.1">
+                      <tool toolname="file utility" toolversion="5.09"/>
+                    </identity>
+                    <identity format="OpenDocument Text" mimetype="application/vnd.oasis.opendocument.text" toolname="FITS" toolversion="0.6.1">
+                      <tool toolname="NLNZ Metadata Extractor" toolversion="3.4GA"/>
+                    </identity>
+                  </identification>
+                  <fileinfo>
+                    <lastmodified toolname="Exiftool" toolversion="7.74" status="SINGLE_RESULT">2012:08:31 04:23:32-04:00</lastmodified>
+                    <filepath toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</filepath>
+                    <filename toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</filename>
+                    <size toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">108488</size>
+                    <md5checksum toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">0b033ea7375a1f2b3dc887656f672caa</md5checksum>
+                    <fslastmodified toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">1346401412000</fslastmodified>
+                  </fileinfo>
+                  <filestatus/>
+                  <metadata/>
+                  <toolOutput>
+                    <tool name="OIS Audio Information" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="ADL Tool" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="Jhove" version="1.5">
+                      <repInfo xmlns="" uri="/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx">
+                        <reportingModule release="1.3" date="2007-04-10">BYTESTREAM</reportingModule>
+                        <lastModified>2012-08-31T04:23:32-04:00</lastModified>
+                        <size>108488</size>
+                        <format>bytestream</format>
+                        <status>Well-Formed and valid</status>
+                        <mimeType>application/octet-stream</mimeType>
+                      </repInfo>
+                    </tool>
+                    <tool name="file utility" version="5.09">
+                      <fileUtilityOutput xmlns="">
+                        <rawOutput>Microsoft Word 2007+
+application/msword; charset=binary</rawOutput>
+                        <mimetype>application/msword</mimetype>
+                        <format>Microsoft Word 2007+</format>
+                      </fileUtilityOutput>
+                    </tool>
+                    <tool name="Exiftool" version="7.74">
+                      <exiftool xmlns="">
+                        <rawOutput>ExifToolVersion	7.74
+FileName	Baka.docx
+Directory	/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One
+FileSize	106 kB
+FileModifyDate	2012:08:31 04:23:32-04:00
+FileType	ZIP
+MIMEType	application/zip
+ZipVersion	20
+BitFlag	6
+Compression	Deflated
+ModifyDate	1980:01:01 00:00:00
+CRC	0x5d0d0596
+CompressedSize	369
+UncompressedSize	719
+FileNameLength	17
+ExtraFieldLength	264
+ArchivedFileName	docProps/core.xml</rawOutput>
+                        <ExifToolVersion>7.74</ExifToolVersion>
+                        <FileName>Baka.docx</FileName>
+                        <Directory>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One</Directory>
+                        <FileSize>106 kB</FileSize>
+                        <FileModifyDate>2012:08:31 04:23:32-04:00</FileModifyDate>
+                        <FileType>ZIP</FileType>
+                        <MIMEType>application/zip</MIMEType>
+                        <ZipVersion>20</ZipVersion>
+                        <BitFlag>6</BitFlag>
+                        <Compression>Deflated</Compression>
+                        <ModifyDate>1980:01:01 00:00:00</ModifyDate>
+                        <CRC>0x5d0d0596</CRC>
+                        <CompressedSize>369</CompressedSize>
+                        <UncompressedSize>719</UncompressedSize>
+                        <FileNameLength>17</FileNameLength>
+                        <ExtraFieldLength>264</ExtraFieldLength>
+                        <ArchivedFileName>docProps/core.xml</ArchivedFileName>
+                      </exiftool>
+                    </tool>
+                    <tool name="Droid" version="3.0">
+                      <FileCollection xmlns="http://www.nationalarchives.gov.uk/pronom/FileCollection">
+                        <DROIDVersion>3.0</DROIDVersion>
+                        <SignatureFileVersion>35</SignatureFileVersion>
+                        <DateCreated>2014-09-03T14:28:22</DateCreated>
+                        <IdentificationFile IdentQuality="Positive">
+                          <FilePath>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</FilePath>
+                          <FileFormatHit>
+                            <Status>Positive (Specific Format)</Status>
+                            <Name>Microsoft Office Open XML</Name>
+                            <Version>2007</Version>
+                            <PUID>fmt/189</PUID>
+                            <MimeType/>
+                            <IdentificationWarning>Possible file extension mismatch</IdentificationWarning>
+                          </FileFormatHit>
+                        </IdentificationFile>
+                      </FileCollection>
+                    </tool>
+                    <tool name="NLNZ Metadata Extractor" version="3.4GA">
+                      <OPENOFFICE xmlns="">
+                        <METADATA>
+                          <FILENAME>Baka.docx</FILENAME>
+                          <SEPARATOR>/</SEPARATOR>
+                          <PARENT>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One</PARENT>
+                          <CANONICALPATH>/opt/artefactual/archivematica/src/MCPServer/share/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</CANONICALPATH>
+                          <ABSOLUTEPATH>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</ABSOLUTEPATH>
+                          <PATH>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</PATH>
+                          <FILE>true</FILE>
+                          <DIRECTORY>false</DIRECTORY>
+                          <FILELENGTH>108488</FILELENGTH>
+                          <HIDDEN>false</HIDDEN>
+                          <ABSOLUTE>true</ABSOLUTE>
+                          <URL>file:/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</URL>
+                          <URI>file:/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</URI>
+                          <READ>true</READ>
+                          <WRITE>true</WRITE>
+                          <EXTENSION>docx</EXTENSION>
+                          <MODIFIED>2012-08-31 04:23:32</MODIFIED>
+                          <DATE>20120831</DATE>
+                          <DATEPATTERN>yyyyMMdd</DATEPATTERN>
+                          <TIME>042332000</TIME>
+                          <TIMEPATTERN>HHmmssSSS</TIMEPATTERN>
+                          <TYPE>application/open-office-1.x</TYPE>
+                          <PID>null</PID>
+                          <OID>null</OID>
+                          <FID>null</FID>
+                          <PROCESSOR>unknown</PROCESSOR>
+                        </METADATA>
+                      </OPENOFFICE>
+                    </tool>
+                    <tool name="OIS File Information" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd">
+                        <fileinfo>
+                          <filepath>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</filepath>
+                          <filename>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx</filename>
+                          <size>108488</size>
+                          <md5checksum>0b033ea7375a1f2b3dc887656f672caa</md5checksum>
+                          <fslastmodified>1346401412000</fslastmodified>
+                        </fileinfo>
+                      </fits>
+                    </tool>
+                    <tool name="OIS XML Metadata" version="0.2">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="ffident" version="0.2">
+                      <ffidentOutput xmlns="">
+                        <shortName>ZIP</shortName>
+                        <longName>ZIP Format</longName>
+                        <group>archive</group>
+                        <mimetypes>
+                          <mimetype>application/zip</mimetype>
+                        </mimetypes>
+                        <fileExtensions>
+                          <extension>zip</extension>
+                        </fileExtensions>
+                      </ffidentOutput>
+                    </tool>
+                  </toolOutput>
+                </fits>
+              </objectCharacteristicsExtension>
+            </objectCharacteristics>
+            <originalName>%transferDirectory%objects/Fellows Files/Thesis/A-Selection One/Baka.docx</originalName>
+          </object>
+        </xmlData>
+      </mdWrap>
+    </techMD>
+    <rightsMD ID="rightsMD_9">
+      <mdWrap MDTYPE="PREMIS:RIGHTS">
+        <xmlData>
+          <rightsStatement xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd">
+            <rightsStatementIdentifier>
+              <rightsStatementIdentifierType>UUID</rightsStatementIdentifierType>
+              <rightsStatementIdentifierValue>cf88d760-ca3c-4bf6-894e-2c18ee252154</rightsStatementIdentifierValue>
+            </rightsStatementIdentifier>
+            <rightsBasis>Other</rightsBasis>
+            <otherRightsInformation>
+              <otherRightsDocumentationIdentifier>
+                <otherRightsDocumentationIdentifierType>Donor Transfer Agreement and Deed of Gift</otherRightsDocumentationIdentifierType>
+                <otherRightsDocumentationIdentifierValue>5268074v.2</otherRightsDocumentationIdentifierValue>
+                <otherRightsDocumentationRole></otherRightsDocumentationRole>
+              </otherRightsDocumentationIdentifier>
+              <otherRightsBasis>Donor</otherRightsBasis>
+              <otherRightsApplicableDates>
+                <startDate>2012-07-25</startDate>
+                <endDate>2075-01-01</endDate>
+              </otherRightsApplicableDates>
+              <otherRightsNote>Restrictions on access by donor request</otherRightsNote>
+            </otherRightsInformation>
+            <rightsGranted>
+              <act>Access</act>
+              <restriction>Allow</restriction>
+              <termOfGrant>
+                <startDate>2012-07-25</startDate>
+                <endDate>OPEN</endDate>
+              </termOfGrant>
+              <rightsGrantedNote>No restrictions</rightsGrantedNote>
+            </rightsGranted>
+            <rightsGranted>
+              <act>Disseminate</act>
+              <restriction>Conditional</restriction>
+              <termOfRestriction>
+                <startDate>2012-07-25</startDate>
+                <endDate>OPEN</endDate>
+              </termOfRestriction>
+              <rightsGrantedNote>Permission to publish material from the collection must be requested from the Rare Book and Manuscript Library (RBML). The RBML approves permission to publish that which it physically owns; the responsibility to secure copyright permission rests with the patron.</rightsGrantedNote>
+            </rightsGranted>
+            <linkingObjectIdentifier>
+              <linkingObjectIdentifierType>UUID</linkingObjectIdentifierType>
+              <linkingObjectIdentifierValue>7975470c-00b4-46d8-a73d-7daf6a9e2ee2</linkingObjectIdentifierValue>
+            </linkingObjectIdentifier>
+          </rightsStatement>
+        </xmlData>
+      </mdWrap>
+    </rightsMD>
+    <digiprovMD ID="digiprovMD_115">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>ebd5674a-61ff-4ddd-bf73-46326d676c10</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>ingestion</eventType>
+            <eventDateTime>2014-09-03T18:14:55</eventDateTime>
+            <eventDetail></eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote></eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_116">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>95d90e4c-9d2b-41e9-a32d-6a20c46fe38d</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>message digest calculation</eventType>
+            <eventDateTime>2014-09-03T18:15:36</eventDateTime>
+            <eventDetail>program="python"; module="hashlib.sha256()"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>c8d611ae2921830435986b5ce5b6a7630c99ee546f624fa5f1e3bd5542d86f1c</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_117">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>c3969257-34e0-42e8-b28a-4953e2057b71</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>virus check</eventType>
+            <eventDateTime>2014-09-03T18:16:31</eventDateTime>
+            <eventDetail>program="Clam AV"; version="ClamAV 0.97.8"; virusDefinitions="19332/Wed Sep  3 12:19:16 2014
+"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote></eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_118">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>8dea52fc-63db-43b3-ac7e-2b6cdea6b522</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>name cleanup</eventType>
+            <eventDateTime>2014-09-03T18:17:16</eventDateTime>
+            <eventDetail>prohibited characters removed:program="sanitizeNames"; version="1.10.d743f3f7ca9881b7eb4cf574feca2fdbe66526b1"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>Original name="%transferDirectory%objects/Fellows Files/Thesis/A-Selection One/Baka.docx"; cleaned up name="%transferDirectory%objects/Fellows_Files/Thesis/A-Selection One/Baka.docx"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_119">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>8dea52fc-63db-43b3-ac7e-2b6cdea6b522</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>name cleanup</eventType>
+            <eventDateTime>2014-09-03T18:17:16</eventDateTime>
+            <eventDetail>prohibited characters removed:program="sanitizeNames"; version="1.10.d743f3f7ca9881b7eb4cf574feca2fdbe66526b1"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>Original name="%transferDirectory%objects/Fellows_Files/Thesis/A-Selection One/Baka.docx"; cleaned up name="%transferDirectory%objects/Fellows_Files/Thesis/A-Selection_One/Baka.docx"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_120">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>a558af7d-946c-4973-bfdd-6fc09decfadd</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>format identification</eventType>
+            <eventDateTime>2014-09-03T18:28:18</eventDateTime>
+            <eventDetail>program="Droid"; version="3.0"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Positive</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>fmt/189</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_121">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>6e14318c-1f6c-4ad0-9a67-bfbeba5cd1a4</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>validation</eventType>
+            <eventDateTime>2014-09-03T18:28:18</eventDateTime>
+            <eventDetail>program="Jhove"; version="1.5"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>format="bytestream"; result="Well-Formed and valid"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_122">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>7d130b07-88df-4aac-add7-ebfcec461df8</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>fixity check</eventType>
+            <eventDateTime>2014-09-03T19:08:09</eventDateTime>
+            <eventDetail>program="python"; module="hashlib.sha256()"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>c8d611ae2921830435986b5ce5b6a7630c99ee546f624fa5f1e3bd5542d86f1c verified</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_123">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>preservation system</agentIdentifierType>
+              <agentIdentifierValue>Archivematica-0.10</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>Archivematica</agentName>
+            <agentType>software</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_124">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>repository code</agentIdentifierType>
+              <agentIdentifierValue>cul</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>Columbia</agentName>
+            <agentType>organization</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_125">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>Archivematica user pk</agentIdentifierType>
+              <agentIdentifierValue>2</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>username="ldpd", first_name="ldpd", last_name=""</agentName>
+            <agentType>Archivematica user</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+  </amdSec>
+</mets>

@@ -28,22 +28,25 @@ module BagIt
         @title ||= default_title
       end
       def image?
-        IMAGE_TYPES.include? mime or mime.start_with? 'image'
+        dc_type.eql? 'Image'
       end
       def text?
-        TEXT_TYPES.include? mime or mime.start_with? 'text'
+        ['PageDescription','StructuredText','UnstructuredText'].include? dc_type
       end
       def video?
-        VIDEO_TYPES.include? mime or mime.start_with? 'video'
+        dc_type.eql? 'Video'
       end
       def audio?
-        AUDIO_TYPES.include? mime or mime.start_with? 'audio'
+        dc_type.eql? 'Audio'
+      end
+      def document?
+        text? || (['Spreadsheet','Presentation'].include? dc_type)
       end
       def default_title
         if image?
           dt = 'Image'
-        elsif text?
-          dt = 'File Artifact'
+        elsif document?
+          dt = text? ? 'Text Document' : "#{dc_type} Document"
         elsif video?
           dt = 'Recording'
         elsif audio?
@@ -54,21 +57,42 @@ module BagIt
         return original? ? "Preservation #{dt}" : dt
       end
       def dc_type
-        if image?
-          dt = 'StillImage'
-        elsif text?
-          dt = 'Text'
-        elsif video?
-          dt = 'MovingImage'
-        elsif audio?
-          dt = 'Sound'
-        else
-          dt = 'Software'
+        @dc_type ||= begin
+          if pronom_format
+            pf = PronomFormat.find(pronom_format)
+            dt = pf.pcdm_type
+          else
+            if IMAGE_TYPES.include? mime or mime.start_with? 'image'
+              dt = 'Image'
+            elsif DOC_TYPES.include? mime
+              dt = 'PageDescription'
+            elsif PRESENTATION_TYPES.include? mime
+              dt = 'Presentation'
+            elsif SPREADSHEET_TYPES.include? mime
+              dt = 'Spreadsheet'
+            elsif VIDEO_TYPES.include? mime or mime.start_with? 'video'
+              dt = 'Video'
+            elsif AUDIO_TYPES.include? mime or mime.start_with? 'audio'
+              dt = 'Audio'
+            elsif XML_TYPES.include? mime or mime() =~ /xml$/
+              dt = 'StructuredText'
+            elsif TEXT_TYPES.include? mime or mime.start_with? 'text'
+              dt = 'UnstructuredText'
+            else
+              dt = 'Unknown'
+            end
+          end
+          dt
         end
-        dt
       end
       def mime
         @mime ||= Entry.mime_for_name(path)
+      end
+      def pronom_format
+        @pronom_format
+      end
+      def pronom_format=(puid)
+        @pronom_format = puid
       end
       def self.mime_for_name(filename)
         if filename.nil?

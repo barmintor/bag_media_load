@@ -1,0 +1,593 @@
+<?xml version='1.0' encoding='ASCII'?>
+<mets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.loc.gov/METS/" xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version18/mets.xsd">
+  <amdSec ID="amdSec_13">
+    <techMD ID="techMD_13">
+      <mdWrap MDTYPE="PREMIS:OBJECT">
+        <xmlData>
+          <object xmlns="info:lc/xmlns/premis-v2" xsi:type="file" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <objectIdentifier>
+              <objectIdentifierType>UUID</objectIdentifierType>
+              <objectIdentifierValue>3023a17c-65da-4181-bf9f-3137c5d50e4e</objectIdentifierValue>
+            </objectIdentifier>
+            <objectCharacteristics>
+              <compositionLevel>0</compositionLevel>
+              <fixity>
+                <messageDigestAlgorithm>sha256</messageDigestAlgorithm>
+                <messageDigest>6a284ff772b1048db53f4d66d3c7ebc3035aefa9d4c19172d83e483da9790cdf</messageDigest>
+              </fixity>
+              <size>50176</size>
+              <format>
+                <formatDesignation>
+                  <formatName>OLE2 Compound Document Format</formatName>
+                  <formatVersion></formatVersion>
+                </formatDesignation>
+                <formatRegistry>
+                  <formatRegistryName>PRONOM</formatRegistryName>
+                  <formatRegistryKey>fmt/111</formatRegistryKey>
+                </formatRegistry>
+              </format>
+              <objectCharacteristicsExtension>
+                <fits xmlns="http://hul.harvard.edu/ois/xml/ns/fits/fits_output" xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd" version="0.6.1" timestamp="9/3/14 2:37 PM">
+                  <identification>
+                    <identity format="Microsoft Word" mimetype="application/msword" toolname="FITS" toolversion="0.6.1">
+                      <tool toolname="file utility" toolversion="5.09"/>
+                      <tool toolname="NLNZ Metadata Extractor" toolversion="3.4GA"/>
+                      <tool toolname="ffident" toolversion="0.2"/>
+                    </identity>
+                  </identification>
+                  <fileinfo>
+                    <created toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">2007-10-02 04:21:00</created>
+                    <creatingApplicationName toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">Microsoft Office Word</creatingApplicationName>
+                    <creatingApplicationVersion toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">0x805b</creatingApplicationVersion>
+                    <filepath toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</filepath>
+                    <filename toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</filename>
+                    <size toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">50176</size>
+                    <md5checksum toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">1ede2328b53d004e566dfe157b13dba5</md5checksum>
+                    <fslastmodified toolname="OIS File Information" toolversion="0.1" status="SINGLE_RESULT">1342729792000</fslastmodified>
+                  </fileinfo>
+                  <filestatus/>
+                  <metadata>
+                    <document>
+                      <pageCount toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">3</pageCount>
+                      <wordCount toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">763</wordCount>
+                      <characterCount toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">4350</characterCount>
+                      <title toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">Job Title:</title>
+                      <author toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">Mrs Araba Botchway</author>
+                      <language toolname="NLNZ Metadata Extractor" toolversion="3.4GA" status="SINGLE_RESULT">U.S. English</language>
+                    </document>
+                  </metadata>
+                  <toolOutput>
+                    <tool name="OIS Audio Information" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="ADL Tool" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="Jhove" version="1.5">
+                      <repInfo xmlns="" uri="/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc">
+                        <reportingModule release="1.3" date="2007-04-10">BYTESTREAM</reportingModule>
+                        <lastModified>2012-07-19T16:29:52-04:00</lastModified>
+                        <size>50176</size>
+                        <format>bytestream</format>
+                        <status>Well-Formed and valid</status>
+                        <mimeType>application/octet-stream</mimeType>
+                      </repInfo>
+                    </tool>
+                    <tool name="file utility" version="5.09">
+                      <fileUtilityOutput xmlns="">
+                        <rawOutput>Microsoft Office Document Microsoft Word Document
+application/msword; charset=binary</rawOutput>
+                        <mimetype>application/msword</mimetype>
+                        <format>Microsoft Office Document Microsoft Word Document</format>
+                      </fileUtilityOutput>
+                    </tool>
+                    <tool name="Droid" version="3.0">
+                      <FileCollection xmlns="http://www.nationalarchives.gov.uk/pronom/FileCollection">
+                        <DROIDVersion>3.0</DROIDVersion>
+                        <SignatureFileVersion>35</SignatureFileVersion>
+                        <DateCreated>2014-09-03T14:37:51</DateCreated>
+                        <IdentificationFile IdentQuality="Positive">
+                          <FilePath>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</FilePath>
+                          <FileFormatHit>
+                            <Status>Positive (Specific Format)</Status>
+                            <Name>OLE2 Compound Document Format</Name>
+                            <PUID>fmt/111</PUID>
+                            <MimeType/>
+                            <IdentificationWarning>Possible file extension mismatch</IdentificationWarning>
+                          </FileFormatHit>
+                        </IdentificationFile>
+                      </FileCollection>
+                    </tool>
+                    <tool name="NLNZ Metadata Extractor" version="3.4GA">
+                      <WORD xmlns="">
+                        <METADATA>
+                          <FILENAME>Job_description_-_Project_Officer-_IFP_-west_Africa.doc</FILENAME>
+                          <SEPARATOR>/</SEPARATOR>
+                          <PARENT>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information</PARENT>
+                          <CANONICALPATH>/opt/artefactual/archivematica/src/MCPServer/share/sharedDirectoryStructure/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</CANONICALPATH>
+                          <ABSOLUTEPATH>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</ABSOLUTEPATH>
+                          <PATH>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</PATH>
+                          <FILE>true</FILE>
+                          <DIRECTORY>false</DIRECTORY>
+                          <FILELENGTH>50176</FILELENGTH>
+                          <HIDDEN>false</HIDDEN>
+                          <ABSOLUTE>true</ABSOLUTE>
+                          <URL>file:/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</URL>
+                          <URI>file:/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</URI>
+                          <READ>true</READ>
+                          <WRITE>true</WRITE>
+                          <EXTENSION>doc</EXTENSION>
+                          <MODIFIED>2012-07-19 16:29:52</MODIFIED>
+                          <DATE>20120719</DATE>
+                          <DATEPATTERN>yyyyMMdd</DATEPATTERN>
+                          <TIME>162952000</TIME>
+                          <TIMEPATTERN>HHmmssSSS</TIMEPATTERN>
+                          <TYPE>application/ms-word</TYPE>
+                          <PID>null</PID>
+                          <OID>null</OID>
+                          <FID>null</FID>
+                          <PROCESSOR>unknown</PROCESSOR>
+                        </METADATA>
+                        <VERSION>OLE</VERSION>
+                        <HEADER>
+                          <MAGICNUMBER>0xa5ec</MAGICNUMBER>
+                          <FIBNUMBER>0xc1</FIBNUMBER>
+                          <PRODUCTVERSION>0x805b</PRODUCTVERSION>
+                        </HEADER>
+                        <FIB>
+                          <LID>409</LID>
+                          <LANG>U.S. English</LANG>
+                          <DOPOFFSET>18960</DOPOFFSET>
+                          <ISTEMPLATE>false</ISTEMPLATE>
+                          <ISGLOSSARY>false</ISGLOSSARY>
+                          <HASPICTURES>false</HASPICTURES>
+                          <ISCOMPLEX>false</ISCOMPLEX>
+                          <ISENCRYPTED>false</ISENCRYPTED>
+                        </FIB>
+                        <SUMMARY>
+                          <TEMPLATE>Normal</TEMPLATE>
+                          <TITLE>Job Title:</TITLE>
+                          <SUBJECT/>
+                          <KEYWORDS/>
+                          <COMMENTS/>
+                          <LASTREVIEWEDBY>Eunice</LASTREVIEWEDBY>
+                          <AUTHOR>Mrs Araba Botchway</AUTHOR>
+                        </SUMMARY>
+                        <PROPERTIES>
+                          <CREATED>2007-10-02 04:21:00</CREATED>
+                          <REVISION>2012-07-19 11:29:00</REVISION>
+                          <PRINTED/>
+                          <REVISIONCOUNT>43</REVISIONCOUNT>
+                          <PAGES>3</PAGES>
+                          <WORDS>763</WORDS>
+                          <CHARACTERS>4350</CHARACTERS>
+                          <APPLICATION>Microsoft Office Word</APPLICATION>
+                        </PROPERTIES>
+                      </WORD>
+                    </tool>
+                    <tool name="OIS File Information" version="0.1">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd">
+                        <fileinfo>
+                          <filepath>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</filepath>
+                          <filename>/var/archivematica/sharedDirectory/watchedDirectories/workFlowDecisions/selectFormatIDToolTransfer/gha_ur_00-5c8d0cfc-fbab-43dc-bcfe-328340af6d93/objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc</filename>
+                          <size>50176</size>
+                          <md5checksum>1ede2328b53d004e566dfe157b13dba5</md5checksum>
+                          <fslastmodified>1342729792000</fslastmodified>
+                        </fileinfo>
+                      </fits>
+                    </tool>
+                    <tool name="OIS XML Metadata" version="0.2">
+                      <fits xsi:schemaLocation="http://hul.harvard.edu/ois/xml/ns/fits/fits_output http://hul.harvard.edu/ois/xml/xsd/fits/fits_output.xsd"/>
+                    </tool>
+                    <tool name="ffident" version="0.2">
+                      <ffidentOutput xmlns="">
+                        <shortName>DOC</shortName>
+                        <longName>Microsoft Word</longName>
+                        <group>doc</group>
+                        <mimetypes>
+                          <mimetype>application/msword</mimetype>
+                        </mimetypes>
+                        <fileExtensions>
+                          <extension>doc</extension>
+                        </fileExtensions>
+                      </ffidentOutput>
+                    </tool>
+                  </toolOutput>
+                </fits>
+              </objectCharacteristicsExtension>
+            </objectCharacteristics>
+            <originalName>%transferDirectory%objects/Administrative Files/STAFF Information/Job description - Project Officer- IFP -west Africa.doc</originalName>
+          </object>
+        </xmlData>
+      </mdWrap>
+    </techMD>
+    <rightsMD ID="rightsMD_7">
+      <mdWrap MDTYPE="PREMIS:RIGHTS">
+        <xmlData>
+          <rightsStatement xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd">
+            <rightsStatementIdentifier>
+              <rightsStatementIdentifierType>UUID</rightsStatementIdentifierType>
+              <rightsStatementIdentifierValue>7a86a9b5-3230-49c1-b7c3-030daaf313dd</rightsStatementIdentifierValue>
+            </rightsStatementIdentifier>
+            <rightsBasis>Other</rightsBasis>
+            <otherRightsInformation>
+              <otherRightsDocumentationIdentifier>
+                <otherRightsDocumentationIdentifierType>Donor Transfer Agreement and Deed of Gift</otherRightsDocumentationIdentifierType>
+                <otherRightsDocumentationIdentifierValue>5268074v.2</otherRightsDocumentationIdentifierValue>
+                <otherRightsDocumentationRole></otherRightsDocumentationRole>
+              </otherRightsDocumentationIdentifier>
+              <otherRightsBasis>Donor</otherRightsBasis>
+              <otherRightsApplicableDates>
+                <startDate>2012-07-25</startDate>
+                <endDate>2075-01-01</endDate>
+              </otherRightsApplicableDates>
+              <otherRightsNote>Restrictions on access by donor request</otherRightsNote>
+            </otherRightsInformation>
+            <rightsGranted>
+              <act>Access</act>
+              <restriction>Allow</restriction>
+              <termOfGrant>
+                <startDate>2012-07-25</startDate>
+                <endDate>OPEN</endDate>
+              </termOfGrant>
+              <rightsGrantedNote>No restrictions</rightsGrantedNote>
+            </rightsGranted>
+            <rightsGranted>
+              <act>Disseminate</act>
+              <restriction>Conditional</restriction>
+              <termOfRestriction>
+                <startDate>2012-07-25</startDate>
+                <endDate>OPEN</endDate>
+              </termOfRestriction>
+              <rightsGrantedNote>Permission to publish material from the collection must be requested from the Rare Book and Manuscript Library (RBML). The RBML approves permission to publish that which it physically owns; the responsibility to secure copyright permission rests with the patron.</rightsGrantedNote>
+            </rightsGranted>
+            <linkingObjectIdentifier>
+              <linkingObjectIdentifierType>UUID</linkingObjectIdentifierType>
+              <linkingObjectIdentifierValue>3023a17c-65da-4181-bf9f-3137c5d50e4e</linkingObjectIdentifierValue>
+            </linkingObjectIdentifier>
+          </rightsStatement>
+        </xmlData>
+      </mdWrap>
+    </rightsMD>
+    <digiprovMD ID="digiprovMD_91">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>c034b4a6-067a-4a74-806c-590b859bc36f</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>ingestion</eventType>
+            <eventDateTime>2014-09-03T18:15:12</eventDateTime>
+            <eventDetail></eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote></eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_92">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>f2b3f694-73d5-4914-b109-90e95cbab09d</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>message digest calculation</eventType>
+            <eventDateTime>2014-09-03T18:15:55</eventDateTime>
+            <eventDetail>program="python"; module="hashlib.sha256()"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>6a284ff772b1048db53f4d66d3c7ebc3035aefa9d4c19172d83e483da9790cdf</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_93">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>62e6d029-0749-49d4-bf97-bf6d89061d59</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>virus check</eventType>
+            <eventDateTime>2014-09-03T18:17:02</eventDateTime>
+            <eventDetail>program="Clam AV"; version="ClamAV 0.97.8"; virusDefinitions="19332/Wed Sep  3 12:19:16 2014
+"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote></eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_94">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>8dea52fc-63db-43b3-ac7e-2b6cdea6b522</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>name cleanup</eventType>
+            <eventDateTime>2014-09-03T18:17:16</eventDateTime>
+            <eventDetail>prohibited characters removed:program="sanitizeNames"; version="1.10.d743f3f7ca9881b7eb4cf574feca2fdbe66526b1"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>Original name="%transferDirectory%objects/Administrative Files/STAFF Information/Job description - Project Officer- IFP -west Africa.doc"; cleaned up name="%transferDirectory%objects/Administrative_Files/STAFF Information/Job description - Project Officer- IFP -west Africa.doc"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_95">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>8dea52fc-63db-43b3-ac7e-2b6cdea6b522</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>name cleanup</eventType>
+            <eventDateTime>2014-09-03T18:17:16</eventDateTime>
+            <eventDetail>prohibited characters removed:program="sanitizeNames"; version="1.10.d743f3f7ca9881b7eb4cf574feca2fdbe66526b1"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>Original name="%transferDirectory%objects/Administrative_Files/STAFF Information/Job description - Project Officer- IFP -west Africa.doc"; cleaned up name="%transferDirectory%objects/Administrative_Files/STAFF_Information/Job description - Project Officer- IFP -west Africa.doc"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_96">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>8dea52fc-63db-43b3-ac7e-2b6cdea6b522</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>name cleanup</eventType>
+            <eventDateTime>2014-09-03T18:17:16</eventDateTime>
+            <eventDetail>prohibited characters removed:program="sanitizeNames"; version="1.10.d743f3f7ca9881b7eb4cf574feca2fdbe66526b1"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome></eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>Original name="%transferDirectory%objects/Administrative_Files/STAFF_Information/Job description - Project Officer- IFP -west Africa.doc"; cleaned up name="%transferDirectory%objects/Administrative_Files/STAFF_Information/Job_description_-_Project_Officer-_IFP_-west_Africa.doc"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_97">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>022b22df-bf6f-4c65-92a6-4379df8c8a47</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>format identification</eventType>
+            <eventDateTime>2014-09-03T18:37:46</eventDateTime>
+            <eventDetail>program="Droid"; version="3.0"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Positive</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>fmt/111</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_98">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>3caaf612-0598-4031-af46-6ead388185f0</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>validation</eventType>
+            <eventDateTime>2014-09-03T18:37:46</eventDateTime>
+            <eventDetail>program="Jhove"; version="1.5"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>format="bytestream"; result="Well-Formed and valid"</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_99">
+      <mdWrap MDTYPE="PREMIS:EVENT">
+        <xmlData>
+          <event xmlns="info:lc/xmlns/premis-v2" xsi:schemaLocation="info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/v2/premis-v2-2.xsd" version="2.2">
+            <eventIdentifier>
+              <eventIdentifierType>UUID</eventIdentifierType>
+              <eventIdentifierValue>1440e7ed-5a5c-425c-872a-a487e6db84f2</eventIdentifierValue>
+            </eventIdentifier>
+            <eventType>fixity check</eventType>
+            <eventDateTime>2014-09-03T19:07:30</eventDateTime>
+            <eventDetail>program="python"; module="hashlib.sha256()"</eventDetail>
+            <eventOutcomeInformation>
+              <eventOutcome>Pass</eventOutcome>
+              <eventOutcomeDetail>
+                <eventOutcomeDetailNote>6a284ff772b1048db53f4d66d3c7ebc3035aefa9d4c19172d83e483da9790cdf verified</eventOutcomeDetailNote>
+              </eventOutcomeDetail>
+            </eventOutcomeInformation>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>Archivematica user pk</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>2</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>preservation system</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>Archivematica-0.10</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+            <linkingAgentIdentifier>
+              <linkingAgentIdentifierType>repository code</linkingAgentIdentifierType>
+              <linkingAgentIdentifierValue>cul</linkingAgentIdentifierValue>
+            </linkingAgentIdentifier>
+          </event>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_100">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>preservation system</agentIdentifierType>
+              <agentIdentifierValue>Archivematica-0.10</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>Archivematica</agentName>
+            <agentType>software</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_101">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>repository code</agentIdentifierType>
+              <agentIdentifierValue>cul</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>Columbia</agentName>
+            <agentType>organization</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+    <digiprovMD ID="digiprovMD_102">
+      <mdWrap MDTYPE="PREMIS:AGENT">
+        <xmlData>
+          <agent>
+            <agentIdentifier>
+              <agentIdentifierType>Archivematica user pk</agentIdentifierType>
+              <agentIdentifierValue>2</agentIdentifierValue>
+            </agentIdentifier>
+            <agentName>username="ldpd", first_name="ldpd", last_name=""</agentName>
+            <agentType>Archivematica user</agentType>
+          </agent>
+        </xmlData>
+      </mdWrap>
+    </digiprovMD>
+  </amdSec>
+</mets>

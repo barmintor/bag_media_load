@@ -7,8 +7,16 @@ module BagIt
 
     IMAGE_TYPES = ["image/bmp", "image/gif", "imag/jpeg", "image/png", "image/tiff", "image/x-windows-bmp"]
 
-    TEXT_TYPES = MIME::Types.type_for('pdf') + MIME::Types.type_for('doc') +
-                 MIME::Types.type_for('rtf') + MIME::Types.type_for('txt')
+    DOC_TYPES = MIME::Types.type_for('pdf') + MIME::Types.type_for('doc') +
+                 MIME::Types.type_for('rtf') + MIME::Types.type_for('docx')
+
+    PRESENTATION_TYPES = MIME::Types.type_for('ppt') + MIME::Types.type_for('pptx')
+
+    SPREADSHEET_TYPES = MIME::Types.type_for('xls') + MIME::Types.type_for('xlsx')
+
+    XML_TYPES = MIME::Types.type_for('xml')
+
+    TEXT_TYPES = MIME::Types.type_for('txt')
 
     AUDIO_TYPES = MIME::Types.type_for('mp3') + MIME::Types.type_for('wav') +
                   MIME::Types.type_for('aiff') + MIME::Types.type_for('au') +

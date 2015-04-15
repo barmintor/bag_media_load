@@ -43,13 +43,11 @@ module Arxv
       document = file_node.document
       adm_id = file_node['ADMID']
       if adm_id
-        adm = document.xpath("//mets:amdSec[@ID='#{adm_id}']", METS_NS).first
-        mime = adm.xpath(".//premis:objectCharacteristicsExtension/fits:fits/fits:identification/fits:identity", METS_NS).first if adm
-        mime = mime ? mime["mimetype"] : nil
-        opts[:mime] = mime
+        adm = Arxv::AmdSec.new(document.xpath("//mets:amdSec[@ID='#{adm_id}']", METS_NS).first)
+        opts[:mime] = adm.mime_type
+        opts[:puid] = adm.puid
         if original
-          original_path = adm.xpath(".//premis:originalName", METS_NS).text
-          opts[:original_path] = original_path
+          opts[:original_path] = adm.original_path
         end
       end
       Arxv::Entry.new(opts)

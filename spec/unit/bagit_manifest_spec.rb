@@ -11,7 +11,13 @@ describe BagIt::Manifest do
  'data/lol.bar',
  'data/top/lol.wut',
  'data/top/foo.wut',
- 'data/top/lol.bar'
+ 'data/top/lol.bar',
+ 'data/top/fake.doc',
+ 'data/top/fake.docx',
+ 'data/top/fake.xls',
+ 'data/top/fake.xlsx',
+ 'data/top/fake.ppt',
+ 'data/top/fake.pptx',
      ).sort
   end
   it 'should load all the entries' do
@@ -24,6 +30,12 @@ describe BagIt::Manifest do
     actual = []
     expected = absolute_paths('data/top/lol.wut')
     @test.each_entry('data/top/lol.wut') {|entry| actual << entry.path}
+    expect(actual.sort).to eql(expected)
+  end
+  it 'should map types correctly' do
+    actual = []
+    expected = ['PageDescription','PageDescription','Presentation','Presentation','Spreadsheet','Spreadsheet','Unknown','Unknown','Unknown','Unknown','Unknown']
+    @test.each_entry {|entry| actual << entry.dc_type}
     expect(actual.sort).to eql(expected)
   end
   it 'should load entries matching a pattern' do

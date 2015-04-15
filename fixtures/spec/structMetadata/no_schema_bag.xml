@@ -2,6 +2,12 @@
   <mets:div LABEL="lol.bar" CONTENTIDS="apt://columbia.edu/foo/data/lol.bar" />
   <mets:div LABEL="lol.wut" CONTENTIDS="apt://columbia.edu/foo/data/lol.wut" />
   <mets:div LABEL="top">
+    <mets:div LABEL="fake.doc" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.doc" />
+    <mets:div LABEL="fake.docx" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.docx" />
+    <mets:div LABEL="fake.ppt" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.ppt" />
+    <mets:div LABEL="fake.pptx" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.pptx" />
+    <mets:div LABEL="fake.xls" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.xls" />
+    <mets:div LABEL="fake.xlsx" CONTENTIDS="apt://columbia.edu/foo/data/top/fake.xlsx" />
     <mets:div LABEL="foo.wut" CONTENTIDS="apt://columbia.edu/foo/data/top/foo.wut" />
     <mets:div LABEL="lol.bar" CONTENTIDS="apt://columbia.edu/foo/data/top/lol.bar" />
     <mets:div LABEL="lol.wut" CONTENTIDS="apt://columbia.edu/foo/data/top/lol.wut" />
