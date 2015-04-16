@@ -43,5 +43,9 @@ module BagIt
     def to_absolute_path(src_path)
       Pathname.new(src_path).realpath.to_path
     end
+
+    def index_type_label
+      "FILE ASSET"
+    end
   end
 end
