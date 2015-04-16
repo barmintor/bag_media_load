@@ -1,4 +1,7 @@
 module BagMediaLoad::MigrationHelpers
+  IMAGE_EXT = {"image/bmp" => 'bmp', "image/gif" => 'gif', "image/jpeg" => 'jpg',
+   "image/png" => 'png', "image/tiff" => 'tif', "image/x-windows-bmp" => 'bmp',
+   "image/jp2" => 'jp2'}
   extend ActiveSupport::Concern
   def derivatives!(opts={:override=>false},derivative_entries=[])
     ds = datastreams["content"]
