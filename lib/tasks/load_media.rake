@@ -79,6 +79,10 @@ namespace :bag do
         load "#{Rails.root}/db/seeds.rb"
       end
     end
+    task reseed: :environment do
+      PronomFormat.all.delete_all
+      load "#{Rails.root}/db/seeds.rb"
+    end
     desc "debug derivative creation"
     task :debug => :seed do
       rpath = '/fstore/archive/ldpd/preservation/lindquist/data/Lindquist_box_OS/burke_lindq_OS_1907v.tif'
