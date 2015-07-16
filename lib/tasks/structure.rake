@@ -108,7 +108,11 @@ namespace :structure do
     # parse bag-info for external-id and title
     bag_info = BagIt::Info.new(bag_path)
     raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-    id_prefix = "apt://columbia.edu/#{bag_info.external_id}"
+    if bag_info.external_id =~ /^apt:\/\//
+      id_prefix = bag_info.external_id
+    else
+      id_prefix = "apt://columbia.edu/#{bag_info.external_id}"
+    end
     cagg_id = "#{id_prefix}/data"
     cagg = ContentAggregator.search_repo(identifier: cagg_id).first
     unless cagg.nil?
