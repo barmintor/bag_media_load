@@ -41,7 +41,7 @@ module Cul::Repo::Cache::DerivativeInfo
       # Check for the presence of a structMap and get first GenericResource in that structMap
       if obj.has_struct_metadata?
 
-        struct = Cul::Scv::Hydra::Datastreams::StructMetadata.from_xml(obj.datastreams['structMetadata'].content)
+        struct = Cul::Hydra::Datastreams::StructMetadata.from_xml(obj.datastreams['structMetadata'].content)
         ng_div = struct.first_ordered_content_div #Nokogiri node response
         content_ids = ng_div.attr('CONTENTIDS').split(' ') # Get all space-delimited content ids
         child_obj = GenericAggregator.search_repo.find_by(identifier: content_ids[0]) # We don't know what type of aggregator we'll be getting back, but all we need is the pid
@@ -49,7 +49,7 @@ module Cul::Repo::Cache::DerivativeInfo
         return get_representative_generic_resource(child_obj.pid)
       else
         # If there isn't a structMap, just get the first child
-        member_pids = Cul::Scv::Hydra::RisearchMembers.get_direct_member_pids(id)
+        member_pids = Cul::Hydra::RisearchMembers.get_direct_member_pids(id)
         return get_representative_generic_resource(member_pids.first)
       end
     end

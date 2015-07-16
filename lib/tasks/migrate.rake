@@ -1,6 +1,6 @@
 require "rake"
 require "active-fedora"
-require "cul_scv_hydra"
+require "cul_hydra"
 require "mime/types"
 
 def unique_pids(search_response)
@@ -32,7 +32,7 @@ namespace :migrate do
       :limit => '100',
       :stream => 'on'
     }
-    search_response = JSON(Cul::Scv::Fedora.repository.find_by_itql(query, ri_opts))
+    search_response = JSON(Cul::Hydra::Fedora.repository.find_by_itql(query, ri_opts))
     ctr = 0
     while (pids = unique_pids(search_response)).first
       pids.each do |pid|
@@ -53,7 +53,7 @@ namespace :migrate do
         Rails.logger.info "#{ctr} dc:type = #{image ? 'StillImage' : 'Software'}"
       end
       sleep 10
-      search_response = JSON(Cul::Scv::Fedora.repository.find_by_itql(query, ri_opts))
+      search_response = JSON(Cul::Hydra::Fedora.repository.find_by_itql(query, ri_opts))
     end
   end
 end

@@ -1,6 +1,6 @@
 require "rake"
 require "active-fedora"
-require "cul_scv_hydra"
+require "cul_hydra"
 require "nokogiri"
 require 'cul_repo_cache'
 require "bag_it"
@@ -152,7 +152,7 @@ namespace :util do
           end
         end
         ds = cagg.datastreams['structMetadata']
-        ds.ng_xml = Cul::Scv::Hydra::Datastreams::StructMetadata.xml_template
+        ds.ng_xml = Cul::Hydra::Datastreams::StructMetadata.xml_template
         ds.content_will_change!
         ds.label = 'Sequence'
         ds.type = 'logical'

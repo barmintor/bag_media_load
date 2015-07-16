@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'cul_scv_hydra'
+require 'cul_hydra'
 describe BagIt::DcHelpers do
   DC_FIXTURE = <<-dc
   <oai_dc:dc
@@ -12,7 +12,7 @@ dc
     include BagIt::DcHelpers
     def datastreams
       @map ||= begin
-        map = {'DC' => Cul::Scv::Hydra::Datastreams::DCMetadata.new}
+        map = {'DC' => Cul::Hydra::Datastreams::DCMetadata.new}
         map['DC'].content= DC_FIXTURE
         map    
       end

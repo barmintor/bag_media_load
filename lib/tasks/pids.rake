@@ -1,6 +1,6 @@
 require "rake"
 require "active-fedora"
-require "cul_scv_hydra"
+require "cul_hydra"
 require "nokogiri"
 require 'cul_repo_cache'
 require "bag_it"

@@ -11,9 +11,9 @@ class GenericResource < ::ActiveFedora::Base
   include ::ActiveFedora::FinderMethods::RepositoryMethods
   include ::ActiveFedora::DatastreamCollections
   include ::Hydra::ModelMethods
-  include Cul::Scv::Hydra::Models::Common
-  include Cul::Scv::Hydra::Models::ImageResource
-  include Cul::Scv::Fedora::UrlHelperBehavior
+  include Cul::Hydra::Models::Common
+  include Cul::Hydra::Models::ImageResource
+  include Cul::Hydra::Fedora::UrlHelperBehavior
   include BagIt::DcHelpers
   include BagIt::Resource
   include ::ActiveFedora::RelsInt
