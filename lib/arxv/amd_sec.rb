@@ -9,6 +9,11 @@ module Arxv
       xsi: "http://www.w3.org/2001/XMLSchema-instance",
       pronom:"http://www.nationalarchives.gov.uk/pronom/FileCollection"
     }
+    module Fmt189
+      DOC = ['.docx', '.doc']
+      XLS = ['.xlsx', '.xls']
+      PPT = ['.pptx','.ppt']
+    end
     def initialize(node)
       @node = node
       if @node
@@ -37,17 +42,25 @@ module Arxv
                   puid = 'fmt/61'
                 end
               end
+            elsif ffident = @node.xpath(".//fits:tool[@name='ffident']/ffidentOutput/shortName", METS_NS).text
+              if ffident == 'DOC'
+                puid = 'fmt/40'
+              elsif ffident == 'XLS'
+                puid = 'fmt/61'
+              elsif ffident == 'PPT'
+                puid = 'fmt/126'
+              end
             end
           elsif puid == 'fmt/189'
             path = @node.xpath(".//premis:objectCharacteristicsExtension/fits:fits/fits:fileinfo/fits:filepath", METS_NS).first.text
             ext = File.extname(path)
-            if ext == '.docx'
+            if Fmt189::DOC.include? ext
               puid = 'fmt/412'
-            elsif ext == '.xlsx'
+            elsif Fmt189::XLS.include? ext
               puid = 'fmt/214'
-            elsif ext == '.pptx'
+            elsif Fmt189::PPT.include? ext
               puid = 'fmt/215'
-            end              
+            end     
           end
           @puid = puid
         end
