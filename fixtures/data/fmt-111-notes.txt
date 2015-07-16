@@ -1,0 +1,70 @@
+OLE2 (fmt/111)
+
+BIFF_BOF_v8
+0x0600 = BIFFv8
+0x0500 = BIFFv7
+
+
+typedef enum {
+23	MS_BIFF_V_UNKNOWN = 0,
+24	MS_BIFF_V2 = 2,
+25	MS_BIFF_V3 = 3,
+26	MS_BIFF_V4 = 4,
+27	MS_BIFF_V5 = 5, /* Excel 5.0 */
+28	MS_BIFF_V7 = 7, /* Excel 95 */
+29	MS_BIFF_V8 = 8  /* Excel 97, 2000, XP, 2003 */
+30} MsBiffVersion;
+
+
+                        <VERSION>MSExcel</VERSION>
+                        <HEADER>
+                          <MAGICNUMBER>0x809</MAGICNUMBER>
+                          <FIBNUMBER>0x10</FIBNUMBER>
+                          <PRODUCTVERSION>0x600</PRODUCTVERSION>
+                        </HEADER>
+
+HDR: 0809 0010 0600
+
+MAGICNUMBER 0xA5DC fmt/39
+MAGICNUMBER 0xA5EC fmt/40
+MAGICNUMBER 0x809
+  PRODUCTVERSION 0x500 fmt/59
+  PRODUCTVERSION 0x600 fmt/61
+fmt/125
+fmt/126
+opCode == MAGICNUMBER
+version1 = opCode >> 8 = 0x08
+
+version2, streamtype = unpack('<HH', data[0:4]) = 0x0100, 0x0006
+
+2	0x0002	nFib	ushort			FIB version written. This will be >= 101 for all Word 6.0 for Windows and after documents.
+
+
+
+                        <VERSION>OLE</VERSION>
+                        <HEADER>
+                          <MAGICNUMBER>0xa5ec</MAGICNUMBER>
+                          <FIBNUMBER>0xc1</FIBNUMBER>
+                          <PRODUCTVERSION>0x805b</PRODUCTVERSION>
+                        </HEADER>
+
+typedef struct _fib {
+      short magicNumber;
+      // Word 6.0: 0xA5DC fmt/39
+      // Word 7.0 (95): 0xA5DC fmt/39
+      // Word 8.0 (97): 0xA5EC fmt/40
+
+      short version;   // >= 101 for Word 6.0 and higher...
+      // Word 6.0: 101
+      // Word 7.0 (95): 104
+      // Word 8.0 (97): 105
+   } FIB, *LPFIB;
+
+
+
+                        <VERSION>MSPowerPoint</VERSION>
+                        <HEADER>
+                          <MAGICNUMBER>0xf</MAGICNUMBER>
+                          <FIBNUMBER>0x3e8</FIBNUMBER>
+                          <PRODUCTVERSION>0x187e</PRODUCTVERSION>
+                        </HEADER>

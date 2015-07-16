@@ -1,0 +1,177 @@
+application/msword	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/dbase	http://reference.data.gov.uk/technical-registry/Database
+text/plain	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PlainTextDocument
+text/csv	http://reference.data.gov.uk/technical-registry/Dataset
+application/postscript	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.wordperfect	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/dwf	http://reference.data.gov.uk/technical-registry/Model
+application/x-dwf	http://reference.data.gov.uk/technical-registry/Model
+drawing/x-dwf	http://reference.data.gov.uk/technical-registry/Model
+image/vnd.dwf	http://reference.data.gov.uk/technical-registry/Model
+image/x-dwf	http://reference.data.gov.uk/technical-registry/Model
+model/vnd.dwf	http://reference.data.gov.uk/technical-registry/Model
+image/x-pict	http://reference.data.gov.uk/technical-registry/RasterImage
+application/vnd.ms-powerpoint	http://reference.data.gov.uk/technical-registry/Presentation
+image/vnd.adobe.photoshop
+application/sld
+application/x-sld
+image/x-sld
+image/svg+xml	http://reference.data.gov.uk/technical-registry/VectorImage
+application/vnd.visio
+application/vnd.lotus-1-2-3	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/x-123	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/lotus123	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/vnd.ms-excel	http://reference.data.gov.uk/technical-registry/Spreadsheet
+audio/x-aiff	http://reference.data.gov.uk/technical-registry/Audio
+audio/basic	http://reference.data.gov.uk/technical-registry/Audio
+image/x-sgi-bw
+image/cgm	http://reference.data.gov.uk/technical-registry/VectorImage
+video/dv	http://reference.data.gov.uk/technical-registry/Video
+image/x-emf
+model/iges	http://reference.data.gov.uk/technical-registry/Model
+text/html	http://reference.data.gov.uk/technical-registry/MarkupText
+application/vnd.mif
+image/x-portable-bitmap	http://reference.data.gov.uk/technical-registry/Database
+image/x-portable-pixmap	http://reference.data.gov.uk/technical-registry/Database
+audio/vnd.rn-realaudio
+audio/x-pn-realaudio
+image/x-sun-raster
+application/vnd.rn-realmedia
+application/vnd.lotus-wordpro	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+text/sgml	http://reference.data.gov.uk/technical-registry/StructuredText
+image/x-xbitmap	http://reference.data.gov.uk/technical-registry/Database
+image/x-xpixmap	http://reference.data.gov.uk/technical-registry/Database
+application/x-internet-archive
+application/x-cdf
+text/css	http://reference.data.gov.uk/technical-registry/StructuredText
+application/gml+xml
+audio/midi	http://reference.data.gov.uk/technical-registry/Audio
+application/x-project
+application/vnd.ms-project
+application/zip	http://reference.data.gov.uk/technical-registry/Aggregate
+application/x-rar-compressed	http://reference.data.gov.uk/technical-registry/Aggregate
+application/x-tar	http://reference.data.gov.uk/technical-registry/Aggregate
+application/x-gzip	http://reference.data.gov.uk/technical-registry/Aggregate
+application/x-bzip2	http://reference.data.gov.uk/technical-registry/Aggregate
+image/bmp	http://reference.data.gov.uk/technical-registry/RasterImage
+video/vnd.rn-realvideo	http://reference.data.gov.uk/technical-registry/Video
+audio/mpeg	http://reference.data.gov.uk/technical-registry/Audio
+application/xml	http://reference.data.gov.uk/technical-registry/StructuredText
+application/dec-dx.
+image/x-xwindowdump
+application/vnd.framemaker
+application/x-filemaker	http://reference.data.gov.uk/technical-registry/Database
+application/vnd.lotus-approach
+application/vnd.lotus-freelance
+application/vnd.lotus-notes
+application/lwp
+application/x-director
+image/x-dcx
+application/x-dvi
+application/pdf	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+image/gif	http://reference.data.gov.uk/technical-registry/RasterImage
+application/rtf	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+text/rtf	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+text/xml	http://reference.data.gov.uk/technical-registry/StructuredText
+application/xhtml+xml	http://reference.data.gov.uk/technical-registry/MarkupText
+application/x-shockwave-flash
+video/x-flv	http://reference.data.gov.uk/technical-registry/Video
+audio/x-wav	http://reference.data.gov.uk/technical-registry/Audio
+video/x-msvideo	http://reference.data.gov.uk/technical-registry/Video
+application/fits	http://reference.data.gov.uk/technical-registry/Dataset
+image/fits	http://reference.data.gov.uk/technical-registry/Dataset
+video/quicktime	http://reference.data.gov.uk/technical-registry/Video
+video/mpeg	http://reference.data.gov.uk/technical-registry/Video
+model/vrml	http://reference.data.gov.uk/technical-registry/Model
+image/png	http://reference.data.gov.uk/technical-registry/RasterImage
+image/jpeg	http://reference.data.gov.uk/technical-registry/RasterImage
+image/tiff	http://reference.data.gov.uk/technical-registry/RasterImage
+image/jp2	http://reference.data.gov.uk/technical-registry/RasterImage
+application/vnd.ms-asf	http://reference.data.gov.uk/technical-registry/Aggregate
+audio/x-ms-wma	http://reference.data.gov.uk/technical-registry/Audio
+video/x-ms-wmv	http://reference.data.gov.uk/technical-registry/Video
+image/vnd.dwg	http://reference.data.gov.uk/technical-registry/VectorImage
+image/vnd.dxf	http://reference.data.gov.uk/technical-registry/VectorImage
+application/vnd.sun.xml.writer		http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.sun.xml.calc	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/vnd.sun.xml.impress	http://reference.data.gov.uk/technical-registry/Presentation
+application/vnd.sun.xml.draw	http://reference.data.gov.uk/technical-registry/VectorImage
+application/vnd.stardivision.writer		http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.stardivision.draw	http://reference.data.gov.uk/technical-registry/
+application/vnd.stardivision.calc	http://reference.data.gov.uk/technical-registry/
+application/vnd.stardivision.impress	http://reference.data.gov.uk/technical-registry/
+application/octet-stream	http://reference.data.gov.uk/technical-registry/
+application/java-archive	http://reference.data.gov.uk/technical-registry/
+application/vnd.oasis.opendocument.text		http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.oasis.opendocument.spreadsheet	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/vnd.oasis.opendocument.presentation	http://reference.data.gov.uk/technical-registry/Presentation
+application/vnd.oasis.opendocument.graphics	http://reference.data.gov.uk/technical-registry/VectorImage
+image/jpx	http://reference.data.gov.uk/technical-registry/RasterImage
+image/vnd.microsoft.icon	http://reference.data.gov.uk/technical-registry/RasterImage
+image/x-icon	http://reference.data.gov.uk/technical-registry/RasterImage
+application/inf
+application/javascript	http://reference.data.gov.uk/technical-registry/StructuredText
+message/rfc822
+multipart/related
+application/mxf
+audio/ogg	http://reference.data.gov.uk/technical-registry/Audio
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/vnd.openxmlformats-officedocument.presentationml.presentation	http://reference.data.gov.uk/technical-registry/Presentation
+image/vnd.djvu	http://reference.data.gov.uk/technical-registry/RasterImage
+image/x-djvu	http://reference.data.gov.uk/technical-registry/RasterImage
+application/netcdf	http://reference.data.gov.uk/technical-registry/Dataset
+application/x-netcdf	http://reference.data.gov.uk/technical-registry/Dataset
+image/cgm; version=1	http://reference.data.gov.uk/technical-registry/VectorImage
+image/cgm; version=2	http://reference.data.gov.uk/technical-registry/VectorImage
+image/cgm; version=3	http://reference.data.gov.uk/technical-registry/VectorImage
+image/cgm; version=4	http://reference.data.gov.uk/technical-registry/VectorImage
+application/qif	http://reference.data.gov.uk/technical-registry/StructuredText
+application/x-ofx	http://reference.data.gov.uk/technical-registry/StructuredText
+audio/prs.sid	http://reference.data.gov.uk/technical-registry/Audio
+audio/xm	http://reference.data.gov.uk/technical-registry/Audio
+application/x-endnote-style
+application/x-endnote-connect
+application/x-endnote-connection
+application/x-endnote-refer
+application/x-sh	http://reference.data.gov.uk/technical-registry/Aggregate
+application/x-shar	http://reference.data.gov.uk/technical-registry/Aggregate
+video/mj2	http://reference.data.gov.uk/technical-registry/Video
+audio/amr	http://reference.data.gov.uk/technical-registry/Audio
+audio/3gpp	http://reference.data.gov.uk/technical-registry/Audio
+video/3gpp	http://reference.data.gov.uk/technical-registry/Video
+chemical/x-dcx		
+image/x-win-bitmap	http://reference.data.gov.uk/technical-registry/RasterImage
+text/x-vCalendar	http://reference.data.gov.uk/technical-registry/StructuredText
+text/calendar	http://reference.data.gov.uk/technical-registry/StructuredText
+application/vnd.openxmlformats-officedocument.wordprocessingml.document	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.ms-excel.sheet.macroEnabled.12	http://reference.data.gov.uk/technical-registry/Spreadsheet
+image/jpm	http://reference.data.gov.uk/technical-registry/RasterImage
+application/x-ibooks+zip	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/epub+zip	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.ms-powerpoint.presentation.macroEnabled.12	http://reference.data.gov.uk/technical-registry/Presentation
+application/vnd.ms-word.document.macroEnabled.12	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/vnd.ms-officetheme
+video/x-mng	http://reference.data.gov.uk/technical-registry/Video
+image/x-jng	http://reference.data.gov.uk/technical-registry/RasterImage
+video/webm	http://reference.data.gov.uk/technical-registry/Video
+application/vnd.ms-wpl	http://reference.data.gov.uk/technical-registry/StructuredText
+image/vnd.mix	http://reference.data.gov.uk/technical-registry/RasterImage
+application/vnd.ms-excel.sheet.binary.macroEnabled.12	http://reference.data.gov.uk/technical-registry/Spreadsheet
+application/vnd.openxmlformats-officedocument.wordprocessingml.template
+application/vnd.openxmlformats-officedocument.spreadsheetml.template
+application/vnd.ms-word.template.macroEnabled.12	http://reference.data.gov.uk/technical-registry/
+application/font-woff		http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/Font
+application/vnd.ms-excel.template.macroEnabled.12
+application/vnd.ms-excel.addin.macroEnabled.12
+application/vnd.openxmlformats-officedocument.presentationml.slideshow	http://reference.data.gov.uk/technical-registry/Presentation
+application/vnd.ms-powerpoint.slideshow.macroEnabled.12	http://reference.data.gov.uk/technical-registry/Presentation
+application/vnd.openxmlformats-officedocument.presentationml.template
+application/vnd.ms-powerpoint.template.macroEnabled.12
+application/vnd.ms-powerpoint.addin.macroEnabled.12
+application/vnd.ms-htmlhelp
+application/vnd.ms-powerpoint.slide.macroEnabled.12	http://reference.data.gov.uk/technical-registry/Presentation
+application/msonenote
+application/oxps	http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#PaginatedTextDocument
+application/mbox	http://reference.data.gov.uk/technical-registry/
+application/vnd.google-earth.kml+xml	http://reference.data.gov.uk/technical-registry/GIS
+application/x-sqlite3	http://reference.data.gov.uk/technical-registry/Database

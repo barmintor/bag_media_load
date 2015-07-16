@@ -1,0 +1,8 @@
+fmt/7	image/tiff
+fmt/8	image/tiff
+fmt/9	image/tiff
+fmt/10	image/tiff
+fmt/149	image/jpeg
+fmt/199	trigger/mp4
+fmt/111	trigger/ole
+fmt/189	trigger/ooxml
