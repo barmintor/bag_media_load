@@ -1,4 +1,4 @@
-<mets:structMap TYPE="physical" LABEL="Device" xmlns:mets="http://www.loc.gov/METS/">
+<mets:structMap TYPE="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#Filesystem" LABEL="Device" xmlns:mets="http://www.loc.gov/METS/">
   <mets:div LABEL="lol.bar" CONTENTIDS="apt://columbia.edu/foo/data/lol.bar" />
   <mets:div LABEL="lol.wut" CONTENTIDS="apt://columbia.edu/foo/data/lol.wut" />
   <mets:div LABEL="top">

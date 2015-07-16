@@ -101,7 +101,8 @@ module BagIt
           end
         end
       end
-      Cul::Repo::Serializers::StructMetadata.serialize(nil, struct, io)
+      opts = {type: RDF::NFO[:"#Filesystem"].to_s}
+      Cul::Repo::Serializers::StructMetadata.serialize(nil, struct, io, opts)
     end
   end
 end
