@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git://github.com/cul/active_fedora_relsint
-  revision: e5af2906f1ddca5f051dcc61fbcfea81b43c92de
+  revision: a87f94460f06ede3cd69431439de29d9beb71ba1
   specs:
     active_fedora_relsint (0.3.0)
       active-fedora (>= 7.0)
@@ -15,9 +15,9 @@ GIT
 
 GIT
   remote: git://github.com/cul/cul_hydra
-  revision: bb412cc57b155723c3b84b469c32ba4ab2e99253
+  revision: f7de9aa1c45dc91b955eef57f02c470ec0536f29
   specs:
-    cul_hydra (1.0.7)
+    cul_hydra (1.2.0)
       active-fedora (~> 7.0)
       active-triples (~> 0.2.2)
       active_fedora_finders (>= 0.5.0)

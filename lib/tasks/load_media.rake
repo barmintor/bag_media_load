@@ -100,11 +100,11 @@ namespace :bag do
 
       group_id = "rbml_css"
 
-      css = BagAggregator.find_by_identifier(group_id)
+      css = AdministrativeSet.find_by_identifier(group_id)
       if css.blank?
-        all_ldpd_content = BagAggregator.find_by_identifier(LDPD_PROJECTS_ID)
+        all_ldpd_content = AdministrativeSet.find_by_identifier(LDPD_PROJECTS_ID)
         css_pid = next_pid
-        css = BagAggregator.new(:pid=>css_pid)
+        css = AdministrativeSet.new(:pid=>css_pid)
         css.datastreams["DC"].identifier = group_id
         css.datastreams["DC"].title = "Community Service Society Records"
         css.datastreams["DC"].dc_type = 'Collection'
@@ -151,17 +151,17 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(bag_path)
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      all_ldpd_content = BagAggregator.search_repo(identifier: LDPD_STORAGE_ID).first
+      all_ldpd_content = AdministrativeSet.search_repo(identifier: LDPD_STORAGE_ID).first
       group_id = bag_info.group_id || LDPD_STORAGE_ID
       Rails.logger.info "Searching for \"#{bag_info.external_id}\""
-      bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
+      bag_agg = AdministrativeSet.search_repo(identifier: (bag_info.external_id)).first
       bag_agg_id = apt_project_id(bag_info.external_id)
-      bag_agg ||= BagAggregator.search_repo(identifier: bag_agg_id).first
+      bag_agg ||= AdministrativeSet.search_repo(identifier: bag_agg_id).first
       if bag_agg.blank?
         # raise 'check into missing bag: ' + bag_info.external_id
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
-        bag_agg = BagAggregator.new(:pid=>pid)
+        bag_agg = AdministrativeSet.new(:pid=>pid)
         bag_agg.datastreams["DC"].update_values({[:dc_identifier] => [bag_info.external_id, bag_agg_id]})
         bag_agg.datastreams["DC"].update_values({[:dc_title] => bag_info.external_desc})
         bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
@@ -170,15 +170,15 @@ namespace :bag do
         all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
       end
       all_media_id = bag_agg_id + "/data"
-      all_media = ContentAggregator.search_repo(identifier: (all_media_id)).first
+      all_media = Collection.search_repo(identifier: (all_media_id)).first
       if all_media.blank?
-        all_media = ContentAggregator.new(:pid=>next_pid)
+        all_media = Collection.new(:pid=>next_pid)
         all_media.datastreams["DC"].update_values({[:dc_identifier] => all_media_id})
         all_media.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         title = 'All Media From Bag at ' + bag_path
         all_media.datastreams["DC"].update_values({[:dc_title] => title})
         all_media.label = title
-        all_media.add_relationship(:cul_member_of, bag_agg.internal_uri)
+        all_media.add_relationship(:iana_describes, bag_agg.internal_uri)
         all_media.save
       end
 
@@ -272,17 +272,17 @@ namespace :bag do
       derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(bag_path)
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
-      all_ldpd_content = BagAggregator.search_repo(identifier: LDPD_STORAGE_ID).first
+      all_ldpd_content = AdministrativeSet.search_repo(identifier: LDPD_STORAGE_ID).first
       group_id = bag_info.group_id || LDPD_STORAGE_ID
       Rails.logger.info "Searching for \"#{bag_info.external_id}\""
-      bag_agg = BagAggregator.search_repo(identifier: (bag_info.external_id)).first
+      bag_agg = AdministrativeSet.search_repo(identifier: (bag_info.external_id)).first
       bag_agg_id = apt_project_id(bag_info.external_id)
-      bag_agg ||= BagAggregator.search_repo(identifier: bag_agg_id).first
+      bag_agg ||= AdministrativeSet.search_repo(identifier: bag_agg_id).first
       if bag_agg.blank?
         # raise 'check into missing bag: ' + bag_info.external_id
         pid = next_pid
         Rails.logger.info "NEXT PID: #{pid}"
-        bag_agg = BagAggregator.new(:pid=>pid)
+        bag_agg = AdministrativeSet.new(:pid=>pid)
         bag_agg.datastreams["DC"].update_values({[:dc_identifier] => [bag_info.external_id, bag_agg_id]})
         bag_agg.datastreams["DC"].update_values({[:dc_title] => bag_info.external_desc})
         bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
@@ -291,15 +291,15 @@ namespace :bag do
         all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
       end
       all_media_id = bag_agg_id + "/data"
-      all_media = ContentAggregator.search_repo(identifier: (all_media_id)).first
+      all_media = Collection.search_repo(identifier: (all_media_id)).first
       if all_media.blank?
-        all_media = ContentAggregator.new(:pid=>next_pid)
+        all_media = Collection.new(:pid=>next_pid)
         all_media.datastreams["DC"].update_values({[:dc_identifier] => all_media_id})
         all_media.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         title = 'All Media From Bag at ' + bag_path
         all_media.datastreams["DC"].update_values({[:dc_title] => title})
         all_media.label = title
-        all_media.add_relationship(:cul_member_of, bag_agg.internal_uri)
+        all_media.add_relationship(:iana_describes, bag_agg.internal_uri)
         all_media.save
       end
 
