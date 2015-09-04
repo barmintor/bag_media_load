@@ -6,12 +6,6 @@ GIT
       ffi (>= 1.0.10)
 
 GIT
-  remote: git@github.com:meh/ruby-thread.git
-  revision: f77505ccdf22faca32d08a493525c043e0303fe4
-  specs:
-    thread (0.2.2)
-
-GIT
   remote: https://github.com/ruby-rdf/rdf-rdfxml.git
   revision: 78c13fe5dbcecaf1f56abe9535d00f16c670a764
   ref: 78c13fe5dbcecaf1f56abe9535d00f16c670a764
@@ -384,6 +378,7 @@ GEM
       libv8 (~> 3.16.14.0)
       ref
     thor (0.19.1)
+    thread (0.2.2)
     thread_safe (0.3.5)
     tilt (1.4.1)
     tzinfo (1.2.2)
@@ -420,5 +415,5 @@ DEPENDENCIES
   sass-rails (~> 4.0.2)
   sqlite3
   therubyracer (= 0.12.0)
-  thread!
+  thread
   uglifier (>= 1.0.3)

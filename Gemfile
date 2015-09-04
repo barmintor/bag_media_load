@@ -17,7 +17,7 @@ gem 'free-image', :github => 'barmintor/free-image-ruby'
 # image derivative gem
 gem 'imogen', '>= 0.1.2'
 gem 'mime-types'
-gem 'thread', :git=>'git@github.com:meh/ruby-thread.git'
+gem 'thread'
 gem 'rdf-rdfxml', git: 'https://github.com/ruby-rdf/rdf-rdfxml.git', ref:'78c13fe5dbcecaf1f56abe9535d00f16c670a764'
 # Gems used only for assets and not required
 # in production environments by default.
