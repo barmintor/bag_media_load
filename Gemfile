@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.4'
+gem 'rails', '4.2.1'
 gem 'foreigner'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -9,8 +9,8 @@ gem 'sqlite3'
 
 gem 'active-fedora', '~>7.0'
 gem 'active_fedora_finders'
-gem 'active_fedora_relsint', :git=>'git://github.com/cul/active_fedora_relsint'
-gem 'cul_hydra', :git=>'git://github.com/cul/cul_hydra' #'~>0.9.0'
+gem 'active_fedora_relsint'
+gem 'cul_hydra', '~>1.2.0'
 gem 'libv8', '~>3.16' # for therubyracer
 gem 'therubyracer', "0.12.0" # for execjs
 gem 'free-image', :github => 'barmintor/free-image-ruby'
@@ -49,11 +49,7 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 group :development do
-  gem 'rspec'
+  gem 'rspec', '~> 3.3'
   gem 'rspec-rails'
   gem 'mocha'
-end
-
-group :test do
-  gem 'test-unit'
 end
