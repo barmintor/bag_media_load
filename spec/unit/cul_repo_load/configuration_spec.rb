@@ -25,6 +25,9 @@ describe Cul::Repo::Load::Configuration do
       end
     end
     after do
+      test_env.each do |k,v|
+        ENV[k] = nil
+      end
       old_env.each do |k,v|
         ENV[k] = v
       end
@@ -32,6 +35,7 @@ describe Cul::Repo::Load::Configuration do
     subject { Cul::Repo::Load::Configuration.from_env }
     it do
       expect(subject.bag_path).to eql(bag_path)
+      expect(subject.create_parent_works?).to be
     end
     context "and configured from yml" do
       let(:test_env) do
@@ -39,11 +43,13 @@ describe Cul::Repo::Load::Configuration do
           'BAG_PATH' => bag_path,
           'CHECKSUM_ALG' => checksum_alg,
           'SKIP' => offset,
+          'ORPHAN' => 'true',
           'LOAD_CONFIG' => path_to_fixture(File.join('load','config.yml'))
         )
       end
       it do
         expect(subject.bag_path).to eql('path/from/yml')
+        expect(subject.create_parent_works?).not_to be
       end
     end
   end
@@ -52,6 +58,7 @@ describe Cul::Repo::Load::Configuration do
     subject { Cul::Repo::Load::Configuration.from_yml(config_path) }
     it do
       expect(subject.bag_path).to eql('path/from/yml')
+      expect(subject.create_parent_works?).to be
     end
   end
 end

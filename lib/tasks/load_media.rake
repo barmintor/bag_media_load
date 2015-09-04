@@ -223,9 +223,11 @@ namespace :bag do
               end
             end
             parent_id = nil
-            parent_id = container_pids.select{|x| x != all_media.pid }.first
-            parent_id ||= name_parser.parent(rel_path)
-            unless parent_id.blank? || (ENV['ORPHAN'] =~ /^true$/i)
+            if config.create_parent_works?
+              parent_id = container_pids.select{|x| x != all_media.pid }.first
+              parent_id ||= name_parser.parent(rel_path)
+            end
+            unless parent_id.blank?
               begin
                 parent = ContentAggregator.search_repo(identifier: parent_id).first
                 if parent.blank?

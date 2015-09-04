@@ -3,17 +3,24 @@ module Cul::Repo::Load
     DEFAULT_CHECKSUM = 'sha1'.freeze
     DEFAULT_OFFSET = 0
 
-    attr_accessor :bag_path, :checksum_alg, :pattern, :offset, :override
+    attr_accessor :bag_path, :checksum_alg, :skip_parent_works, :pattern, :offset, :override
     def initialize(*args)
       opts = args.extract_options!
       self.bag_path = opts[:bag_path]
       self.checksum_alg = opts[:checksum_alg]
+      self.skip_parent_works = opts[:skip_parent_works]
       self.pattern = opts[:pattern]
       self.offset = opts[:offset]
       self.override = opts[:override]
     end
     def checksum_alg=(val)
       @checksum_alg = val ? val : DEFAULT_CHECKSUM
+    end
+    def create_parent_works?
+      !skip_parent_works
+    end
+    def skip_parent_works=(val)
+      @skip_parent_works = !!val and (val.to_s =~ /^true$/i)
     end
     def pattern=(val)
       if val.is_a? String
@@ -26,7 +33,7 @@ module Cul::Repo::Load
       @offset = val ? val.to_i : DEFAULT_OFFSET
     end
     def override=(val)
-      @override = !!val and !(val =~ /^false$/i)
+      @override = !!val and !(val.to_s =~ /^false$/i)
     end
     def upload_dir
       ActiveFedora.config.credentials[:upload_dir]
@@ -61,6 +68,7 @@ module Cul::Repo::Load
       opts[:pattern] = ENV['PATTERN']
       opts[:offset] = ENV.fetch('SKIP',DEFAULT_OFFSET).to_i
       opts[:override] = ENV['OVERRIDE']
+      opts[:skip_parent_works] = ENV['ORPHAN']
       opts.symbolize_keys!
       opts
     end
