@@ -133,12 +133,12 @@ namespace :bag do
     end
     desc "load resource objects for all the file resources in a bag"
     task :load => :seed do
-      bag_path = ENV['BAG_PATH']
-      alg = ENV['CHECKSUM_ALG'] || 'sha1'
-      pattern = ENV['PATTERN']
-      pattern = Regexp.compile(pattern) if pattern
-      skip = (ENV['SKIP'] || 0).to_i
-      override = !!ENV['OVERRIDE'] and !(ENV['OVERRIDE'] =~ /^false$/i)
+      config = Cul::Repo::Load::Configuration.from_env
+      bag_path = config.bag_path
+      alg = config.checksum_alg
+      pattern = config.pattern
+      skip = config.offset
+      override = config.override
       upload_dir = ActiveFedora.config.credentials[:upload_dir]
       # parse bag-info for external-id and title
       only_data = nil
@@ -147,8 +147,6 @@ namespace :bag do
         bag_path = parts[0]
         only_data = "data/#{parts[1..-1].join('')}"
       end
-      derivative_options = {:override => override}
-      derivative_options[:upload_dir] = upload_dir.clone.untaint if upload_dir
       bag_info = BagIt::Info.new(bag_path)
       raise "External-Identifier for bag is required" if bag_info.external_id.blank?
       all_ldpd_content = AdministrativeSet.search_repo(identifier: LDPD_STORAGE_ID).first
@@ -214,7 +212,7 @@ namespace :bag do
               dc.update_values([:dc_type]=>entry.dc_type)
               resource.save
             end
-            resource.derivatives!(derivative_options,entry.derivatives)
+            resource.derivatives!(config.derivative_options,entry.derivatives)
             container_pids = container_pids_for(resource)
             unless container_pids.include? all_media.pid
               resource.add_relationship(:cul_member_of, all_media)

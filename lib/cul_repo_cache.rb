@@ -1,6 +1,7 @@
 module Cul
   module Repo
     autoload :Constants, 'cul/repo/constants'
+    autoload :Load, 'cul/repo/load'
     module Serializers
       require 'cul/repo/serializers/struct_metadata'
     end
