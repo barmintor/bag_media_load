@@ -1,1 +1,7 @@
 bag_path: 'path/from/yml'
+relationships:
+  cul_member_of:
+    - foo
+  publisher:
+    - lol
+    - wut
