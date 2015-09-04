@@ -36,7 +36,7 @@ describe Cul::Repo::Load::Configuration do
     it do
       expect(subject.bag_path).to eql(bag_path)
       expect(subject.create_parent_works?).to be
-      expect(subject.relationships).to be_empty
+      expect(subject.object_relationships).to be_empty
     end
     context "and configured from yml" do
       let(:test_env) do
@@ -51,9 +51,9 @@ describe Cul::Repo::Load::Configuration do
       it do
         expect(subject.bag_path).to eql('path/from/yml')
         expect(subject.create_parent_works?).not_to be
-        expect(subject.relationships).to include(:cul_member_of)
-        expect(subject.relationships[:cul_member_of]).to eql(['foo'])
-        expect(subject.relationships[:publisher]).to eql(['lol','wut'])
+        expect(subject.object_relationships).to include(:cul_member_of)
+        expect(subject.object_relationships[:cul_member_of]).to eql(['foo'])
+        expect(subject.object_relationships[:publisher]).to eql(['lol','wut'])
       end
     end
   end

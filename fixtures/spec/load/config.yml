@@ -1,5 +1,5 @@
 bag_path: 'path/from/yml'
-relationships:
+object_relationships:
   cul_member_of:
     - foo
   publisher:

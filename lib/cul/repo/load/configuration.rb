@@ -4,7 +4,7 @@ module Cul::Repo::Load
     DEFAULT_OFFSET = 0
 
     attr_accessor :bag_path, :checksum_alg, :offset, :override,
-                  :pattern, :relationships, :skip_parent_works
+                  :pattern, :object_relationships, :skip_parent_works
 
     def initialize(*args)
       opts = args.extract_options!
@@ -14,7 +14,7 @@ module Cul::Repo::Load
       self.pattern = opts[:pattern]
       self.offset = opts[:offset]
       self.override = opts[:override]
-      self.relationships = opts.fetch(:relationships,{}).symbolize_keys
+      self.object_relationships = opts.fetch(:object_relationships,{}).symbolize_keys
     end
     def checksum_alg=(val)
       @checksum_alg = val ? val : DEFAULT_CHECKSUM

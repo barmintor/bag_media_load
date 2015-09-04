@@ -198,9 +198,19 @@ namespace :bag do
               original_name = original_name.object.to_s
             else
               resource.add_relationship(:original_name,entry.original_path,true)
-              resource.save
               original_name = entry.original_path
             end
+            config.object_relationships.each do |rel, vals|
+              vals.each do |val|
+                resource.add_relationship(rel,val)
+              end
+            end
+            container_pids = container_pids_for(resource)
+            unless container_pids.include? all_media.pid
+              resource.add_relationship(:cul_member_of, all_media)
+            end
+            resource.save
+            # set some DC properties
             dc = resource.datastreams['DC']
             title = dc.find_by_terms(:dc_title).first
             if title.nil? || title.text =~ /^Preservation[:]? (File|Image|Recording)/
@@ -212,16 +222,9 @@ namespace :bag do
               dc.update_values([:dc_type]=>entry.dc_type)
               resource.save
             end
+            # create derivatives
             resource.derivatives!(config.derivative_options,entry.derivatives)
-            container_pids = container_pids_for(resource)
-            unless container_pids.include? all_media.pid
-              resource.add_relationship(:cul_member_of, all_media)
-              begin
-                resource.save
-              rescue
-                Rails.logger.warn("could not add #{resource.pid} to all-media agg #{all_media.pid}")
-              end
-            end
+
             parent_id = nil
             if config.create_parent_works?
               parent_id = container_pids.select{|x| x != all_media.pid }.first
@@ -235,6 +238,11 @@ namespace :bag do
                   parent.datastreams["DC"].update_values({[:dc_identifier] => parent_id})
                   parent.datastreams["DC"].update_values({[:dc_type] => 'InteractiveResource'})
                   parent.add_relationship(:cul_member_of, bag_agg)
+                  config.object_relationships.each do |rel, vals|
+                    vals.each do |val|
+                      parent.add_relationship(rel,val)
+                    end
+                  end
                   parent.save
                 end
                 unless container_pids.include? parent.pid
