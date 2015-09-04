@@ -76,6 +76,8 @@
     :dwt_levels: dwtLevels
   http://www.loc.gov/premis/rdf/v1#:
     :original_name: hasOriginalName
+  http://www.openarchives.org/ore/terms/:
+    :lineage: lineage
   http://pcdm.org/models#:
     :pcdm_has_file: hasFile
     :pcdm_file_of: fileOf
