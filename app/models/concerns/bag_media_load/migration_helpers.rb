@@ -101,6 +101,9 @@ module BagMediaLoad::MigrationHelpers
       dsLocation = (dsLocation =~ /^file:\//) ? dsLocation.sub(/^file:/,'') : dsLocation
       image_rels(dsLocation,nouv)
     end
+    clear_obsolete_rels()
+  end
+  def clear_obsolete_rels
     clear_relationship(:cul_image_length)
     clear_relationship(:cul_image_width)
     clear_relationship(:format)

@@ -105,33 +105,44 @@ module BagIt
           resource.add_datastream(ds)
           ds.save
         end
-        begin
-          if dc_source_or_entry.image?
-              setImageProperties(resource)
-          elsif dc_source_or_entry.dc_type.eql? 'Software'
-            Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
-          end
-          resource.set_dc_format dc_source_or_entry.mime
-          resource.set_dc_type dc_source_or_entry.dc_type
-          resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
-
-        rescue Exception => e
-          Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
-          Rails.logger.warn "WARN ingesting as unidentified bytestream"
-          resource.set_dc_format dc_source_or_entry.mime
-          resource.set_dc_type dc_source_or_entry.dc_type
-          resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
-        end
         bag_entry = sources[0].slice((sources[0].index('/data/') + 1)..-1)
         resource.add_dc_identifier name_parser.id(bag_entry) if name_parser.id(bag_entry)
         resource.add_dc_identifier name_parser.default.id(bag_entry)
         resource.set_dc_source sources[0]
-        resource.set_dc_extent ds_size
+        resource.set_dc_extent ds_size.to_s
+        set_resource_properties!(resource,dc_source_or_entry)
+      else
+        set_resource_properties(resource,dc_source_or_entry)
+        resource.clear_obsolete_rels
+        resource.save
       end
-      resource.migrate!
       resource
     end
 
+    def set_resource_properties!(resource, dc_source_or_entry)
+      set_resource_properties(resource, dc_source_or_entry)
+      resource.save
+    end
+
+    def set_resource_properties(resource, dc_source_or_entry)
+      begin
+        if dc_source_or_entry.image?
+            setImageProperties(resource)
+        elsif dc_source_or_entry.dc_type.eql? 'Software'
+          Rails.logger.warn "WARN: Unsupported MIME Type #{mimetype} for #{sources[0]}"
+        end
+        resource.set_dc_format dc_source_or_entry.mime
+        resource.set_dc_type dc_source_or_entry.dc_type
+        resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
+
+      rescue Exception => e
+        Rails.logger.warn "WARN failed to analyze image at #{sources[0]} : #{e.message}"
+        Rails.logger.warn "WARN ingesting as unidentified bytestream"
+        resource.set_dc_format dc_source_or_entry.mime
+        resource.set_dc_type dc_source_or_entry.dc_type
+        resource.set_dc_title dc_source_or_entry.title if resource.datastreams['DC'].term_values(:dc_title).blank?
+      end
+    end
     def entry_for(dc_source)
       Manifest.entry_for(dc_source)
     end
