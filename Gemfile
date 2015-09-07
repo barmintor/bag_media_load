@@ -9,7 +9,7 @@ gem 'sqlite3'
 
 gem 'active-fedora', '~>7.0'
 gem 'active_fedora_finders'
-gem 'active_fedora_relsint'
+gem 'active_fedora_relsint', '~>0.4.1'
 gem 'cul_hydra', '~>1.2.1'
 gem 'libv8', '~>3.16' # for therubyracer
 gem 'therubyracer', "0.12.0" # for execjs

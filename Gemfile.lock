@@ -57,7 +57,7 @@ GEM
       active-fedora (>= 7.0.0)
       activerecord
       nokogiri
-    active_fedora_relsint (0.4.0)
+    active_fedora_relsint (0.4.1)
       active-fedora (~> 7.0)
       activesupport (>= 3.2.0, < 5.0)
     activejob (4.2.1)
@@ -398,7 +398,7 @@ PLATFORMS
 DEPENDENCIES
   active-fedora (~> 7.0)
   active_fedora_finders
-  active_fedora_relsint
+  active_fedora_relsint (~> 0.4.1)
   coffee-rails (~> 4.0.0)
   cul_hydra (~> 1.2.1)
   foreigner
