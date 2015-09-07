@@ -10,7 +10,7 @@ gem 'sqlite3'
 gem 'active-fedora', '~>7.0'
 gem 'active_fedora_finders'
 gem 'active_fedora_relsint'
-gem 'cul_hydra', '~>1.2.0'
+gem 'cul_hydra', '~>1.2.1'
 gem 'libv8', '~>3.16' # for therubyracer
 gem 'therubyracer', "0.12.0" # for execjs
 gem 'free-image', :github => 'barmintor/free-image-ruby'

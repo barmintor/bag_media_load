@@ -77,7 +77,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.3)
-    autoprefixer-rails (6.0.0)
+    autoprefixer-rails (6.0.1)
       execjs
       json
     blacklight (5.14.0)
@@ -103,7 +103,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
-    cul_hydra (1.2.0)
+    cul_hydra (1.2.1)
       active-fedora (~> 7.0)
       active-triples (~> 0.2.2)
       active_fedora_finders (>= 0.5.0)
@@ -400,7 +400,7 @@ DEPENDENCIES
   active_fedora_finders
   active_fedora_relsint
   coffee-rails (~> 4.0.0)
-  cul_hydra (~> 1.2.0)
+  cul_hydra (~> 1.2.1)
   foreigner
   free-image!
   imogen (>= 0.1.2)
