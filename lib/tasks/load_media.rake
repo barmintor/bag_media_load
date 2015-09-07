@@ -165,7 +165,9 @@ namespace :bag do
         bag_agg.datastreams["DC"].update_values({[:dc_type] => 'Collection'})
         bag_agg.label = bag_info.external_desc
         bag_agg.save
-        all_ldpd_content.add_member(bag_agg) unless all_ldpd_content.nil?
+        if !all_ldpd_content.nil? and !(all_ldpd_content.members.detect {|d| d.pid.eql?(bag_agg.pid)})
+          all_ldpd_content.members = all_ldpd_content.members + [bag_agg]
+        end
       end
       all_media_id = bag_agg_id + "/data"
       all_media = Collection.search_repo(identifier: (all_media_id)).first
