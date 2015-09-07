@@ -90,3 +90,5 @@
   http://www.iana.org/assignments/relation/:
     :iana_describes: describes
     :iana_described_by: describedby
+  http://www.w3.org/ns/ldp#:
+    :ldp_contains: contains
