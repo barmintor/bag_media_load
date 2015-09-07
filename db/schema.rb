@@ -13,16 +13,16 @@
 
 ActiveRecord::Schema.define(version: 20150408210038) do
 
-  create_table "bookmarks", force: true do |t|
-    t.integer  "user_id",     null: false
-    t.string   "document_id"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "user_type"
+  create_table "bookmarks", force: :cascade do |t|
+    t.integer  "user_id",                 null: false
+    t.string   "document_id", limit: 255
+    t.string   "title",       limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "user_type",   limit: 255
   end
 
-  create_table "pronom_format_types", force: true do |t|
+  create_table "pronom_format_types", force: :cascade do |t|
     t.string "pronom_format_type"
     t.string "pronom_format_id"
   end
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20150408210038) do
   add_index "pronom_format_types", ["pronom_format_id"], name: "index_pronom_format_types_on_pronom_format_id"
   add_index "pronom_format_types", ["pronom_format_type"], name: "index_pronom_format_types_on_pronom_format_type"
 
-  create_table "pronom_formats", id: false, force: true do |t|
+  create_table "pronom_formats", id: false, force: :cascade do |t|
     t.string "id"
     t.string "uri"
     t.string "pcdm_type"
@@ -39,12 +39,12 @@ ActiveRecord::Schema.define(version: 20150408210038) do
   add_index "pronom_formats", ["pcdm_type"], name: "index_pronom_formats_on_pcdm_type"
   add_index "pronom_formats", ["uri"], name: "index_pronom_formats_on_uri"
 
-  create_table "searches", force: true do |t|
+  create_table "searches", force: :cascade do |t|
     t.text     "query_params"
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "user_type"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "user_type",    limit: 255
   end
 
   add_index "searches", ["user_id"], name: "index_searches_on_user_id"

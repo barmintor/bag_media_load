@@ -12,7 +12,7 @@ begin
 
 require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new(:rspec) do |spec|
+RSpec::Core::RakeTask.new(rspec: ['bag:media:seed']) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
   spec.pattern += FileList['spec/*_spec.rb']
   spec.rspec_opts = ['--backtrace'] if ENV['CI']
