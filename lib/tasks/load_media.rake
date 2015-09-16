@@ -6,25 +6,6 @@ require 'cul_repo_cache'
 require "bag_it"
 require "thread/pool"
 include Cul::Repo::Constants
-def get_mods_nodes()
-  file = File.new('fixtures/lindquist-mods.xml')
-  mods_collection = Nokogiri::XML.parse(file)
-  ns = {'mods' => 'http://www.loc.gov/mods/v3'}
-  return mods_collection.xpath('/mods:modsCollection/mods:mods', ns)
-end
-
-def get_ldpd_content_pid
-  BagAggregator.find_by_identifier(LDPD_PROJECTS_ID)
-end
-
-def get_bag_pid(bag_id)
-  BagAggregator.find_by_identifier(bag_id)
-end
-
-def rubydora
-  ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
-  ActiveFedora::Base.fedora_connection[0].connection
-end
 
 def next_pid
   BagIt.next_pid
