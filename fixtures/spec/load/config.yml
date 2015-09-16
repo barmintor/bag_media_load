@@ -1,7 +1,11 @@
+%TAG !rdf! !ruby/object:RDF::
+---
 bag_path: 'path/from/yml'
 object_relationships:
   cul_member_of:
     - foo
+    - !rdf!URI
+      value: "http://foo.org"
   publisher:
     - lol
     - wut

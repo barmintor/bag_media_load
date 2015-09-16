@@ -52,7 +52,7 @@ describe Cul::Repo::Load::Configuration do
         expect(subject.bag_path).to eql('path/from/yml')
         expect(subject.create_parent_works?).not_to be
         expect(subject.object_relationships).to include(:cul_member_of)
-        expect(subject.object_relationships[:cul_member_of]).to eql(['foo'])
+        expect(subject.object_relationships[:cul_member_of]).to eql(['foo',RDF::URI('http://foo.org')])
         expect(subject.object_relationships[:publisher]).to eql(['lol','wut'])
       end
     end
