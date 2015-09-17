@@ -54,6 +54,7 @@
   info:fedora/fedora-system:def/model#:
     :has_model: hasModel
   http://purl.org/dc/terms/:
+    :contributor: contributor
     :extent: extent
     :format: format
     :format_of: isFormatOf
