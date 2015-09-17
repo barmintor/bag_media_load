@@ -185,7 +185,7 @@ namespace :bag do
             end
             config.object_relationships.each do |rel, vals|
               vals.each do |val|
-                resource.add_relationship(rel,val)
+                resource.add_relationship(rel,val, !(val.is_a? RDF::URI))
               end
             end
             container_pids = container_pids_for(resource)

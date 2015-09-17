@@ -46,7 +46,7 @@ module Cul::Repo::Load
       @derivative_options ||= begin
         o = {:override => self.override}
         o[:upload_dir] = self.upload_dir.clone.untaint if self.upload_dir
-        o       
+        o
       end
     end
     def self.from_env
