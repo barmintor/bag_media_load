@@ -35,7 +35,7 @@ module Arxv
       doc.xpath("/mets:mets/mets:fileSec/mets:fileGrp[@USE='#{use}']", METS_NS)
     end
     def file_path(file_node)
-      File.absolute_path(File.join(@bag_info.bag_path,'data',file_node.css('FLocat').first["xlink:href"]))
+      File.absolute_path(File.join(@bag_info.bag_path,'data',file_node.xpath('mets:FLocat',METS_NS).first["xlink:href"]))
     end
     def file_entry(file_node,original=true)
       local_id = file_node['ID']
