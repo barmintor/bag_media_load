@@ -49,7 +49,8 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 group :development do
-  gem 'rspec', '~> 3.3'
+  gem 'rspec', '~> 3.4'
   gem 'rspec-rails'
-  gem 'mocha'
+  gem 'rubocop', require: false
+  gem 'rubocop-rspec', require: false
 end

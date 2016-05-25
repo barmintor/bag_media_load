@@ -1,6 +1,7 @@
 module BagIt
   class Manifest
     class Entry
+      include GlobalID::Identification
       attr_accessor :path, :mime, :derivatives, :title
       def initialize(opts)
         @path = opts[:path]

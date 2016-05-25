@@ -139,4 +139,17 @@ namespace :structure do
       puts "No ContentAggregator found for #{cagg_id}"
     end
   end
+  task :debug => :environment do
+    mets_path = 'tmp/METS.456ebfa9-d726-42f6-941d-bc4ad8c15585.xml'
+    mets_doc = Nokogiri::XML(open(mets_path)) { |c| c.strict.noblanks }
+    arxv = Arxv::Archive.allocate
+    arxv.instance_variable_set(:@mets, mets_doc)
+    bag_info = BagIt::Info.new("tmp")
+    arxv.instance_variable_set(:@bag_info, bag_info)
+    open("tmp/debug.log", 'w') do |buffer|
+      arxv.each_entry do |entry|
+        buffer.write(entry.inspect + "\n")
+      end
+    end
+  end
 end

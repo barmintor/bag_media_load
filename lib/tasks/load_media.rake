@@ -192,21 +192,17 @@ namespace :bag do
             unless container_pids.include? all_media.pid
               resource.add_relationship(:cul_member_of, all_media)
             end
-            resource.save
+
             # set some DC properties
             dc = resource.datastreams['DC']
             title = dc.find_by_terms(:dc_title).first
             if title.nil? || title.text =~ /^Preservation[:]? (File|Image|Recording)/
               dc.update_values([:dc_title]=>original_name.split('/')[-1])
-              resource.save
             end
             dc_type = dc.find_by_terms(:dc_type).first
             unless dc_type.eql? entry.dc_type
               dc.update_values([:dc_type]=>entry.dc_type)
-              resource.save
             end
-            # create derivatives
-            resource.derivatives!(config.derivative_options,entry.derivatives)
 
             parent_id = nil
             if config.create_parent_works?
@@ -237,6 +233,11 @@ namespace :bag do
                 Rails.logger.error(e.backtrace.join("\n"))
               end
             end
+            io = StringIO.new
+            Cul::Foxml::Serializer.serialize_object(resource, io)
+            Cul::Hydra::Fedora.repository.ingest(pid: resource.pid, file: io.string)
+            # create derivatives
+            resource.derivatives!(config.derivative_options,entry.derivatives)
           #end
         rescue Exception => e
           Rails.logger.error(e.message)

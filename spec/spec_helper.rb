@@ -10,7 +10,7 @@ require 'tempfile'
 require 'cul_image_props'
 
 RSpec.configure do |config|
-  config.mock_with :mocha
+  config.mock_with :rspec
 end
 unless PronomFormat.exists?('fmt/18')
 	load "#{Rails.root}/db/seeds.rb"

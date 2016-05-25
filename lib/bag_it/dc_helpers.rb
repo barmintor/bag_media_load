@@ -3,6 +3,10 @@ module BagIt
     def dc_dirty!
       self.datastreams['DC'].changed_attributes[:content] = true
     end
+    def set_dc_contributor(val)
+      self.datastreams['DC'].update_indexed_attributes([:dc_contributor=>0]=>val)
+      self.dc_dirty!
+    end
     def set_dc_extent(val)
       self.datastreams['DC'].update_indexed_attributes([:dc_extent=>0]=>val)
       self.dc_dirty!

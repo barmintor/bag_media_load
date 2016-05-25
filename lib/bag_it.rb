@@ -1,5 +1,6 @@
 require 'active_support'
 require 'cul_repo_cache'
+require 'cul_foxml'
 module BagIt
   extend ActiveSupport::Autoload
   eager_autoload do
@@ -24,9 +25,10 @@ module BagIt
   	ActiveFedora::Base.fedora_connection[0] ||= ActiveFedora::RubydoraConnection.new(ActiveFedora.config.credentials)
     repo = ActiveFedora::Base.fedora_connection[0].connection
     pid = nil
-    begin
+    until pid
       pid = repo.mint(namespace: namespace)
-    end while self.exists? pid
+      pid = nil if self.exists? pid
+    end
     pid
   end
 end

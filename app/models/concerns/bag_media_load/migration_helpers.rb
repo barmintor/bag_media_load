@@ -16,7 +16,6 @@ module BagMediaLoad::MigrationHelpers
           @width = @length = nil
         end
         rels_int.serialize!
-        self.save
         uri = URI.parse(derivative_url())
         Net::HTTP.new(uri.host, uri.port) {|http| http.head(uri.request_uri).code}
       rescue Exception => e
@@ -48,7 +47,6 @@ module BagMediaLoad::MigrationHelpers
         rels_int.serialize!
       end
     end
-    self.save
   end
 
   def migrate!

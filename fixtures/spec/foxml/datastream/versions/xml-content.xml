@@ -1,0 +1,5 @@
+<foxml:datastreamVersion ID="EXAMPLE-DS.0" LABEL="Example Datastream Version" MIMETYPE="text/xml" FORMAT_URI="http://example.org/xml">
+<foxml:xmlContent>
+<elements></elements>
+</foxml:xmlContent>
+</foxml:datastreamVersion>

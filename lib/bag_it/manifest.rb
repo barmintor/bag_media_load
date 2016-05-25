@@ -86,7 +86,6 @@ module BagIt
       if resource.blank?
         return nil unless create
         resource = GenericResource.new(:pid => BagIt.next_pid)
-        resource.save
       end
       unless resource.datastreams['content'] and !resource.datastreams['content'].new?
         mimetype = Manifest.mime_for_name(sources[0])
@@ -99,11 +98,9 @@ module BagIt
         if ds and !ds.new?
           ds.dsLocation = dsLocation
           ds.dsLabel = sources[0].split('/').last
-          ds.save
         else
           ds = resource.create_datastream(ActiveFedora::Datastream, 'content', :dsLocation=>dsLocation, :controlGroup => 'E', :mimeType=>mimetype, :dsLabel=>sources[0].split('/').last)
           resource.add_datastream(ds)
-          ds.save
         end
         bag_entry = sources[0].slice((sources[0].index('/data/') + 1)..-1)
         resource.add_dc_identifier name_parser.id(bag_entry) if name_parser.id(bag_entry)
@@ -114,14 +111,12 @@ module BagIt
       else
         set_resource_properties(resource,dc_source_or_entry)
         resource.clear_obsolete_rels
-        resource.save
       end
       resource
     end
 
     def set_resource_properties!(resource, dc_source_or_entry)
       set_resource_properties(resource, dc_source_or_entry)
-      resource.save
     end
 
     def set_resource_properties(resource, dc_source_or_entry)
