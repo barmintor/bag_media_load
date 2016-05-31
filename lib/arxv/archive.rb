@@ -23,7 +23,12 @@ module Arxv
       original_fg = file_group(@mets,"original").first
       file_entries = original_fg.xpath("mets:file", METS_NS).collect do |file|
         gid = file["GROUPID"]
-        derivatives = file_group(@mets,"preservation").first.xpath("mets:file[@GROUPID='#{gid}']", METS_NS)
+        pres_file_group = file_group(@mets,"preservation").first
+        if pres_file_group
+          derivatives = pres_file_group.xpath("mets:file[@GROUPID='#{gid}']", METS_NS)
+        else
+          derivatives = []
+        end
         entry = file_entry(file)
         entry.derivatives = derivatives.collect {|node| file_entry(node,false)}
         if !only_data || entry.path =~ only_data
