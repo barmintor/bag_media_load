@@ -15,7 +15,7 @@ module Arxv
       @bag_info = bag_info
       mets_path = Dir.entries(File.join(bag_info.bag_path,'data')).select {|x| x =~ /^METS\..+\.xml$/}
       mets_path = File.join(bag_info.bag_path,'data',mets_path.first)
-      @mets = Nokogiri::XML(open(mets_path))
+      @mets = Nokogiri::XML(open(mets_path)) { |config| config.strict.noblanks }
     end
     # return the Arxv::FileEntry objects associated with the original files of this archive
     def each_entry(only_data=nil)
