@@ -233,6 +233,8 @@ namespace :bag do
                 Rails.logger.error(e.backtrace.join("\n"))
               end
             end
+            # since we're not calling :create, we need to call :assert_content_model
+            resource.assert_content_model
             io = StringIO.new
             Cul::Foxml::Serializer.serialize_object(resource, io)
             Cul::Hydra::Fedora.repository.ingest(pid: resource.pid, file: io.string)

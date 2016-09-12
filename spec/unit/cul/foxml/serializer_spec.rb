@@ -26,6 +26,8 @@ describe Cul::Foxml::Serializer do
       allow(af_object).to receive(:pid).and_return('example:1')
       allow(af_object).to receive(:label).and_return('Example Title')
       allow(af_object).to receive(:datastreams).and_return({})
+      allow(af_object).to receive(:object_relations).and_return({})
+      expect(af_object).to receive(:assert_content_model)
     end
     subject do
       io = StringIO.new

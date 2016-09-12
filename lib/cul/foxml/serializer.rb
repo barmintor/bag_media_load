@@ -8,6 +8,9 @@ module Cul
       SERIALIZE_DATASTREAM_CONTENT = proc {|ds, io, block| serialize_datastream_content(ds, io, &block) }
       def self.serialize_object(af_object, io = StringIO.new, &block)
         block = SERIALIZE_DATASTREAM unless block_given?
+        if af_object.object_relations[:has_model].blank?
+          af_object.assert_content_model
+        end
         # write root element
         io << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         io << '<foxml:digitalObject VERSION="1.1" '

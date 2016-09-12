@@ -49,5 +49,8 @@ describe Cul::Foxml::Serializer, type: :integration do
       expect(ids).to include(test_pid)
 #      open('tmp/object.xml', 'w') { |b| b.write(repository.api.object_xml(pid: test_pid)) }
     end
+    it 'assigns a content model' do
+      expect(subject.object_relations[:has_model]).to include('info:fedora/ldpd:GenericResource')
+    end
   end
 end
