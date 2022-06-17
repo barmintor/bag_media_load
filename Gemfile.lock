@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/barmintor/free-image-ruby.git
+  remote: https://github.com/barmintor/free-image-ruby.git
   revision: 6761773da5614161c0c22bd0b0e250a5f6897bfc
   specs:
     free-image (0.6.2)
@@ -104,6 +104,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
+    concurrent-ruby (1.1.10)
     cul_hydra (1.2.1)
       active-fedora (~> 7.0)
       active-triples (~> 0.2.2)
@@ -164,7 +165,8 @@ GEM
       hydra-access-controls (= 7.2.2)
       hydra-core (= 7.2.2)
       rails (>= 3.2.6)
-    i18n (0.7.0)
+    i18n (0.9.5)
+      concurrent-ruby (~> 1.0)
     imogen (0.1.7)
       ruby-opencv
     iso-639 (0.2.5)
@@ -204,7 +206,7 @@ GEM
       rdf-turtle (~> 1.1, >= 1.1.5)
       sparql (~> 1.1, >= 1.1.4)
       sparql-client (~> 1.1, >= 1.1.3)
-    logger (1.2.8)
+    logger (1.5.1)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
